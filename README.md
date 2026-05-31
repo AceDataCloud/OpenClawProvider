@@ -22,7 +22,7 @@ openclaw onboard --auth-choice acedatacloud-api-key --acedata-api-key <YOUR_KEY>
 
 Get a key at [`platform.acedata.cloud/console/applications`](https://platform.acedata.cloud/console/applications) — first credentials include free credits.
 
-## What you get in v2026.5.31
+## What you get in v2026.5.32
 
 | Capability | Status | Notes |
 |---|---|---|
@@ -34,7 +34,9 @@ Get a key at [`platform.acedata.cloud/console/applications`](https://platform.ac
 
 ## Status
 
-**v2026.5.31 (first npm release).** Chat (62 models, dynamic-id passthrough) and web search are shipping. Image / video / music modality providers are tracked as follow-ups — see the [PR board](https://github.com/AceDataCloud/OpenClawProvider/pulls) and the [plan](https://github.com/AceDataCloud/Index/blob/main/.plans/OPENCLAW-PROVIDER.md).
+**v2026.5.32.** Chat (62 models, dynamic-id passthrough) and web search are shipping and validated end-to-end on `openclaw >= 2026.4.2`. Image / video / music modality providers are tracked as follow-ups — see the [PR board](https://github.com/AceDataCloud/OpenClawProvider/pulls) and the [plan](https://github.com/AceDataCloud/Index/blob/main/.plans/OPENCLAW-PROVIDER.md).
+
+Full setup guide: **[docs/cookbook.md](docs/cookbook.md)**.
 
 ## Configuration
 
