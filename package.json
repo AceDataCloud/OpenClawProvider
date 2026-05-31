@@ -1,6 +1,6 @@
 {
   "name": "@acedatacloud/openclaw-provider",
-  "version": "0.1.0",
+  "version": "2026.5.31",
   "description": "OpenClaw provider plugin for Ace Data Cloud — chat, image, video, music, and web-search across 50+ AI models through a single OpenAI-compatible endpoint.",
   "keywords": [
     "openclaw",

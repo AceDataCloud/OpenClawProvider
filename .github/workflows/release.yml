@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag to release (e.g. v2026.5.31)'
+        required: true
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve ref
+        id: ref
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "ref=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout this plugin
+        uses: actions/checkout@v4
+        with:
+          path: OpenClawProvider
+          ref: ${{ steps.ref.outputs.ref }}
+
+      - name: Checkout openclaw monorepo (for workspace plugin-sdk)
+        uses: actions/checkout@v4
+        with:
+          repository: openclaw/openclaw
+          ref: main
+          path: openclaw
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Install dependencies
+        working-directory: OpenClawProvider
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Typecheck
+        working-directory: OpenClawProvider
+        run: pnpm typecheck
+
+      - name: Tests
+        working-directory: OpenClawProvider
+        run: pnpm test
+
+      - name: Build
+        working-directory: OpenClawProvider
+        run: pnpm build
+
+      - name: Verify package contents
+        working-directory: OpenClawProvider
+        run: pnpm pack --pack-destination /tmp && ls -la /tmp/*.tgz
+
+      - name: Publish to npm
+        working-directory: OpenClawProvider
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --no-git-checks --access public
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ref.outputs.ref }}
+          name: ${{ steps.ref.outputs.ref }}
+          generate_release_notes: true
+          fail_on_unmatched_files: false

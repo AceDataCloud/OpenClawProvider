@@ -22,19 +22,19 @@ openclaw onboard --auth-choice acedatacloud-api-key --acedata-api-key <YOUR_KEY>
 
 Get a key at [`platform.acedata.cloud/console/applications`](https://platform.acedata.cloud/console/applications) — first credentials include free credits.
 
-## What you get
+## What you get in v2026.5.31
 
-| Capability | Models |
-|---|---|
-| **Chat** | Claude opus/sonnet/haiku, GPT-4.1/4o/5.x, Gemini 3.x, Grok 4, DeepSeek V3/R1/V4, Kimi K2, GLM 5, Qwen 3.5 — plus any model id you pass through (e.g. `acedatacloud/gpt-5.4-mini`) |
-| **Image** | Midjourney, Flux (dev/pro/kontext), Seedream 4 / 4.5, NanoBanana / NanoBanana Pro, `gpt-image-2` |
-| **Video** | Sora, Veo 3 / 3.1-fast, Kling 2.1, Luma Ray 2, Hailuo 02, Wan 2.5, Seedance 1 Pro, Pixverse 4.5 (generate + image-to-video) |
-| **Music** | Suno v5 (+ instrumental), Producer |
-| **Web Search** | Google Serp |
+| Capability | Status | Notes |
+|---|---|---|
+| **Chat** | ✅ shipping | 62 curated models (Claude opus/sonnet/haiku, GPT-4.1/4o/5.x, o-series, Gemini 3.x, Grok 4, DeepSeek V3/R1/V4, Kimi K2, GLM 5) — plus any model id you pass through (e.g. `acedatacloud/gpt-5.4-mini`) via `resolveDynamicModel` |
+| **Web Search** | ✅ shipping | Google SERP — supports `search` / `images` / `news` / `videos` / `maps` / `places` verticals |
+| **Image generation** | 🚧 follow-up PR | Midjourney, Flux dev/pro/kontext, Seedream 4 / 4.5, NanoBanana / NanoBanana Pro, `gpt-image-2` — currently exposed via chat-style passthrough; native `ImageGenerationProvider` is planned |
+| **Video generation** | 🚧 follow-up PR | Sora, Veo 3 / 3.1-fast, Kling 2.1, Luma Ray 2, Hailuo 02, Wan 2.5, Seedance 1 Pro, Pixverse 4.5 — needs an async task-polling adapter |
+| **Music generation** | 🚧 follow-up PR | Suno v5, Producer — needs an async task-polling adapter |
 
 ## Status
 
-**Active development (Phase 0 — skeleton).** Track progress at [the .plans/ doc in AceDataCloud/Index](https://github.com/AceDataCloud/Index/blob/main/.plans/OPENCLAW-PROVIDER.md) and the [Pull Request board](https://github.com/AceDataCloud/OpenClawProvider/pulls).
+**v2026.5.31 (first npm release).** Chat (62 models, dynamic-id passthrough) and web search are shipping. Image / video / music modality providers are tracked as follow-ups — see the [PR board](https://github.com/AceDataCloud/OpenClawProvider/pulls) and the [plan](https://github.com/AceDataCloud/Index/blob/main/.plans/OPENCLAW-PROVIDER.md).
 
 ## Configuration
 
