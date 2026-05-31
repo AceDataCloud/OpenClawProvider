@@ -16,6 +16,7 @@ import {
   ACEDATA_DEFAULT_MODEL_REF,
   applyAcedataConfig,
 } from "./src/chat/onboard.js";
+import { createAcedataWebSearchProvider } from "./src/search/acedata-search-provider.js";
 
 const ZERO_COST = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } as const;
 
@@ -92,5 +93,6 @@ export default definePluginEntry({
       },
       resolveDynamicModel: (ctx) => resolveDynamicChatModel(ctx),
     });
+    api.registerWebSearchProvider(createAcedataWebSearchProvider());
   },
 });
