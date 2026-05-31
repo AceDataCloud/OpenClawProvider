@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       openclaw:
-        specifier: '>=2026.5.26'
+        specifier: '>=2026.4.2'
         version: 2026.5.28
     devDependencies:
       '@openclaw/plugin-sdk':
