@@ -46,6 +46,8 @@
     "test:live": "vitest run --config vitest.live.config.ts",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
+    "sync-catalog": "node scripts/sync-catalog.mjs",
+    "sync-catalog:check": "node scripts/sync-catalog.mjs --check",
     "prepublishOnly": "pnpm clean && pnpm build"
   },
   "devDependencies": {
