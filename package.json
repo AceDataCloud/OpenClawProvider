@@ -1,0 +1,106 @@
+{
+  "name": "@acedatacloud/openclaw-provider",
+  "version": "0.1.0",
+  "description": "OpenClaw provider plugin for Ace Data Cloud — chat, image, video, music, and web-search across 50+ AI models through a single OpenAI-compatible endpoint.",
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "openclaw-provider",
+    "acedatacloud",
+    "ace-data-cloud",
+    "llm",
+    "ai-gateway",
+    "image-generation",
+    "video-generation",
+    "music-generation",
+    "midjourney",
+    "suno",
+    "veo",
+    "sora",
+    "claude",
+    "gpt"
+  ],
+  "homepage": "https://github.com/AceDataCloud/OpenClawProvider#readme",
+  "bugs": "https://github.com/AceDataCloud/OpenClawProvider/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AceDataCloud/OpenClawProvider.git"
+  },
+  "license": "MIT",
+  "author": "Ace Data Cloud <dev@acedata.cloud>",
+  "type": "module",
+  "files": [
+    "dist",
+    "openclaw.plugin.json",
+    "index.ts",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:live": "vitest run --config vitest.live.config.ts",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "prepublishOnly": "pnpm clean && pnpm build"
+  },
+  "devDependencies": {
+    "@openclaw/plugin-sdk": "file:../openclaw/packages/plugin-sdk",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "undici": "^7.2.0",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.5.26"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "publishConfig": {
+    "access": "public"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@google/genai",
+      "esbuild",
+      "openclaw",
+      "protobufjs",
+      "tree-sitter-bash"
+    ]
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "runtimeExtensions": [
+      "./dist/index.js"
+    ],
+    "install": {
+      "npmSpec": "@acedatacloud/openclaw-provider",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.5.26"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.26"
+    },
+    "build": {
+      "openclawVersion": "2026.5.31",
+      "pluginSdkVersion": "2026.5.31",
+      "bundledDist": false
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

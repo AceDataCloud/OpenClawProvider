@@ -1,0 +1,44 @@
+name: Live API smoke test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'  # nightly 06:00 UTC
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this plugin
+        uses: actions/checkout@v4
+        with:
+          path: OpenClawProvider
+
+      - name: Checkout openclaw monorepo (for workspace plugin-sdk)
+        uses: actions/checkout@v4
+        with:
+          repository: openclaw/openclaw
+          ref: main
+          path: openclaw
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Install dependencies
+        working-directory: OpenClawProvider
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Live API smoke test
+        working-directory: OpenClawProvider
+        env:
+          ACEDATA_API_KEY: ${{ secrets.ACEDATACLOUD_API_KEY }}
+          ENABLE_LIVE_TESTS: '1'
+        run: pnpm test:live

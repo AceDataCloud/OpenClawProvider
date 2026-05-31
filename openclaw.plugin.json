@@ -1,0 +1,53 @@
+{
+  "id": "acedatacloud",
+  "name": "Ace Data Cloud",
+  "description": "Ace Data Cloud aggregates chat, image, video, music, and web-search across 50+ AI models behind a single OpenAI-compatible endpoint.",
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": ["acedatacloud"],
+  "modelIdNormalization": {
+    "providers": {
+      "acedatacloud": {
+        "prefixWhenBare": "acedatacloud"
+      }
+    }
+  },
+  "providerRequest": {
+    "providers": {
+      "acedatacloud": {
+        "family": "openai-compatible"
+      }
+    }
+  },
+  "setup": {
+    "providers": [
+      {
+        "id": "acedatacloud",
+        "envVars": ["ACEDATA_API_KEY", "ACEDATACLOUD_API_KEY"]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "acedatacloud",
+      "method": "api-key",
+      "choiceId": "acedatacloud-api-key",
+      "choiceLabel": "Ace Data Cloud API key",
+      "groupId": "acedatacloud",
+      "groupLabel": "Ace Data Cloud",
+      "groupHint": "API key",
+      "onboardingScopes": ["text-inference"],
+      "optionKey": "acedatacloudApiKey",
+      "cliFlag": "--acedata-api-key",
+      "cliOption": "--acedata-api-key <key>",
+      "cliDescription": "Ace Data Cloud API key (https://platform.acedata.cloud)"
+    }
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
