@@ -20,16 +20,26 @@ import { createAcedataWebSearchProvider } from "./src/search/acedata-search-prov
 
 const ZERO_COST = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } as const;
 
+const ACEDATA_MODEL_ID_PREFIX_RE = new RegExp(`^${ACEDATA_PROVIDER_ID}\\/`);
+
+// OpenClaw passes the qualified id (e.g. "acedatacloud/claude-haiku-4-5-20251001")
+// when a model is not in the static catalog. The api.acedata.cloud upstream
+// expects the bare provider model id in the request payload.
+function stripAcedataProviderPrefix(modelId: string): string {
+  return modelId.replace(ACEDATA_MODEL_ID_PREFIX_RE, "");
+}
+
 function resolveDynamicChatModel(
   ctx: ProviderResolveDynamicModelContext,
 ): ProviderRuntimeModel {
+  const bareId = stripAcedataProviderPrefix(ctx.modelId);
   return {
-    id: ctx.modelId,
-    name: ctx.modelId,
+    id: bareId,
+    name: bareId,
     api: "openai-completions",
     provider: ACEDATA_PROVIDER_ID,
     baseUrl: ACEDATA_BASE_URL,
-    reasoning: isAcedataReasoningModel(ctx.modelId),
+    reasoning: isAcedataReasoningModel(bareId),
     input: ["text", "image"],
     cost: ZERO_COST,
     contextWindow: 128_000,
@@ -96,3 +106,5 @@ export default definePluginEntry({
     api.registerWebSearchProvider(createAcedataWebSearchProvider());
   },
 });
+
+export { resolveDynamicChatModel, stripAcedataProviderPrefix };
