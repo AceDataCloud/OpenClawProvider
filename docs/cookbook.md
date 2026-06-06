@@ -50,13 +50,13 @@ openclaw onboard --auth-choice acedatacloud-api-key --token "$ACEDATA_API_KEY"
 ### 4. Pick a default model
 
 ```bash
-openclaw config set agents.defaults.model.primary 'acedatacloud/claude-sonnet-4-5'
+openclaw config set agents.defaults.model.primary 'acedatacloud/claude-opus-4-8'
 ```
 
 ### 5. Run a turn
 
 ```bash
-openclaw agent --local --session-key smoke --model 'acedatacloud/claude-sonnet-4-5' \
+openclaw agent --local --session-key smoke --model 'acedatacloud/claude-opus-4-8' \
   -m 'Say hello in one sentence.'
 ```
 
@@ -64,15 +64,15 @@ openclaw agent --local --session-key smoke --model 'acedatacloud/claude-sonnet-4
 
 Model refs follow the pattern `acedatacloud/<model-name>`. The provider ships with 60+ curated entries and also accepts arbitrary upstream model ids as a passthrough — anything Ace Data Cloud lists at [docs.acedata.cloud/aichat/models](https://docs.acedata.cloud/aichat/models) is valid.
 
-| Family       | Example refs                                                        |
-| ------------ | ------------------------------------------------------------------- |
-| Claude       | `acedatacloud/claude-sonnet-4-5`, `acedatacloud/claude-haiku-4-5`   |
-| GPT / o-     | `acedatacloud/gpt-5`, `acedatacloud/gpt-5-mini`, `acedatacloud/o4-mini` |
-| Gemini       | `acedatacloud/gemini-2.5-pro`, `acedatacloud/gemini-2.5-flash`      |
-| Grok         | `acedatacloud/grok-4`, `acedatacloud/grok-3`                        |
-| DeepSeek     | `acedatacloud/deepseek-v3.2`, `acedatacloud/deepseek-r1`            |
-| Kimi         | `acedatacloud/kimi-k2`, `acedatacloud/moonshot-v1-128k`             |
-| GLM          | `acedatacloud/glm-4.6`, `acedatacloud/glm-4-air`                    |
+| Family       | Example refs                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| Claude       | `acedatacloud/claude-opus-4-8`, `acedatacloud/claude-sonnet-4-6`, `acedatacloud/claude-haiku-4-5-20251001` |
+| GPT / o-     | `acedatacloud/gpt-5.2-pro`, `acedatacloud/gpt-5.4-mini`, `acedatacloud/o4-mini`               |
+| Gemini       | `acedatacloud/gemini-3.1-pro`, `acedatacloud/gemini-3-flash`                                  |
+| Grok         | `acedatacloud/grok-4-1-fast`, `acedatacloud/grok-4`                                           |
+| DeepSeek     | `acedatacloud/deepseek-v4-flash`, `acedatacloud/deepseek-r1`                                  |
+| Kimi         | `acedatacloud/kimi-k2.5`, `acedatacloud/kimi-k2-thinking`                                     |
+| GLM          | `acedatacloud/glm-5.1`, `acedatacloud/glm-4.6`                                                |
 
 ## Manual configuration
 
@@ -83,7 +83,7 @@ If you'd rather edit `~/.openclaw/openclaw.json` directly:
   env: { ACEDATA_API_KEY: "ace-..." },
   agents: {
     defaults: {
-      model: { primary: "acedatacloud/claude-sonnet-4-5" },
+      model: { primary: "acedatacloud/claude-opus-4-8" },
     },
   },
   plugins: {
@@ -103,10 +103,10 @@ OpenClaw supports model fallback chains. Mix Ace Data Cloud with other providers
   agents: {
     defaults: {
       model: {
-        primary: "acedatacloud/claude-sonnet-4-5",
+        primary: "acedatacloud/claude-opus-4-8",
         fallbacks: [
-          "acedatacloud/gpt-5",
-          "acedatacloud/gemini-2.5-pro",
+          "acedatacloud/gpt-5.2-pro",
+          "acedatacloud/gemini-3.1-pro",
         ],
       },
     },
@@ -176,14 +176,14 @@ Different chat channels can use different Ace Data Cloud models:
     telegram: {
       agents: {
         defaults: {
-          model: { primary: "acedatacloud/claude-sonnet-4-5" },
+          model: { primary: "acedatacloud/claude-opus-4-8" },
         },
       },
     },
     discord: {
       agents: {
         defaults: {
-          model: { primary: "acedatacloud/gpt-5-mini" },   // cheaper for Discord
+          model: { primary: "acedatacloud/claude-haiku-4-5-20251001" },   // cheaper for Discord
         },
       },
     },
