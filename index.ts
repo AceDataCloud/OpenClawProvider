@@ -63,7 +63,7 @@ export default definePluginEntry({
           methodId: "api-key",
           label: "Ace Data Cloud API key",
           hint: "API key from https://platform.acedata.cloud/console/applications",
-          optionKey: "acedatacloudApiKey",
+          optionKey: "acedataApiKey",
           flagName: "--acedata-api-key",
           envVar: "ACEDATA_API_KEY",
           promptMessage: "Enter your Ace Data Cloud API key",

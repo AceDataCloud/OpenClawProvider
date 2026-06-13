@@ -1,14 +1,43 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import pluginEntry, {
   resolveDynamicChatModel,
   stripAcedataProviderPrefix,
 } from "../index.js";
 
+// Commander derives the parsed option key from the long flag: it drops the
+// leading dashes and camel-cases the remaining hyphen-separated segments.
+function commanderOptionKey(cliFlag: string): string {
+  return cliFlag
+    .replace(/^--/, "")
+    .split("-")
+    .map((part, index) =>
+      index === 0 ? part : part.slice(0, 1).toUpperCase() + part.slice(1),
+    )
+    .join("");
+}
+
 describe("plugin manifest", () => {
   it("exposes the acedatacloud provider id", () => {
     expect(pluginEntry.id).toBe("acedatacloud");
     expect(pluginEntry.name).toContain("Ace Data Cloud");
     expect(typeof pluginEntry.register).toBe("function");
+  });
+
+  it("non-interactive auth optionKey matches the CLI flag Commander parses", () => {
+    const manifest = JSON.parse(
+      readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
+    ) as { providerAuthChoices?: Array<{ cliFlag?: string; optionKey?: string }> };
+    const choices = manifest.providerAuthChoices ?? [];
+    expect(choices.length).toBeGreaterThan(0);
+    for (const choice of choices) {
+      if (!choice.cliFlag) {
+        continue;
+      }
+      // Guards the onboarding mismatch where --acedata-api-key parses to
+      // acedataApiKey but the manifest declared acedatacloudApiKey.
+      expect(choice.optionKey).toBe(commanderOptionKey(choice.cliFlag));
+    }
   });
 });
 
