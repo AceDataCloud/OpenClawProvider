@@ -1,5 +1,5 @@
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth-api-key";
+import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
 import type {
   ProviderResolveDynamicModelContext,
   ProviderRuntimeModel,
@@ -99,6 +99,18 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
         }),
       },
       resolveDynamicModel: (ctx) => resolveDynamicChatModel(ctx),
+    });
+    api.registerModelCatalogProvider({
+      provider: ACEDATA_PROVIDER_ID,
+      kinds: ["text"],
+      staticCatalog: () =>
+        GENERATED_CHAT_MODELS.map((model) => ({
+          kind: "text",
+          provider: ACEDATA_PROVIDER_ID,
+          model: model.id,
+          label: model.name,
+          source: "static",
+        })),
     });
     api.registerWebSearchProvider(createAcedataWebSearchProvider());
   },

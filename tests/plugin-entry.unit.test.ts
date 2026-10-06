@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { applyAcedataConfig } from "../src/chat/onboard.js";
 import pluginEntry, {
   resolveDynamicChatModel,
   stripAcedataProviderPrefix,
@@ -22,6 +23,22 @@ describe("plugin manifest", () => {
     expect(pluginEntry.id).toBe("acedatacloud");
     expect(pluginEntry.name).toContain("Ace Data Cloud");
     expect(typeof pluginEntry.register).toBe("function");
+  });
+
+  it("onboarding preserves an existing explicit model selection", () => {
+    const config = {
+      agents: {
+        defaults: {
+          model: { primary: "other/chosen", fallbacks: ["other/backup"] },
+        },
+      },
+    };
+    expect(applyAcedataConfig(config).agents?.defaults?.model).toEqual(
+      config.agents.defaults.model,
+    );
+    expect(applyAcedataConfig({}).agents?.defaults?.model).toEqual({
+      primary: "acedatacloud/gpt-4.1-mini",
+    });
   });
 
   it("non-interactive auth optionKey matches the CLI flag Commander parses", () => {

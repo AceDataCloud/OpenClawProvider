@@ -22,6 +22,7 @@ import { argv, exit } from "node:process";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
 const OUT_PATH = join(ROOT, "src/chat/generated-catalog.ts");
+const MANIFEST_PATH = join(ROOT, "openclaw.plugin.json");
 const OVERRIDES_PATH = join(ROOT, "src/chat/model-overrides.json");
 
 function parseArgs(args) {
@@ -194,10 +195,27 @@ if (missing.length > 0) {
 
 const entries = buildEntries([...ids].sort(), overrides);
 const rendered = render(entries, args.source);
+const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf-8"));
+manifest.modelCatalog = {
+  providers: {
+    acedatacloud: {
+      baseUrl: "https://api.acedata.cloud/openai",
+      api: "openai-completions",
+      models: entries.map(({ family, vision, ...entry }) => ({
+        ...entry,
+        input: vision ? ["text", "image"] : ["text"],
+      })),
+    },
+  },
+};
+const renderedManifest = `${JSON.stringify(manifest, null, 2)}\n`;
 
 if (args.check) {
   const current = existsSync(OUT_PATH) ? readFileSync(OUT_PATH, "utf-8") : "";
-  if (current === rendered) {
+  if (
+    current === rendered &&
+    readFileSync(MANIFEST_PATH, "utf-8") === renderedManifest
+  ) {
     console.log(
       `OK — generated catalog matches (${entries.length} models from ${ids.size} source ids).`,
     );
@@ -210,6 +228,7 @@ if (args.check) {
 }
 
 writeFileSync(OUT_PATH, rendered, "utf-8");
+writeFileSync(MANIFEST_PATH, renderedManifest, "utf-8");
 console.log(
   `Wrote ${OUT_PATH} (${entries.length} visible models from ${ids.size} source ids).`,
 );

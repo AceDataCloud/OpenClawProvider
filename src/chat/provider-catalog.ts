@@ -1,7 +1,8 @@
-import type {
-  ModelDefinitionConfig,
-  ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-model-shared";
+import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+type ModelProviderConfig = NonNullable<
+  NonNullable<OpenClawConfig["models"]>["providers"]
+>[string];
+type ModelDefinitionConfig = ModelProviderConfig["models"][number];
 import { ACEDATA_BASE_URL } from "../constants.js";
 import { GENERATED_CHAT_MODELS } from "./generated-catalog.js";
 

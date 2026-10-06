@@ -1,5 +1,4 @@
 import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
-import { resolvePositiveTimeoutSeconds } from "openclaw/plugin-sdk/provider-web-search";
 import {
   normalizeResolvedSecretInputString,
   normalizeSecretInput,
@@ -83,8 +82,9 @@ export function resolveAcedataSearchBaseUrl(cfg?: OpenClawConfig): string {
 }
 
 export function resolveAcedataSearchTimeoutSeconds(override?: number): number {
-  return resolvePositiveTimeoutSeconds(
-    override,
-    ACEDATA_SEARCH_DEFAULT_TIMEOUT_SECONDS,
-  );
+  return typeof override === "number" &&
+    Number.isFinite(override) &&
+    override > 0
+    ? Math.max(1, Math.floor(override))
+    : ACEDATA_SEARCH_DEFAULT_TIMEOUT_SECONDS;
 }
