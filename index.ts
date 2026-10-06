@@ -3,22 +3,16 @@ import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-aut
 import type {
   ProviderResolveDynamicModelContext,
   ProviderRuntimeModel,
+  OpenClawPluginDefinition,
 } from "openclaw/plugin-sdk/plugin-entry";
-import {
-  ACEDATA_BASE_URL,
-  ACEDATA_PROVIDER_ID,
-} from "./src/constants.js";
-import {
-  buildAcedataChatProvider,
-  isAcedataReasoningModel,
-} from "./src/chat/provider-catalog.js";
+import { ACEDATA_BASE_URL, ACEDATA_PROVIDER_ID } from "./src/constants.js";
+import { buildAcedataChatProvider } from "./src/chat/provider-catalog.js";
+import { GENERATED_CHAT_MODELS } from "./src/chat/generated-catalog.js";
 import {
   ACEDATA_DEFAULT_MODEL_REF,
   applyAcedataConfig,
 } from "./src/chat/onboard.js";
 import { createAcedataWebSearchProvider } from "./src/search/acedata-search-provider.js";
-
-const ZERO_COST = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } as const;
 
 const ACEDATA_MODEL_ID_PREFIX_RE = new RegExp(`^${ACEDATA_PROVIDER_ID}\\/`);
 
@@ -31,31 +25,34 @@ function stripAcedataProviderPrefix(modelId: string): string {
 
 function resolveDynamicChatModel(
   ctx: ProviderResolveDynamicModelContext,
-): ProviderRuntimeModel {
+): ProviderRuntimeModel | undefined {
   const bareId = stripAcedataProviderPrefix(ctx.modelId);
+  const known = GENERATED_CHAT_MODELS.find((model) => model.id === bareId);
+  if (!known) return undefined;
   return {
-    id: bareId,
-    name: bareId,
+    id: known.id,
+    name: known.name,
+    reasoning: known.reasoning,
+    input: known.vision ? ["text", "image"] : ["text"],
+    cost: known.cost,
+    contextWindow: known.contextWindow,
+    maxTokens: known.maxTokens,
     api: "openai-completions",
     provider: ACEDATA_PROVIDER_ID,
     baseUrl: ACEDATA_BASE_URL,
-    reasoning: isAcedataReasoningModel(bareId),
-    input: ["text", "image"],
-    cost: ZERO_COST,
-    contextWindow: 128_000,
-    maxTokens: 8_192,
   };
 }
 
-export default definePluginEntry({
+const plugin: OpenClawPluginDefinition = definePluginEntry({
   id: ACEDATA_PROVIDER_ID,
   name: "Ace Data Cloud Provider",
-  description: "Bundled Ace Data Cloud provider plugin (chat, image, video, music, search)",
+  description: "Ace Data Cloud chat model and web search provider",
   register(api) {
     api.registerProvider({
       id: ACEDATA_PROVIDER_ID,
       label: "Ace Data Cloud",
-      docsPath: "/providers/acedatacloud",
+      docsPath:
+        "https://github.com/AceDataCloud/OpenClawProvider/blob/main/docs/cookbook.md",
       envVars: ["ACEDATA_API_KEY", "ACEDATACLOUD_API_KEY"],
       auth: [
         createProviderApiKeyAuthMethod({
@@ -107,4 +104,5 @@ export default definePluginEntry({
   },
 });
 
+export default plugin;
 export { resolveDynamicChatModel, stripAcedataProviderPrefix };

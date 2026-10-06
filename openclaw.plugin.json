@@ -1,7 +1,7 @@
 {
   "id": "acedatacloud",
   "name": "Ace Data Cloud",
-  "description": "Ace Data Cloud aggregates chat, image, video, music, and web-search across 50+ AI models behind a single OpenAI-compatible endpoint.",
+  "description": "Ace Data Cloud chat models and Google web search. Requires an Ace Data Cloud API key.",
   "activation": {
     "onStartup": false
   },
@@ -53,8 +53,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "apiKey": { "type": ["string", "object"] },
-          "baseUrl": { "type": "string" }
+          "apiKey": {
+            "type": ["string", "object"]
+          },
+          "baseUrl": {
+            "type": "string"
+          }
         }
       }
     }
@@ -73,5 +77,6 @@
       "label": "Ace Data Cloud Base URL",
       "help": "Override the Ace Data Cloud API base URL (defaults to https://api.acedata.cloud)."
     }
-  }
+  },
+  "categories": ["models"]
 }
