@@ -51,7 +51,7 @@ export function wrapAcedataStream(
     context,
     options,
   ) => {
-    const entry = GENERATED_CHAT_MODELS.find((row) => row.id === model.id);
+    const entry = GENERATED_CHAT_MODELS.find((row) => row.id === model.id.replace(/^acedatacloud\//, ""));
     const headers =
       entry?.api === "anthropic-messages" &&
       new URL(model.baseUrl).origin === "https://api.acedata.cloud" &&

@@ -12,7 +12,9 @@
   "modelIdNormalization": {
     "providers": {
       "acedatacloud": {
-        "prefixWhenBare": "acedatacloud"
+        "stripPrefixes": [
+          "acedatacloud/"
+        ]
       }
     }
   },
