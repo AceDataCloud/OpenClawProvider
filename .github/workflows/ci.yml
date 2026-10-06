@@ -27,7 +27,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: OpenClawProvider
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Typecheck
         working-directory: OpenClawProvider
@@ -44,6 +44,17 @@ jobs:
       - name: Check package
         working-directory: OpenClawProvider
         run: pnpm pack --pack-destination .
+
+      - name: Inspect packed plugin on stable OpenClaw
+        working-directory: OpenClawProvider
+        env:
+          OPENCLAW_HOME: ${{ runner.temp }}/provider-home
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/provider-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/provider-state/openclaw.json
+        run: |
+          pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz"
+          pnpm exec openclaw plugins inspect acedatacloud --runtime --json > runtime-inspect.json
+          node -e 'const x = require("./runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
 
       - name: Save build and resolved lockfile
         uses: actions/upload-artifact@v4

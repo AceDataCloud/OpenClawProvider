@@ -46,7 +46,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: OpenClawProvider
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Typecheck
         working-directory: OpenClawProvider
