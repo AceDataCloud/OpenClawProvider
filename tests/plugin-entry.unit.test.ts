@@ -42,8 +42,12 @@ describe("plugin manifest", () => {
   });
 
   it("keeps the provider namespace separate from the wire model ID", () => {
-    const manifest = JSON.parse(readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"));
-    expect(manifest.modelIdNormalization.providers.acedatacloud).toEqual({ stripPrefixes: ["acedatacloud/"] });
+    const manifest = JSON.parse(
+      readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
+    );
+    expect(manifest.modelIdNormalization.providers.acedatacloud).toEqual({
+      stripPrefixes: ["acedatacloud/"],
+    });
   });
 
   it("non-interactive auth optionKey matches the CLI flag Commander parses", () => {

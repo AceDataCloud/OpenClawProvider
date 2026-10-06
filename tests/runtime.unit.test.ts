@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { ProviderWrapStreamFnContext } from "openclaw/plugin-sdk/plugin-entry";
 import { resolveDynamicChatModel } from "../index.js";
 import {
+  prepareAcedataRuntimeAuth,
   resolveAcedataThinkingProfile,
   wrapAcedataStream,
 } from "../src/chat/runtime.js";
@@ -15,6 +16,33 @@ function model(id: string) {
 }
 
 describe("provider runtime", () => {
+  it("carries bearer authentication through the embedded runtime transport", async () => {
+    const prepared = await prepareAcedataRuntimeAuth({
+      provider: "acedatacloud",
+      modelId: "claude-sonnet-5-5",
+      model: model("claude-sonnet-5-5"),
+      apiKey: "test-api-key",
+      authMode: "api-key",
+      env: {},
+    });
+    expect(prepared).toEqual({
+      apiKey: "test-api-key",
+      request: {
+        auth: { mode: "authorization-bearer", token: "test-api-key" },
+      },
+    });
+    expect(
+      await prepareAcedataRuntimeAuth({
+        provider: "acedatacloud",
+        modelId: "gpt-4.1-mini",
+        model: model("gpt-4.1-mini"),
+        apiKey: "test-api-key",
+        authMode: "api-key",
+        env: {},
+      }),
+    ).toBeUndefined();
+  });
+
   it("adds Bearer auth only to Ace Data Cloud native Messages requests", () => {
     const calls: Parameters<Stream>[] = [];
     const stream = vi.fn((...args: Parameters<Stream>) => {
@@ -26,7 +54,14 @@ describe("provider runtime", () => {
       provider: "acedatacloud",
       modelId: "fixture",
     })!;
-    wrapped({ ...model("claude-sonnet-5-5"), api: "provider-simple-completion:acedatacloud" }, context, { apiKey: "test-api-key" });
+    wrapped(
+      {
+        ...model("claude-sonnet-5-5"),
+        api: "provider-simple-completion:acedatacloud",
+      },
+      context,
+      { apiKey: "test-api-key" },
+    );
     wrapped(model("gpt-4.1-mini"), context, { apiKey: "test-api-key" });
     wrapped(
       { ...model("claude-sonnet-5-5"), baseUrl: "https://example.test" },

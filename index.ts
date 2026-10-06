@@ -15,6 +15,7 @@ import {
 import {
   resolveAcedataThinkingProfile,
   wrapAcedataStream,
+  prepareAcedataRuntimeAuth,
 } from "./src/chat/runtime.js";
 import { createAcedataWebSearchProvider } from "./src/search/acedata-search-provider.js";
 
@@ -96,6 +97,7 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
       resolveThinkingProfile: resolveAcedataThinkingProfile,
       wrapStreamFn: wrapAcedataStream,
       wrapSimpleCompletionStreamFn: wrapAcedataStream,
+      prepareRuntimeAuth: prepareAcedataRuntimeAuth,
     });
     api.registerModelCatalogProvider({
       provider: ACEDATA_PROVIDER_ID,

@@ -12,7 +12,7 @@ Each request preserves the selected public model ID. The plugin does not add fal
 | Responses        |      5 | `/openai/responses`                                                |
 | Messages         |      2 | `/v1/messages`, with explicit Bearer authentication                |
 
-Input and reasoning metadata are model-specific. Native PDF/audio/video input is not copied onto Chat Completions models. Reasoning levels and toggles use the selected host protocol; toggle-only hosts do not receive an unsupported `reasoning_effort`.
+Input and reasoning metadata are model-specific. Image input is advertised only when both the model definition and the current public Ace Data Cloud catalog support it. Native PDF/audio/video input is not copied onto Chat Completions models. Reasoning levels and toggles use the selected host protocol; toggle-only hosts do not receive an unsupported `reasoning_effort`.
 
 Context/output limits use the reviewed public model definitions from [Models.dev](https://github.com/anomalyco/models.dev/tree/dev/models). The four public API aliases `gpt-4`, `gpt-4o`, `gemini-2.5-flash-lite`, and `gemini-3.5-flash-lite` use conservative plugin budgets, and do not claim a specific canonical checkpoint. Account access, service limits, and upstream availability may impose additional limits.
 
@@ -20,7 +20,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 
 | Model                        | API                | Image input | Reasoning controls                  |
 | ---------------------------- | ------------------ | ----------- | ----------------------------------- |
-| `claude-3-5-haiku-20241022`  | openai-completions | yes         | —                                   |
+| `claude-3-5-haiku-20241022`  | openai-completions | no          | —                                   |
 | `claude-3-5-sonnet-20240620` | openai-completions | yes         | —                                   |
 | `claude-3-5-sonnet-20241022` | openai-completions | yes         | —                                   |
 | `claude-3-7-sonnet-20250219` | openai-completions | yes         | low, medium, high                   |
@@ -49,7 +49,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `deepseek-v3.2-exp`          | openai-completions | no          | on/off                              |
 | `deepseek-v4-flash`          | openai-completions | no          | on/off; low, high, max              |
 | `deepseek-v4-pro`            | openai-completions | no          | on/off; low, high, max              |
-| `deepseek-v4.1-flash`        | openai-completions | yes         | on/off; low, high, max              |
+| `deepseek-v4.1-flash`        | openai-completions | no          | on/off; low, high, max              |
 | `gemini-2.5-flash`           | openai-completions | yes         | low, medium, high                   |
 | `gemini-2.5-flash-lite`      | openai-completions | yes         | —                                   |
 | `gemini-2.5-pro`             | openai-completions | yes         | low, medium, high                   |
@@ -94,17 +94,17 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `gpt-6-sol`                  | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-6.1-sol`                | openai-completions | yes         | low, medium, high, xhigh, max       |
 | `grok-3`                     | openai-completions | no          | —                                   |
-| `grok-4`                     | openai-completions | yes         | low, medium, high                   |
+| `grok-4`                     | openai-completions | no          | low, medium, high                   |
 | `grok-4.5`                   | openai-completions | yes         | low, medium, high                   |
 | `grok-4.7`                   | openai-completions | yes         | low, medium, high, xhigh            |
 | `kimi-k2-thinking`           | openai-completions | no          | model-managed                       |
 | `kimi-k2-thinking-turbo`     | openai-completions | no          | model-managed                       |
-| `kimi-k2.5`                  | openai-completions | yes         | on/off                              |
+| `kimi-k2.5`                  | openai-completions | no          | on/off                              |
 | `kimi-k2.6`                  | openai-completions | yes         | on/off                              |
 | `kimi-k3`                    | openai-completions | yes         | low, high, max                      |
-| `o1`                         | openai-completions | yes         | low, medium, high                   |
+| `o1`                         | openai-completions | no          | low, medium, high                   |
 | `o1-mini`                    | openai-completions | no          | model-managed                       |
-| `o1-pro`                     | openai-responses   | yes         | low, medium, high                   |
+| `o1-pro`                     | openai-responses   | no          | low, medium, high                   |
 | `o3`                         | openai-completions | yes         | low, medium, high                   |
 | `o3-mini`                    | openai-completions | no          | low, medium, high                   |
 | `o3-pro`                     | openai-responses   | yes         | low, medium, high                   |

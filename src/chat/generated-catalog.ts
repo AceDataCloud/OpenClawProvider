@@ -17,8 +17,7 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     "baseUrl": "https://api.acedata.cloud/v1",
     "reasoning": false,
     "input": [
-      "text",
-      "image"
+      "text"
     ],
     "contextWindow": 200000,
     "maxTokens": 8192,
@@ -1206,8 +1205,7 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     "baseUrl": "https://api.acedata.cloud/deepseek",
     "reasoning": true,
     "input": [
-      "text",
-      "image"
+      "text"
     ],
     "contextWindow": 1000000,
     "maxTokens": 384000,
@@ -3210,8 +3208,7 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     "baseUrl": "https://api.acedata.cloud/grok",
     "reasoning": true,
     "input": [
-      "text",
-      "image"
+      "text"
     ],
     "contextWindow": 256000,
     "maxTokens": 256000,
@@ -3435,8 +3432,7 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     "baseUrl": "https://api.acedata.cloud/kimi",
     "reasoning": true,
     "input": [
-      "text",
-      "image"
+      "text"
     ],
     "contextWindow": 262144,
     "maxTokens": 262144,
@@ -3543,8 +3539,7 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     "baseUrl": "https://api.acedata.cloud/openai",
     "reasoning": true,
     "input": [
-      "text",
-      "image"
+      "text"
     ],
     "contextWindow": 200000,
     "maxTokens": 100000,
@@ -3620,8 +3615,7 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     "baseUrl": "https://api.acedata.cloud/openai",
     "reasoning": true,
     "input": [
-      "text",
-      "image"
+      "text"
     ],
     "contextWindow": 200000,
     "maxTokens": 100000,

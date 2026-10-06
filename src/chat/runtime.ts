@@ -2,8 +2,24 @@ import type {
   ProviderDefaultThinkingPolicyContext,
   ProviderThinkingProfile,
   ProviderWrapStreamFnContext,
+  ProviderPrepareRuntimeAuthContext,
+  ProviderPreparedRuntimeAuth,
 } from "openclaw/plugin-sdk/plugin-entry";
 import { GENERATED_CHAT_MODELS } from "./generated-catalog.js";
+
+export async function prepareAcedataRuntimeAuth(
+  ctx: ProviderPrepareRuntimeAuthContext,
+): Promise<ProviderPreparedRuntimeAuth | undefined> {
+  if (
+    ctx.model.api !== "anthropic-messages" ||
+    new URL(ctx.model.baseUrl).origin !== "https://api.acedata.cloud"
+  )
+    return undefined;
+  return {
+    apiKey: ctx.apiKey,
+    request: { auth: { mode: "authorization-bearer", token: ctx.apiKey } },
+  };
+}
 
 export function resolveAcedataThinkingProfile(
   ctx: ProviderDefaultThinkingPolicyContext,
@@ -51,7 +67,9 @@ export function wrapAcedataStream(
     context,
     options,
   ) => {
-    const entry = GENERATED_CHAT_MODELS.find((row) => row.id === model.id.replace(/^acedatacloud\//, ""));
+    const entry = GENERATED_CHAT_MODELS.find(
+      (row) => row.id === model.id.replace(/^acedatacloud\//, ""),
+    );
     const headers =
       entry?.api === "anthropic-messages" &&
       new URL(model.baseUrl).origin === "https://api.acedata.cloud" &&
