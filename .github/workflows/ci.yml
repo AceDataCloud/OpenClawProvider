@@ -52,7 +52,7 @@ jobs:
           OPENCLAW_STATE_DIR: ${{ runner.temp }}/provider-state
           OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/provider-state/openclaw.json
         run: |
-          pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force
+          pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force --accept-capabilities
           pnpm exec openclaw plugins inspect acedatacloud --runtime --json > runtime-inspect.json
           node -e 'const x = require("./runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
 
