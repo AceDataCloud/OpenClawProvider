@@ -76,12 +76,8 @@ describe("resolveDynamicChatModel", () => {
       modelId: "acedatacloud/gpt-4.1-mini",
     } as Parameters<typeof resolveDynamicChatModel>[0]);
     expect(known?.id).toBe("gpt-4.1-mini");
-    expect(known?.input).toEqual(["text"]);
-    for (const modelId of [
-      "unknown-model",
-      "gpt-4o-image",
-      "claude-opus-5-5",
-    ]) {
+    expect(known?.input).toEqual(["text", "image"]);
+    for (const modelId of ["unknown-model", "gpt-4o-image"]) {
       expect(
         resolveDynamicChatModel({ modelId } as Parameters<
           typeof resolveDynamicChatModel

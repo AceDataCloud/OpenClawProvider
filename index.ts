@@ -5,13 +5,17 @@ import type {
   ProviderRuntimeModel,
   OpenClawPluginDefinition,
 } from "openclaw/plugin-sdk/plugin-entry";
-import { ACEDATA_BASE_URL, ACEDATA_PROVIDER_ID } from "./src/constants.js";
+import { ACEDATA_PROVIDER_ID } from "./src/constants.js";
 import { buildAcedataChatProvider } from "./src/chat/provider-catalog.js";
 import { GENERATED_CHAT_MODELS } from "./src/chat/generated-catalog.js";
 import {
   ACEDATA_DEFAULT_MODEL_REF,
   applyAcedataConfig,
 } from "./src/chat/onboard.js";
+import {
+  resolveAcedataThinkingProfile,
+  wrapAcedataStream,
+} from "./src/chat/runtime.js";
 import { createAcedataWebSearchProvider } from "./src/search/acedata-search-provider.js";
 
 const ACEDATA_MODEL_ID_PREFIX_RE = new RegExp(`^${ACEDATA_PROVIDER_ID}\\/`);
@@ -29,18 +33,8 @@ function resolveDynamicChatModel(
   const bareId = stripAcedataProviderPrefix(ctx.modelId);
   const known = GENERATED_CHAT_MODELS.find((model) => model.id === bareId);
   if (!known) return undefined;
-  return {
-    id: known.id,
-    name: known.name,
-    reasoning: known.reasoning,
-    input: known.vision ? ["text", "image"] : ["text"],
-    cost: known.cost,
-    contextWindow: known.contextWindow,
-    maxTokens: known.maxTokens,
-    api: "openai-completions",
-    provider: ACEDATA_PROVIDER_ID,
-    baseUrl: ACEDATA_BASE_URL,
-  };
+  const { reasoningEfforts, thinkingToggle, ...model } = known;
+  return { ...model, provider: ACEDATA_PROVIDER_ID };
 }
 
 const plugin: OpenClawPluginDefinition = definePluginEntry({
@@ -99,6 +93,9 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
         }),
       },
       resolveDynamicModel: (ctx) => resolveDynamicChatModel(ctx),
+      resolveThinkingProfile: resolveAcedataThinkingProfile,
+      wrapStreamFn: wrapAcedataStream,
+      wrapSimpleCompletionStreamFn: wrapAcedataStream,
     });
     api.registerModelCatalogProvider({
       provider: ACEDATA_PROVIDER_ID,

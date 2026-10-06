@@ -15,7 +15,7 @@ For environment-based authentication, set `ACEDATA_API_KEY` or
 onboarding accepts `--acedata-api-key`; prefer the interactive prompt to avoid
 putting keys in shell history.
 
-Select the validated model and inspect it:
+Select a model and inspect the full available catalog:
 
 ```sh
 openclaw models set acedatacloud/gpt-4.1-mini
@@ -23,10 +23,21 @@ openclaw models list --provider acedatacloud
 openclaw infer model run --model acedatacloud/gpt-4.1-mini --prompt "Reply with OPENCLAW_OK" --local
 ```
 
-Requests use `https://api.acedata.cloud/openai/chat/completions`. See
-[the supported catalog](model-catalog.md) for input capabilities, upgrade notes,
-and reference costs. Additional protocols and generation APIs require their own
-integration; this package does not expose image, video, or music generation.
+Each model selects its documented API and base URL. Claude Opus/Sonnet 5.5 use
+Messages with Bearer authentication; Responses-only models use Responses. Other
+models use their family's Chat Completions endpoint. See [the supported
+catalog](model-catalog.md) for all 89 model IDs, capabilities, and reference costs.
+Image, video, and music generation are separate capabilities.
+
+```sh
+openclaw models set acedatacloud/gpt-6.1-sol
+openclaw models set acedatacloud/claude-sonnet-5-5
+openclaw models set acedatacloud/gemini-3.8-flash
+```
+
+The default remains GPT-4.1 mini for new installations. Existing model selections
+are preserved. The model picker exposes only the selected model's supported
+reasoning controls; account access and balance still apply.
 
 ## Optional web search
 

@@ -29,6 +29,10 @@ jobs:
         working-directory: OpenClawProvider
         run: pnpm install --frozen-lockfile
 
+      - name: Verify complete catalog projections
+        working-directory: OpenClawProvider
+        run: pnpm sync-catalog:check
+
       - name: Typecheck
         working-directory: OpenClawProvider
         run: pnpm typecheck
