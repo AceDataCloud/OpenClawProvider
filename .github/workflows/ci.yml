@@ -49,7 +49,7 @@ jobs:
         working-directory: OpenClawProvider
         run: pnpm pack --pack-destination .
 
-      - name: Inspect packed plugin on stable OpenClaw
+      - name: Inspect packed plugin on the build SDK host
         working-directory: OpenClawProvider
         env:
           OPENCLAW_HOME: ${{ runner.temp }}/provider-home
@@ -60,6 +60,27 @@ jobs:
           pnpm exec openclaw plugins inspect acedatacloud --runtime --json > runtime-inspect.json
           node -e 'const x = require("./runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
 
+      - name: Install current stable compatibility host
+        run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.9.9
+
+      - name: Verify current stable SDK and packed-plugin compatibility
+        working-directory: OpenClawProvider
+        env:
+          OPENCLAW_HOME: ${{ runner.temp }}/provider-stable-home
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/provider-stable-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/provider-stable-state/openclaw.json
+        run: |
+          stable_host="$RUNNER_TEMP/openclaw-stable/node_modules/openclaw"
+          node "$stable_host/openclaw.mjs" --version
+          ln -sfn "$stable_host" node_modules/openclaw
+          pnpm typecheck
+          pnpm test
+          node "$stable_host/openclaw.mjs" plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force --accept-capabilities
+          node "$stable_host/openclaw.mjs" plugins inspect acedatacloud --runtime --json > stable-runtime-inspect.json
+          node -e 'const x = require("./stable-runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
+          node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
+          node -e 'const x = require("./stable-models.json"); if (x.models.length !== 89 || new Set(x.models.map(m => m.key)).size !== 89) process.exit(1)'
+
       - name: Save build and resolved lockfile
         uses: actions/upload-artifact@v4
         with:
@@ -67,3 +88,5 @@ jobs:
           path: |
             OpenClawProvider/*.tgz
             OpenClawProvider/pnpm-lock.yaml
+            OpenClawProvider/*runtime-inspect.json
+            OpenClawProvider/stable-models.json
