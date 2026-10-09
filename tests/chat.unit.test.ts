@@ -1,68 +1,90 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   buildAcedataChatProvider,
-  isAcedataReasoningModel,
   listAcedataChatModels,
 } from "../src/chat/provider-catalog.js";
 import { GENERATED_CHAT_MODELS } from "../src/chat/generated-catalog.js";
-import { ACEDATA_BASE_URL } from "../src/constants.js";
 
-describe("acedatacloud chat catalog", () => {
-  it("uses the platform endpoint", () => {
+describe("full public chat catalog", () => {
+  it("keeps every source model in both runtime and manifest projections", () => {
+    const source = JSON.parse(
+      readFileSync(
+        new URL("../src/chat/model-catalog.json", import.meta.url),
+        "utf8",
+      ),
+    );
+    const manifest = JSON.parse(
+      readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
+    );
+    const runtime = listAcedataChatModels();
+    expect(runtime.map((row) => row.id)).toEqual(
+      source.models.map((row: { id: string }) => row.id),
+    );
+    expect(manifest.modelCatalog.providers.acedatacloud.models).toEqual(
+      runtime,
+    );
+    expect(runtime.length).toBe(89);
+    expect(new Set(runtime.map((row) => row.id)).size).toBe(runtime.length);
+    for (const excluded of Object.keys(source.excluded))
+      expect(runtime.some((row) => row.id === excluded)).toBe(false);
+  });
+
+  it("preserves protocol and base URL for each family", () => {
     const provider = buildAcedataChatProvider();
-    expect(provider.baseUrl).toBe(ACEDATA_BASE_URL);
-    expect(provider.api).toBe("openai-completions");
-  });
-
-  it("ships a non-empty catalog generated from PlatformBackend", () => {
-    expect(GENERATED_CHAT_MODELS.length).toBeGreaterThan(40);
-  });
-
-  it("every catalog entry is well-formed and zero-cost (billing is server-side)", () => {
-    for (const model of listAcedataChatModels()) {
-      expect(model.cost).toEqual({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0 });
-      expect(model.id).not.toContain(" ");
-      expect(model.name).toBeTruthy();
-      expect(model.contextWindow).toBeGreaterThan(0);
-      expect(model.maxTokens).toBeGreaterThan(0);
-      for (const input of model.input) {
-        expect(["text", "image"]).toContain(input);
-      }
+    expect(provider.authHeader).toBe(true);
+    const expected = [
+      ["gpt-6.1-sol", "openai-completions", "/openai"],
+      ["claude-sonnet-5", "openai-completions", "/v1"],
+      ["gemini-3.8-flash", "openai-completions", "/gemini"],
+      ["grok-4.7", "openai-completions", "/grok"],
+      ["deepseek-v4.1-flash", "openai-completions", "/deepseek"],
+      ["kimi-k3", "openai-completions", "/kimi"],
+      ["glm-5.3", "openai-completions", "/glm"],
+      ["gpt-5.4-pro", "openai-responses", "/openai"],
+      ["claude-opus-5-5", "anthropic-messages", ""],
+      ["claude-sonnet-5-5", "anthropic-messages", ""],
+    ];
+    for (const [id, api, path] of expected) {
+      expect(provider.models.find((row) => row.id === id)).toMatchObject({
+        api,
+        baseUrl: `https://api.acedata.cloud${path}`,
+      });
     }
   });
 
-  it("flags reasoning models correctly", () => {
-    expect(isAcedataReasoningModel("gpt-5.4-mini")).toBe(true);
-    expect(isAcedataReasoningModel("claude-opus-4-8")).toBe(true);
-    expect(isAcedataReasoningModel("claude-sonnet-4-6")).toBe(true);
-    expect(isAcedataReasoningModel("deepseek-r1")).toBe(true);
-    expect(isAcedataReasoningModel("deepseek-v4-flash")).toBe(true);
-    expect(isAcedataReasoningModel("o3")).toBe(true);
-    expect(isAcedataReasoningModel("o4-mini")).toBe(true);
-    expect(isAcedataReasoningModel("kimi-k2-thinking")).toBe(true);
-    expect(isAcedataReasoningModel("grok-4")).toBe(true);
-
-    expect(isAcedataReasoningModel("gpt-4.1-mini")).toBe(false);
-    expect(isAcedataReasoningModel("claude-haiku-4-5-20251001")).toBe(false);
-    expect(isAcedataReasoningModel("gemini-3.1-flash-lite-preview")).toBe(false);
-    expect(isAcedataReasoningModel("deepseek-chat")).toBe(false);
-    expect(isAcedataReasoningModel("")).toBe(false);
+  it("does not copy vision or reasoning effort onto every model", () => {
+    const models = listAcedataChatModels();
+    expect(models.find((row) => row.id === "gpt-4.1-mini")?.input).toEqual([
+      "text",
+      "image",
+    ]);
+    expect(models.find((row) => row.id === "deepseek-v4-flash")?.input).toEqual(
+      ["text"],
+    );
+    expect(models.find((row) => row.id === "gpt-4.1-mini")?.reasoning).toBe(
+      false,
+    );
+    expect(
+      models.find((row) => row.id === "gpt-6.1-sol")?.compat
+        ?.supportedReasoningEfforts,
+    ).toEqual(["low", "medium", "high", "xhigh", "max"]);
   });
 
-  it("includes the headline modern models", () => {
-    const ids = new Set(GENERATED_CHAT_MODELS.map((m) => m.id));
-    for (const expected of [
-      "claude-opus-4-8",
-      "claude-sonnet-4-6",
-      "gpt-5.4-mini",
-      "gpt-5.2-pro",
-      "gemini-3.1-pro",
-      "grok-4",
-      "deepseek-v4-flash",
-      "kimi-k2.5",
-      "glm-5.1",
-    ]) {
-      expect(ids.has(expected), `expected '${expected}' in generated catalog`).toBe(true);
-    }
+  it("keeps exact reference costs and half-open long-context price bands", () => {
+    const mini = GENERATED_CHAT_MODELS.find(
+      (row) => row.id === "gpt-4.1-mini",
+    )!;
+    expect(mini.cost.input).toBeCloseTo(0.840989 * 0.175, 9);
+    expect(mini.cost.cacheRead).toBeCloseTo((0.840989 - 0.630742) * 0.175, 9);
+    const sol = GENERATED_CHAT_MODELS.find((row) => row.id === "gpt-6.1-sol")!;
+    expect(sol.cost.tieredPricing?.map((tier) => tier.range)).toEqual([
+      [0, 272001],
+      [272001],
+    ]);
+    expect(sol.cost.tieredPricing?.[1].input).toBeCloseTo(
+      sol.cost.input * 2,
+      9,
+    );
   });
 });

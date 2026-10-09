@@ -1,4 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
+import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { resolveAcedataSearchApiKey } from "../src/search/acedata-search-config.js";
 import { runAcedataSearch } from "../src/search/acedata-search-client.js";
 import { createAcedataWebSearchProvider } from "../src/search/acedata-search-provider.js";
 
@@ -12,11 +14,15 @@ afterEach(() => {
 
 describe("acedata search client", () => {
   test("throws when query is empty", async () => {
-    await expect(runAcedataSearch({ query: "  " })).rejects.toThrow(/query is required/);
+    await expect(runAcedataSearch({ query: "  " })).rejects.toThrow(
+      /query is required/,
+    );
   });
 
   test("throws when no api key is configured", async () => {
-    await expect(runAcedataSearch({ query: "openclaw" })).rejects.toThrow(/API key not configured/);
+    await expect(runAcedataSearch({ query: "openclaw" })).rejects.toThrow(
+      /API key not configured/,
+    );
   });
 
   test("POSTs to /serp/google with bearer auth and normalizes results", async () => {
@@ -71,7 +77,9 @@ describe("acedata search client", () => {
     process.env.ACEDATA_API_KEY = "ace-test-token";
     globalThis.fetch = (async () =>
       new Response("rate limited", { status: 429 })) as typeof globalThis.fetch;
-    await expect(runAcedataSearch({ query: "openclaw" })).rejects.toThrow(/HTTP 429/);
+    await expect(runAcedataSearch({ query: "openclaw" })).rejects.toThrow(
+      /HTTP 429/,
+    );
   });
 });
 
@@ -81,7 +89,19 @@ describe("acedata web search provider", () => {
     expect(provider.id).toBe("acedatacloud");
     expect(provider.envVars).toContain("ACEDATA_API_KEY");
     expect(provider.envVars).toContain("ACEDATACLOUD_API_KEY");
-    expect(provider.credentialPath).toBe("plugins.entries.acedatacloud.config.webSearch.apiKey");
+    expect(provider.credentialPath).toBe(
+      "plugins.entries.acedatacloud.config.webSearch.apiKey",
+    );
+  });
+
+  test("setup writes the same plugin-scoped search credential runtime reads", () => {
+    const provider = createAcedataWebSearchProvider();
+    const config: OpenClawConfig = {};
+    provider.setConfiguredCredentialValue?.(config, "search-test-key");
+    expect(provider.getConfiguredCredentialValue?.(config)).toBe(
+      "search-test-key",
+    );
+    expect(resolveAcedataSearchApiKey(config)).toBe("search-test-key");
   });
 
   test("createTool exposes schema and calls runAcedataSearch", async () => {
@@ -108,9 +128,16 @@ describe("acedata web search provider", () => {
     } as never);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    const firstCall = fetchMock.mock.calls[0] as unknown as [unknown, RequestInit];
+    const firstCall = fetchMock.mock.calls[0] as unknown as [
+      unknown,
+      RequestInit,
+    ];
     const body = JSON.parse(String(firstCall[1].body));
-    expect(body).toMatchObject({ query: "openclaw", type: "images", number: 5 });
+    expect(body).toMatchObject({
+      query: "openclaw",
+      type: "images",
+      number: 5,
+    });
     expect(result).toMatchObject({ type: "images", organic_results: [] });
   });
 });

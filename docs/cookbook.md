@@ -1,200 +1,76 @@
-# OpenClaw + Ace Data Cloud Integration Cookbook
+# Configure Ace Data Cloud in OpenClaw
 
-This cookbook walks through using **Ace Data Cloud** as your model provider inside [OpenClaw](https://github.com/openclaw/openclaw). One API key gives you 60+ chat models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, GLM, …) plus Google web-search and (soon) image / video / music generation — all behind a single OpenAI-compatible endpoint at `https://api.acedata.cloud/v1`.
+Install the published version and use the onboarding prompt for the API key:
 
-The provider is published as [`@acedatacloud/openclaw-provider`](https://www.npmjs.com/package/@acedatacloud/openclaw-provider) and is an officially supported OpenClaw plugin.
-
-## What is Ace Data Cloud
-
-[Ace Data Cloud](https://platform.acedata.cloud) is a unified AI gateway:
-
-- **One key, many models.** Anthropic, OpenAI, Google, xAI, DeepSeek, Moonshot, Zhipu, and more.
-- **OpenAI-compatible.** Drop-in `POST /v1/chat/completions` with `Authorization: Bearer <key>`.
-- **Web search.** Google SERP across `search`, `images`, `news`, `videos`, `maps`, and `places`.
-- **Usage-based billing.** Pre-paid credits, per-request cost computed server-side. Console at [platform.acedata.cloud](https://platform.acedata.cloud).
-
-## Quick start
-
-### 1. Get an API key
-
-Sign up at [platform.acedata.cloud](https://platform.acedata.cloud) and create an API key.
-
-### 2. Install the plugin
-
-```bash
-openclaw plugins install '@acedatacloud/openclaw-provider' --pin
-```
-
-The plugin requires `openclaw >= 2026.4.2`.
-
-### 3. Provide the API key
-
-The simplest path is an env var the plugin auto-detects:
-
-```bash
-export ACEDATA_API_KEY="ace-..."          # or ACEDATACLOUD_API_KEY
-```
-
-Or use the wizard:
-
-```bash
+```sh
+openclaw plugins install npm:@acedatacloud/openclaw-provider@2026.10.1 --pin
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-Or supply it inline:
+Version 2026.10.1 is a release candidate until publication. The package is vendor
+maintained; an npm install does not imply OpenClaw bundling or ClawHub approval.
 
-```bash
-openclaw onboard --auth-choice acedatacloud-api-key --token "$ACEDATA_API_KEY"
+For environment-based authentication, set `ACEDATA_API_KEY` or
+`ACEDATACLOUD_API_KEY` in the environment where OpenClaw runs. Non-interactive
+onboarding accepts `--acedata-api-key`; prefer the interactive prompt to avoid
+putting keys in shell history.
+
+Select a model and inspect the full available catalog:
+
+```sh
+openclaw models set acedatacloud/gpt-4.1-mini
+openclaw models list --provider acedatacloud
+openclaw infer model run --model acedatacloud/gpt-4.1-mini --prompt "Reply with OPENCLAW_OK" --local
 ```
 
-### 4. Pick a default model
+Each model selects its documented API and base URL. Claude Opus/Sonnet 5.5 use
+Messages with Bearer authentication; Responses-only models use Responses. Other
+models use their family's Chat Completions endpoint. See [the supported
+catalog](model-catalog.md) for all 89 model IDs, capabilities, and reference costs.
+Image, video, and music generation are separate capabilities.
 
-```bash
-openclaw config set agents.defaults.model.primary 'acedatacloud/claude-opus-4-8'
+```sh
+openclaw models set acedatacloud/gpt-6.1-sol
+openclaw models set acedatacloud/claude-sonnet-5-5
+openclaw models set acedatacloud/gemini-3.8-flash
 ```
 
-### 5. Run a turn
+The default remains GPT-4.1 mini for new installations. Existing model selections
+are preserved. The model picker exposes only the selected model's supported
+reasoning controls; account access and balance still apply.
 
-```bash
-openclaw agent --local --session-key smoke --model 'acedatacloud/claude-opus-4-8' \
-  -m 'Say hello in one sentence.'
-```
+## Optional web search
 
-## Model format
+An appropriately scoped search API key is required. The plugin reuses the named
+environment variables, or reads an explicit plugin-scoped search key:
 
-Model refs follow the pattern `acedatacloud/<model-name>`. The provider ships with 60+ curated entries and also accepts arbitrary upstream model ids as a passthrough — anything Ace Data Cloud lists at [docs.acedata.cloud/aichat/models](https://docs.acedata.cloud/aichat/models) is valid.
-
-| Family       | Example refs                                                                                  |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| Claude       | `acedatacloud/claude-opus-4-8`, `acedatacloud/claude-sonnet-4-6`, `acedatacloud/claude-haiku-4-5-20251001` |
-| GPT / o-     | `acedatacloud/gpt-5.2-pro`, `acedatacloud/gpt-5.4-mini`, `acedatacloud/o4-mini`               |
-| Gemini       | `acedatacloud/gemini-3.1-pro`, `acedatacloud/gemini-3-flash`                                  |
-| Grok         | `acedatacloud/grok-4-1-fast`, `acedatacloud/grok-4`                                           |
-| DeepSeek     | `acedatacloud/deepseek-v4-flash`, `acedatacloud/deepseek-r1`                                  |
-| Kimi         | `acedatacloud/kimi-k2.5`, `acedatacloud/kimi-k2-thinking`                                     |
-| GLM          | `acedatacloud/glm-5.1`, `acedatacloud/glm-4.6`                                                |
-
-## Manual configuration
-
-If you'd rather edit `~/.openclaw/openclaw.json` directly:
-
-```json5
+```json
 {
-  env: { ACEDATA_API_KEY: "ace-..." },
-  agents: {
-    defaults: {
-      model: { primary: "acedatacloud/claude-opus-4-8" },
-    },
-  },
-  plugins: {
-    entries: {
-      acedatacloud: { enabled: true },
-    },
-  },
+  "plugins": {
+    "entries": {
+      "acedatacloud": {
+        "enabled": true,
+        "config": { "webSearch": { "apiKey": "YOUR_SEARCH_KEY" } }
+      }
+    }
+  }
 }
 ```
 
-## Fallbacks across providers
-
-OpenClaw supports model fallback chains. Mix Ace Data Cloud with other providers for redundancy:
-
-```json5
-{
-  agents: {
-    defaults: {
-      model: {
-        primary: "acedatacloud/claude-opus-4-8",
-        fallbacks: [
-          "acedatacloud/gpt-5.2-pro",
-          "acedatacloud/gemini-3.1-pro",
-        ],
-      },
-    },
-  },
-}
+```sh
+openclaw infer web search --provider acedatacloud --query "OpenClaw" --limit 2 --json
 ```
 
-## Web search
+Search uses `/serp/google`, separately from the model base URL. If required, the
+plugin's `webSearch.baseUrl` overrides the search service origin; only set it to a
+service you trust with that search key. The model authentication profile is not
+automatically the search credential.
 
-The plugin also registers an `acedatacloud` **web-search** provider backed by Google SERP. It reuses the same API key:
+## Publishing and verification
 
-```bash
-openclaw config set tools.web.search.provider acedatacloud
-openclaw config set tools.web.search.enabled true
-```
-
-Supported verticals: `search`, `images`, `news`, `videos`, `maps`, `places`. The provider returns OpenClaw's standard `WebSearchResult` shape so any agent that uses web-search works without changes.
-
-Override the API key just for search if needed:
-
-```json5
-{
-  acedatacloud: {
-    webSearch: {
-      apiKey: "ace-...",                       // optional override
-      baseUrl: "https://api.acedata.cloud",    // optional override
-    },
-  },
-}
-```
-
-## Monitoring usage
-
-Open the [Ace Data Cloud Console](https://platform.acedata.cloud) to:
-
-- Watch live token spend per model
-- See per-request cost breakdowns
-- Top up credits
-
-Every chat and search request is billed atomically against your pre-paid balance; usage history is available immediately in the console.
-
-## Common errors
-
-### `No API key found for provider "acedatacloud"`
-
-Set `ACEDATA_API_KEY` (or `ACEDATACLOUD_API_KEY`) in your shell, or run `openclaw onboard --auth-choice acedatacloud-api-key`. The plugin reads in this order: explicit `models.providers.acedatacloud.apiKey` → `ACEDATA_API_KEY` → `ACEDATACLOUD_API_KEY`.
-
-### `No valid account found`
-
-Your API key is invalid, expired, or its credit balance is zero. Re-issue at [platform.acedata.cloud](https://platform.acedata.cloud) and confirm the balance is greater than zero.
-
-### `429 rate limit`
-
-Burst limits apply per key. Add a retry budget or switch to a model with higher throughput in the console.
-
-### `502 / 504 upstream`
-
-Transient — OpenClaw's failover logic will route to the next entry in `model.fallbacks` if you configured one.
-
-## Per-channel models
-
-Different chat channels can use different Ace Data Cloud models:
-
-```json5
-{
-  channels: {
-    telegram: {
-      agents: {
-        defaults: {
-          model: { primary: "acedatacloud/claude-opus-4-8" },
-        },
-      },
-    },
-    discord: {
-      agents: {
-        defaults: {
-          model: { primary: "acedatacloud/claude-haiku-4-5-20251001" },   // cheaper for Discord
-        },
-      },
-    },
-  },
-}
-```
-
-## Resources
-
-- npm package — [`@acedatacloud/openclaw-provider`](https://www.npmjs.com/package/@acedatacloud/openclaw-provider)
-- Source — [github.com/AceDataCloud/OpenClawProvider](https://github.com/AceDataCloud/OpenClawProvider)
-- Ace Data Cloud API docs — [docs.acedata.cloud](https://docs.acedata.cloud)
-- Model catalog — [docs.acedata.cloud/aichat/models](https://docs.acedata.cloud/aichat/models)
-- OpenClaw docs — [docs.openclaw.ai](https://docs.openclaw.ai)
+Build and inspect an exact tarball before submitting it to ClawHub. Include the
+public GitHub commit and package version, then wait for publication checks.
+After approval, verify `openclaw plugins search "Ace Data Cloud"`, install using
+the exact ClawHub package/version, onboard in isolated state, and run a model turn.
+Only then record a successful market-discovery milestone. Official publisher
+status and default bundling require separate OpenClaw decisions.

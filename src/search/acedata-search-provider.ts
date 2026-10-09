@@ -1,9 +1,19 @@
 import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import type { WebSearchProviderPlugin } from "openclaw/plugin-sdk/provider-web-search-contract";
-import { runAcedataSearch, type AcedataSearchType } from "./acedata-search-client.js";
+import type { WebSearchProviderPlugin } from "./acedata-search-shared.js";
+import {
+  runAcedataSearch,
+  type AcedataSearchType,
+} from "./acedata-search-client.js";
 import { buildAcedataSearchProviderBase } from "./acedata-search-shared.js";
 
-const SUPPORTED_TYPES: AcedataSearchType[] = ["search", "images", "news", "videos", "maps", "places"];
+const SUPPORTED_TYPES: AcedataSearchType[] = [
+  "search",
+  "images",
+  "news",
+  "videos",
+  "maps",
+  "places",
+];
 
 const AcedataSearchSchema = {
   type: "object",
@@ -45,7 +55,9 @@ const AcedataSearchSchema = {
 
 function normalizeSearchType(value: unknown): AcedataSearchType | undefined {
   if (typeof value !== "string") return undefined;
-  return (SUPPORTED_TYPES as string[]).includes(value) ? (value as AcedataSearchType) : undefined;
+  return (SUPPORTED_TYPES as string[]).includes(value)
+    ? (value as AcedataSearchType)
+    : undefined;
 }
 
 export function createAcedataWebSearchProvider(): WebSearchProviderPlugin {
@@ -69,7 +81,8 @@ export function createAcedataWebSearchProvider(): WebSearchProviderPlugin {
           query,
           type: normalizeSearchType(args.type) ?? "search",
           country: typeof args.country === "string" ? args.country : undefined,
-          language: typeof args.language === "string" ? args.language : undefined,
+          language:
+            typeof args.language === "string" ? args.language : undefined,
           range: typeof args.range === "string" ? args.range : undefined,
           number: count,
           page,

@@ -15,18 +15,10 @@ jobs:
         with:
           path: OpenClawProvider
 
-      - name: Checkout openclaw monorepo (for workspace plugin-sdk)
-        uses: actions/checkout@v4
-        with:
-          repository: openclaw/openclaw
-          ref: main
-          path: openclaw
-          fetch-depth: 1
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "24.16.0"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -35,7 +27,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: OpenClawProvider
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify complete catalog projections
+        working-directory: OpenClawProvider
+        run: pnpm sync-catalog:check
 
       - name: Typecheck
         working-directory: OpenClawProvider
@@ -48,3 +44,49 @@ jobs:
       - name: Build
         working-directory: OpenClawProvider
         run: pnpm build
+
+      - name: Check package
+        working-directory: OpenClawProvider
+        run: pnpm pack --pack-destination .
+
+      - name: Inspect packed plugin on the build SDK host
+        working-directory: OpenClawProvider
+        env:
+          OPENCLAW_HOME: ${{ runner.temp }}/provider-home
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/provider-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/provider-state/openclaw.json
+        run: |
+          pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force --accept-capabilities
+          pnpm exec openclaw plugins inspect acedatacloud --runtime --json > runtime-inspect.json
+          node -e 'const x = require("./runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
+
+      - name: Install current stable compatibility host
+        run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.9.9
+
+      - name: Verify current stable SDK and packed-plugin compatibility
+        working-directory: OpenClawProvider
+        env:
+          OPENCLAW_HOME: ${{ runner.temp }}/provider-stable-home
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/provider-stable-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/provider-stable-state/openclaw.json
+        run: |
+          stable_host="$RUNNER_TEMP/openclaw-stable/node_modules/openclaw"
+          node "$stable_host/openclaw.mjs" --version
+          ln -sfn "$stable_host" node_modules/openclaw
+          pnpm typecheck
+          pnpm test
+          node "$stable_host/openclaw.mjs" plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force --accept-capabilities
+          node "$stable_host/openclaw.mjs" plugins inspect acedatacloud --runtime --json > stable-runtime-inspect.json
+          node -e 'const x = require("./stable-runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
+          node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
+          node -e 'const x = require("./stable-models.json"); if (x.models.length !== 89 || new Set(x.models.map(m => m.key)).size !== 89) process.exit(1)'
+
+      - name: Save build and resolved lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: provider-package
+          path: |
+            OpenClawProvider/*.tgz
+            OpenClawProvider/pnpm-lock.yaml
+            OpenClawProvider/*runtime-inspect.json
+            OpenClawProvider/stable-models.json
