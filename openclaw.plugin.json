@@ -1,7 +1,7 @@
 {
   "id": "acedatacloud",
   "name": "Ace Data Cloud",
-  "description": "Ace Data Cloud chat models and Google web search. Requires an Ace Data Cloud API key.",
+  "description": "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, Suno, Fish Audio, Google Search and face tools.",
   "activation": {
     "onStartup": false
   },
@@ -72,12 +72,346 @@
             "type": "string"
           }
         }
+      },
+      "serviceCredentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "face": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "fish-audio": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "flux": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "google-search": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "gpt-image": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "grok": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "happyhorse": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "kling": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "midjourney": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "minimax": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "nano-banana": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "qwen-image": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "seedance": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "seedream": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "suno": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "veo": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
+          "wan": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          }
+        }
       }
     }
   },
   "contracts": {
     "webSearchProviders": [
       "acedatacloud"
+    ],
+    "imageGenerationProviders": [
+      "acedatacloud-nano-banana",
+      "acedatacloud-gpt-image",
+      "acedatacloud-seedream",
+      "acedatacloud-flux",
+      "acedatacloud-qwen-image",
+      "acedatacloud-midjourney"
+    ],
+    "videoGenerationProviders": [
+      "acedatacloud-seedance",
+      "acedatacloud-happyhorse",
+      "acedatacloud-grok",
+      "acedatacloud-kling",
+      "acedatacloud-veo",
+      "acedatacloud-minimax",
+      "acedatacloud-wan",
+      "acedatacloud-flux",
+      "acedatacloud-midjourney"
+    ],
+    "musicGenerationProviders": [
+      "acedatacloud-suno"
+    ],
+    "speechProviders": [
+      "acedatacloud-fish-audio"
+    ],
+    "tools": [
+      "acedata_face_transform",
+      "acedata_fish_generate_audio",
+      "acedata_fish_search_voices",
+      "acedata_fish_get_voice",
+      "acedata_fish_create_model",
+      "acedata_fish_create_voice",
+      "acedata_fish_task_retrieve",
+      "acedata_fish_tasks_retrieve_batch",
+      "acedata_flux_generate_image",
+      "acedata_flux_edit_image",
+      "acedata_flux_generate_video",
+      "acedata_flux_task_retrieve",
+      "acedata_flux_tasks_retrieve_batch",
+      "acedata_serp_google",
+      "acedata_gpt_image_generate_image",
+      "acedata_gpt_image_edit_image",
+      "acedata_gpt_image_list_tasks",
+      "acedata_gpt_image_task_retrieve",
+      "acedata_gpt_image_tasks_retrieve_batch",
+      "acedata_grok_generate_video",
+      "acedata_grok_chat_completions",
+      "acedata_grok_task_retrieve",
+      "acedata_grok_tasks_retrieve_batch",
+      "acedata_happyhorse_generate_video",
+      "acedata_happyhorse_task_retrieve",
+      "acedata_happyhorse_tasks_retrieve_batch",
+      "acedata_kling_generate_video",
+      "acedata_kling_generate_motion",
+      "acedata_kling_lip_sync",
+      "acedata_kling_talking_photo",
+      "acedata_kling_goods_studio",
+      "acedata_kling_video_commerce",
+      "acedata_kling_virtual_try_on",
+      "acedata_kling_apparel",
+      "acedata_kling_voices",
+      "acedata_kling_elements",
+      "acedata_kling_task_retrieve",
+      "acedata_kling_tasks_retrieve_batch",
+      "acedata_midjourney_imagine",
+      "acedata_midjourney_edits",
+      "acedata_midjourney_describe",
+      "acedata_midjourney_translate",
+      "acedata_midjourney_videos",
+      "acedata_midjourney_get_seed",
+      "acedata_midjourney_shorten",
+      "acedata_midjourney_task_retrieve",
+      "acedata_midjourney_tasks_retrieve_batch",
+      "acedata_minimax_generate_video",
+      "acedata_minimax_list_tasks",
+      "acedata_minimax_delete_task",
+      "acedata_minimax_task_retrieve",
+      "acedata_minimax_tasks_retrieve_batch",
+      "acedata_nano_banana_generate_image",
+      "acedata_nano_banana_edit_image",
+      "acedata_nano_banana_task_retrieve",
+      "acedata_nano_banana_tasks_retrieve_batch",
+      "acedata_qwen_image",
+      "acedata_qwen_image_task_retrieve",
+      "acedata_qwen_image_tasks_retrieve_batch",
+      "acedata_seedance_generate_video",
+      "acedata_seedance_task_retrieve",
+      "acedata_seedance_tasks_retrieve_batch",
+      "acedata_seedream_generate_image",
+      "acedata_seedream_edit_image",
+      "acedata_seedream_decompose_image",
+      "acedata_seedream_task_retrieve",
+      "acedata_seedream_tasks_retrieve_batch",
+      "acedata_suno_generate_audios",
+      "acedata_suno_generate_lyrics",
+      "acedata_suno_upload_reference_audio",
+      "acedata_suno_get_mp4",
+      "acedata_suno_get_mp3",
+      "acedata_suno_get_wav",
+      "acedata_suno_get_midi",
+      "acedata_suno_get_timing",
+      "acedata_suno_create_vox_audio",
+      "acedata_suno_enhance_style",
+      "acedata_suno_mashup_lyrics",
+      "acedata_suno_create_voice",
+      "acedata_suno_create_persona",
+      "acedata_suno_list_personas",
+      "acedata_suno_delete_persona",
+      "acedata_suno_custom_models",
+      "acedata_suno_projects",
+      "acedata_suno_task_retrieve",
+      "acedata_suno_tasks_retrieve_batch",
+      "acedata_veo_generate_video",
+      "acedata_veo_extend_video",
+      "acedata_veo_edit_objects",
+      "acedata_veo_reshoot_video",
+      "acedata_veo_upsample_video",
+      "acedata_veo_task_retrieve",
+      "acedata_veo_tasks_retrieve_batch",
+      "acedata_wan_generate_video",
+      "acedata_wan3_generate",
+      "acedata_wan_task_retrieve",
+      "acedata_wan_tasks_retrieve_batch"
     ]
   },
   "uiHints": {
@@ -90,6 +424,91 @@
     "webSearch.baseUrl": {
       "label": "Ace Data Cloud Base URL",
       "help": "Override the Ace Data Cloud API base URL (defaults to https://api.acedata.cloud)."
+    },
+    "serviceCredentials.face.apiKey": {
+      "label": "Face Transform API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.fish-audio.apiKey": {
+      "label": "Fish Audio API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.flux.apiKey": {
+      "label": "Flux API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.google-search.apiKey": {
+      "label": "Google Search API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.gpt-image.apiKey": {
+      "label": "GPT Image API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.grok.apiKey": {
+      "label": "Grok API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.happyhorse.apiKey": {
+      "label": "Happy Horse API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.kling.apiKey": {
+      "label": "Kling API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.midjourney.apiKey": {
+      "label": "Midjourney API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.minimax.apiKey": {
+      "label": "MiniMax H3 API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.nano-banana.apiKey": {
+      "label": "Nano Banana API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.qwen-image.apiKey": {
+      "label": "Qwen Image API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.seedance.apiKey": {
+      "label": "Seedance API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.seedream.apiKey": {
+      "label": "Seedream API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.suno.apiKey": {
+      "label": "Suno API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.veo.apiKey": {
+      "label": "Veo API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.wan.apiKey": {
+      "label": "Wan API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
     }
   },
   "categories": [
@@ -3453,5 +3872,301 @@
         ]
       }
     }
-  }
+  },
+  "toolMetadata": {
+    "acedata_face_transform": {
+      "optional": true
+    },
+    "acedata_fish_generate_audio": {
+      "optional": true
+    },
+    "acedata_fish_search_voices": {
+      "optional": true
+    },
+    "acedata_fish_get_voice": {
+      "optional": true
+    },
+    "acedata_fish_create_model": {
+      "optional": true
+    },
+    "acedata_fish_create_voice": {
+      "optional": true
+    },
+    "acedata_fish_task_retrieve": {
+      "optional": true
+    },
+    "acedata_fish_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_flux_generate_image": {
+      "optional": true
+    },
+    "acedata_flux_edit_image": {
+      "optional": true
+    },
+    "acedata_flux_generate_video": {
+      "optional": true
+    },
+    "acedata_flux_task_retrieve": {
+      "optional": true
+    },
+    "acedata_flux_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_serp_google": {
+      "optional": true
+    },
+    "acedata_gpt_image_generate_image": {
+      "optional": true
+    },
+    "acedata_gpt_image_edit_image": {
+      "optional": true
+    },
+    "acedata_gpt_image_list_tasks": {
+      "optional": true
+    },
+    "acedata_gpt_image_task_retrieve": {
+      "optional": true
+    },
+    "acedata_gpt_image_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_grok_generate_video": {
+      "optional": true
+    },
+    "acedata_grok_chat_completions": {
+      "optional": true
+    },
+    "acedata_grok_task_retrieve": {
+      "optional": true
+    },
+    "acedata_grok_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_happyhorse_generate_video": {
+      "optional": true
+    },
+    "acedata_happyhorse_task_retrieve": {
+      "optional": true
+    },
+    "acedata_happyhorse_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_kling_generate_video": {
+      "optional": true
+    },
+    "acedata_kling_generate_motion": {
+      "optional": true
+    },
+    "acedata_kling_lip_sync": {
+      "optional": true
+    },
+    "acedata_kling_talking_photo": {
+      "optional": true
+    },
+    "acedata_kling_goods_studio": {
+      "optional": true
+    },
+    "acedata_kling_video_commerce": {
+      "optional": true
+    },
+    "acedata_kling_virtual_try_on": {
+      "optional": true
+    },
+    "acedata_kling_apparel": {
+      "optional": true
+    },
+    "acedata_kling_voices": {
+      "optional": true
+    },
+    "acedata_kling_elements": {
+      "optional": true
+    },
+    "acedata_kling_task_retrieve": {
+      "optional": true
+    },
+    "acedata_kling_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_midjourney_imagine": {
+      "optional": true
+    },
+    "acedata_midjourney_edits": {
+      "optional": true
+    },
+    "acedata_midjourney_describe": {
+      "optional": true
+    },
+    "acedata_midjourney_translate": {
+      "optional": true
+    },
+    "acedata_midjourney_videos": {
+      "optional": true
+    },
+    "acedata_midjourney_get_seed": {
+      "optional": true
+    },
+    "acedata_midjourney_shorten": {
+      "optional": true
+    },
+    "acedata_midjourney_task_retrieve": {
+      "optional": true
+    },
+    "acedata_midjourney_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_minimax_generate_video": {
+      "optional": true
+    },
+    "acedata_minimax_list_tasks": {
+      "optional": true
+    },
+    "acedata_minimax_delete_task": {
+      "optional": true
+    },
+    "acedata_minimax_task_retrieve": {
+      "optional": true
+    },
+    "acedata_minimax_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_nano_banana_generate_image": {
+      "optional": true
+    },
+    "acedata_nano_banana_edit_image": {
+      "optional": true
+    },
+    "acedata_nano_banana_task_retrieve": {
+      "optional": true
+    },
+    "acedata_nano_banana_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_qwen_image": {
+      "optional": true
+    },
+    "acedata_qwen_image_task_retrieve": {
+      "optional": true
+    },
+    "acedata_qwen_image_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_seedance_generate_video": {
+      "optional": true
+    },
+    "acedata_seedance_task_retrieve": {
+      "optional": true
+    },
+    "acedata_seedance_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_seedream_generate_image": {
+      "optional": true
+    },
+    "acedata_seedream_edit_image": {
+      "optional": true
+    },
+    "acedata_seedream_decompose_image": {
+      "optional": true
+    },
+    "acedata_seedream_task_retrieve": {
+      "optional": true
+    },
+    "acedata_seedream_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_suno_generate_audios": {
+      "optional": true
+    },
+    "acedata_suno_generate_lyrics": {
+      "optional": true
+    },
+    "acedata_suno_upload_reference_audio": {
+      "optional": true
+    },
+    "acedata_suno_get_mp4": {
+      "optional": true
+    },
+    "acedata_suno_get_mp3": {
+      "optional": true
+    },
+    "acedata_suno_get_wav": {
+      "optional": true
+    },
+    "acedata_suno_get_midi": {
+      "optional": true
+    },
+    "acedata_suno_get_timing": {
+      "optional": true
+    },
+    "acedata_suno_create_vox_audio": {
+      "optional": true
+    },
+    "acedata_suno_enhance_style": {
+      "optional": true
+    },
+    "acedata_suno_mashup_lyrics": {
+      "optional": true
+    },
+    "acedata_suno_create_voice": {
+      "optional": true
+    },
+    "acedata_suno_create_persona": {
+      "optional": true
+    },
+    "acedata_suno_list_personas": {
+      "optional": true
+    },
+    "acedata_suno_delete_persona": {
+      "optional": true
+    },
+    "acedata_suno_custom_models": {
+      "optional": true
+    },
+    "acedata_suno_projects": {
+      "optional": true
+    },
+    "acedata_suno_task_retrieve": {
+      "optional": true
+    },
+    "acedata_suno_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_veo_generate_video": {
+      "optional": true
+    },
+    "acedata_veo_extend_video": {
+      "optional": true
+    },
+    "acedata_veo_edit_objects": {
+      "optional": true
+    },
+    "acedata_veo_reshoot_video": {
+      "optional": true
+    },
+    "acedata_veo_upsample_video": {
+      "optional": true
+    },
+    "acedata_veo_task_retrieve": {
+      "optional": true
+    },
+    "acedata_veo_tasks_retrieve_batch": {
+      "optional": true
+    },
+    "acedata_wan_generate_video": {
+      "optional": true
+    },
+    "acedata_wan3_generate": {
+      "optional": true
+    },
+    "acedata_wan_task_retrieve": {
+      "optional": true
+    },
+    "acedata_wan_tasks_retrieve_batch": {
+      "optional": true
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
 }

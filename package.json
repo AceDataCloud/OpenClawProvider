@@ -1,7 +1,7 @@
 {
   "name": "@acedatacloud/openclaw-provider",
   "version": "2026.10.1",
-  "description": "Ace Data Cloud chat model provider and web search for OpenClaw.",
+  "description": "Ace Data Cloud models, image, video, music, speech, search and creative tools for OpenClaw.",
   "keywords": [
     "openclaw",
     "openclaw-plugin",
@@ -26,7 +26,10 @@
     "README.md",
     "LICENSE",
     "docs/cookbook.md",
-    "docs/model-catalog.md"
+    "docs/model-catalog.md",
+    "docs/capabilities.md",
+    "docs/architecture.md",
+    "skills"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -39,7 +42,9 @@
     "format": "prettier --write .",
     "sync-catalog": "node scripts/sync-catalog.mjs",
     "sync-catalog:check": "node scripts/sync-catalog.mjs --check",
-    "prepublishOnly": "pnpm clean && pnpm build"
+    "prepublishOnly": "pnpm clean && pnpm build",
+    "sync-services:check": "node scripts/sync-services.mjs --check",
+    "sync-services": "node scripts/sync-services.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
@@ -93,5 +98,8 @@
       "publishToClawHub": true,
       "publishToNpm": true
     }
+  },
+  "dependencies": {
+    "ajv": "8.20.0"
   }
 }

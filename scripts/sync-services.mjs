@@ -1,0 +1,21 @@
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+const root = fileURLToPath(new URL("../", import.meta.url));
+const services = readdirSync(`${root}src/services/contracts`).filter(f => f.endsWith(".json")).sort().map(f => JSON.parse(readFileSync(`${root}src/services/contracts/${f}`, "utf8")));
+const manifestPath = `${root}openclaw.plugin.json`;
+const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+const image = ["nano-banana", "gpt-image", "seedream", "flux", "qwen-image", "midjourney"];
+const video = ["seedance", "happyhorse", "grok", "kling", "veo", "minimax", "wan", "flux", "midjourney"];
+const tools = services.flatMap(s => Object.keys(s.endpoints).filter(k => !k.includes(":" )).map(k => `acedata_${k}`));
+if (new Set(tools).size !== tools.length || tools.length !== 97) throw new Error("Unexpected Dify operation coverage");
+manifest.description = "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, Suno, Fish Audio, Google Search and face tools.";
+manifest.contracts = { ...manifest.contracts, imageGenerationProviders: image.map(s => `acedatacloud-${s}`), videoGenerationProviders: video.map(s => `acedatacloud-${s}`), musicGenerationProviders: ["acedatacloud-suno"], speechProviders: ["acedatacloud-fish-audio"], tools };
+manifest.toolMetadata = Object.fromEntries(tools.map(name => [name, { optional: true }]));
+manifest.skills = ["./skills"];
+manifest.configSchema.properties.serviceCredentials = { type: "object", additionalProperties: false, properties: Object.fromEntries(services.map(s => [s.id, { type: "object", additionalProperties: false, properties: { apiKey: { type: ["string", "object"] } } }])) };
+for (const s of services) manifest.uiHints[`serviceCredentials.${s.id}.apiKey`] = { label: `${s.label} API key (optional override)`, sensitive: true, help: "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service." };
+const rendered = JSON.stringify(manifest, null, 2) + "\n";
+if (process.argv.includes("--check")) {
+  if (readFileSync(manifestPath, "utf8") !== rendered) throw new Error("Service manifest is stale; run pnpm sync-services");
+} else writeFileSync(manifestPath, rendered);
+console.log(`Verified ${services.length} services / ${tools.length} optional tools and native media contracts.`);
