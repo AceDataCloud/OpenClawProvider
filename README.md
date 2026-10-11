@@ -10,14 +10,18 @@ claim those approvals.
 
 ## Setup
 
-Install the exact published version from npm, then enter an API key in OpenClaw:
+Download `acedatacloud-openclaw-provider-2026.10.1.tgz` from the
+[GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.1),
+then install the reviewed archive and enter an API key:
 
 ```sh
-openclaw plugins install npm:@acedatacloud/openclaw-provider@2026.10.1 --pin
+openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.1.tgz
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-Version 2026.10.1 is a release candidate until it appears in the registry.
+Review OpenClaw's source/capability prompts before accepting installation.
+ClawHub security review and npm publication are separate; this guide does not
+claim either registry has accepted the release.
 Get an API-consumer key from [Ace Data Cloud](https://platform.acedata.cloud).
 The default model is `acedatacloud/gpt-4.1-mini`.
 
@@ -36,6 +40,16 @@ See [capability and tool reference](docs/capabilities.md) and the
 
 [Setup and validation cookbook](docs/cookbook.md) includes environment-key setup,
 model selection, and optional web search.
+
+For a native image after setup:
+
+```sh
+openclaw infer image generate --model acedatacloud-nano-banana/nano-banana-2-lite \
+  --prompt "A blue circle on a white background" --count 1 --output image.jpg
+```
+
+This is a paid generation. Use the task retrieval tools to recover an existing
+result after a timeout instead of generating it again.
 
 ## Credentials and network access
 
