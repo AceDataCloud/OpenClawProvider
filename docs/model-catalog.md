@@ -1,6 +1,6 @@
 # Supported model catalog
 
-The plugin includes **89 public chat models** across seven families, refreshed on October 6, 2026. Catalog membership is derived from the [published Ace Data Cloud directory](https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat) and each bound API contract. Models are not restricted to the subset used for smoke tests.
+The plugin includes **90 public chat models** across seven families, refreshed on October 11, 2026. Catalog membership is derived from the [published Ace Data Cloud directory](https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat) and each bound API contract. Models are not restricted to the subset used for smoke tests.
 
 Each request preserves the selected public model ID. The plugin does not add fallback or substitute models. Unknown IDs are not assigned invented capabilities. The three excluded chat-classified products (`gpt-4o-all`, `gpt-4o-image`, `gpt-5.1-all`) expose image-generation or mixed-product behavior, not this standard text-inference contract. Runtime discovery also contains embeddings, image models and retired entries; those do not become chat models.
 
@@ -8,7 +8,7 @@ Each request preserves the selected public model ID. The plugin does not add fal
 
 | Protocol         | Models | Routing                                                            |
 | ---------------- | -----: | ------------------------------------------------------------------ |
-| Chat Completions |     82 | `/openai`, `/v1`, `/gemini`, `/grok`, `/deepseek`, `/kimi`, `/glm` |
+| Chat Completions |     83 | `/openai`, `/v1`, `/gemini`, `/grok`, `/deepseek`, `/kimi`, `/glm` |
 | Responses        |      5 | `/openai/responses`                                                |
 | Messages         |      2 | `/v1/messages`, with explicit Bearer authentication                |
 
@@ -88,6 +88,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `gpt-5.5-pro`                | openai-responses   | yes         | medium, high, xhigh                 |
 | `gpt-5.6-luna`               | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-5.6-sol`                | openai-completions | yes         | none, low, medium, high, xhigh, max |
+| `gpt-5.6-sol-fast`                | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-5.6-terra`              | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-6-astra`                | openai-completions | yes         | low, medium, high, xhigh, max       |
 | `gpt-6-luna`                 | openai-completions | yes         | none, low, medium, high, xhigh, max |
@@ -116,8 +117,10 @@ Per-model USD-per-million-token values are calculated from the exact public API 
 
 For example, GPT-4.1 mini input/output/cached-input estimates are $0.147173075 / $0.588692650 / $0.036793225 per million tokens. Native Messages cached input and cache creation are separate token counters; their estimates are not derived by subtracting cache tokens twice. The account's package, usage, and billed amount remain authoritative.
 
-All 89 models were checked with 534 short/long-context ordinary-input, cache-read, and cache-write pricing samples. Representative production tools tests cover all seven families, and separate protocol tests cover native Responses and Messages; this does not claim every model/control has been individually invoked.
+The original 89 models were checked with 534 short/long-context ordinary-input, cache-read, and cache-write pricing samples. Representative production tools tests cover all seven families, and separate protocol tests cover native Responses and Messages; this does not claim every model/control has been individually invoked.
 
 ## Maintenance
 
 `src/chat/model-catalog.json` is the reviewed source snapshot, with per-model public API references, package rates and metadata. `pnpm sync-catalog` generates runtime and manifest entries from the same source; `pnpm sync-catalog:check` prevents projection drift. Refresh the published directory and bound API records together, then update metadata for every added or changed model instead of restricting membership to tested examples. Never use the billing-rule inventory alone as a public model list.
+
+Fast serving alias `gpt-5.6-sol-fast` was reconciled on October 11 with the public catalog and both API enums. It preserves the exact requested ID and uses the GPT-5.6 Sol model contract, with its separately published fast prices. Six independent short/long-context price samples and a real tool-call result are reused from the provider-directory validation.

@@ -31,7 +31,7 @@ jobs:
 
       - name: Verify complete catalog projections
         working-directory: OpenClawProvider
-        run: pnpm sync-catalog:check
+        run: pnpm sync-catalog:check && pnpm sync-services:check
 
       - name: Typecheck
         working-directory: OpenClawProvider
@@ -58,7 +58,7 @@ jobs:
         run: |
           pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force --accept-capabilities
           pnpm exec openclaw plugins inspect acedatacloud --runtime --json > runtime-inspect.json
-          node -e 'const x = require("./runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
+          node scripts/check-runtime.mjs runtime-inspect.json
 
       - name: Install current stable compatibility host
         run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.10.1
@@ -77,9 +77,13 @@ jobs:
           pnpm test
           node "$stable_host/openclaw.mjs" plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.1.tgz" --force --accept-capabilities
           node "$stable_host/openclaw.mjs" plugins inspect acedatacloud --runtime --json > stable-runtime-inspect.json
-          node -e 'const x = require("./stable-runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
+          node scripts/check-runtime.mjs stable-runtime-inspect.json
           node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
-          node -e 'const x = require("./stable-models.json"); if (x.models.length !== 89 || new Set(x.models.map(m => m.key)).size !== 89) process.exit(1)'
+          node -e 'const x = require("./stable-models.json"); if (x.models.length !== 90 || new Set(x.models.map(m => m.key)).size !== 90) process.exit(1)'
+
+      - name: Verify guarded downloads of existing media
+        working-directory: OpenClawProvider
+        run: node scripts/verify-public-media.mjs && node scripts/verify-media-adapters.mjs
 
       - name: Save build and resolved lockfile
         uses: actions/upload-artifact@v4
@@ -90,3 +94,5 @@ jobs:
             OpenClawProvider/pnpm-lock.yaml
             OpenClawProvider/*runtime-inspect.json
             OpenClawProvider/stable-models.json
+            OpenClawProvider/media-download-proof.json
+            OpenClawProvider/media-adapter-proof.json

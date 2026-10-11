@@ -1,0 +1,55 @@
+{
+  "image": {
+    "task": "1d5bad9c-0b2b-402a-83f7-3fdba6fd88f9",
+    "response": {
+      "success": true,
+      "task_id": "1d5bad9c-0b2b-402a-83f7-3fdba6fd88f9",
+      "trace_id": "3ef6b019-68c8-441d-91fc-2ff7741c5d06",
+      "data": [
+        {
+          "image_url": "https://cdn.acedata2.cloud/nanobanana/c70afd1112799e29883e37b3fcc1e5bc81201037676ab1c8d95117ae23353fad.jpg"
+        }
+      ]
+    }
+  },
+  "speech": {
+    "task": "3fcb7824-e35d-473e-9bde-c66bc338597b",
+    "response": {
+      "audio_url": "https://platform2.cdn.acedata.cloud/fish/3fcb7824-e35d-473e-9bde-c66bc338597b.mp3",
+      "task_id": "3fcb7824-e35d-473e-9bde-c66bc338597b",
+      "trace_id": "082de106-1b3e-4295-9cc4-4139319f820b"
+    }
+  },
+  "music": {
+    "task": "95a81d9a-2b30-4b2e-ab9c-2b60474703f6",
+    "response": {
+      "success": true,
+      "task_id": "95a81d9a-2b30-4b2e-ab9c-2b60474703f6",
+      "trace_id": "325e466d-38f7-4158-9c17-f7ec32c18b75",
+      "data": [
+        {
+          "id": "3f79ee9e-e37b-46cf-804e-10833b608f8a",
+          "image_url": "https://cdn.acedata2.cloud/suno/0481c1ad7f216c4de39bd5c0e978c806e81d07c6a9e36c44ac39e58b87207563.jpg",
+          "image_large_url": "https://cdn.acedata2.cloud/suno/3ecf199d064e418474dc36dead5cb9db8d2f600b9930f5b3320a80116346a9f8.jpg",
+          "audio_url": "https://cdn.acedata2.cloud/suno/3f79ee9e-e37b-46cf-804e-10833b608f8a.mp3",
+          "video_url": "https://cdn1.suno.ai/3f79ee9e-e37b-46cf-804e-10833b608f8a.mp4",
+          "created_at": "2026-10-07T03:42:44.771Z",
+          "model": "chirp-v6",
+          "state": "succeeded",
+          "duration": 10.52
+        },
+        {
+          "id": "1f9f24b6-a533-4dc3-add5-7f4035dd85a4",
+          "image_url": "https://cdn.acedata2.cloud/suno/0adce61c6d46e10a7d96f62cdd1db23d63f6b1d73764cacb89e2d6a59c4fcafa.jpg",
+          "image_large_url": "https://cdn.acedata2.cloud/suno/f16ee671d997446cc1a507029d13a43fd7416458e8dd84e94d198ca21bbf8cf2.jpg",
+          "audio_url": "https://cdn.acedata2.cloud/suno/1f9f24b6-a533-4dc3-add5-7f4035dd85a4.mp3",
+          "video_url": "https://cdn1.suno.ai/1f9f24b6-a533-4dc3-add5-7f4035dd85a4.mp4",
+          "created_at": "2026-10-07T03:42:44.771Z",
+          "model": "chirp-v6",
+          "state": "succeeded",
+          "duration": 18.24
+        }
+      ]
+    }
+  }
+}

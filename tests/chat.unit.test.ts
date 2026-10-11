@@ -24,7 +24,7 @@ describe("full public chat catalog", () => {
     expect(manifest.modelCatalog.providers.acedatacloud.models).toEqual(
       runtime,
     );
-    expect(runtime.length).toBe(89);
+    expect(runtime.length).toBe(90);
     expect(new Set(runtime.map((row) => row.id)).size).toBe(runtime.length);
     for (const excluded of Object.keys(source.excluded))
       expect(runtime.some((row) => row.id === excluded)).toBe(false);

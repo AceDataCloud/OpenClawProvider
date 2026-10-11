@@ -18,6 +18,8 @@ import {
   prepareAcedataRuntimeAuth,
 } from "./src/chat/runtime.js";
 import { createAcedataWebSearchProvider } from "./src/search/acedata-search-provider.js";
+import { registerServiceTools } from "./src/services/tools.js";
+import { registerMediaProviders } from "./src/services/media.js";
 
 const ACEDATA_MODEL_ID_PREFIX_RE = new RegExp(`^${ACEDATA_PROVIDER_ID}\\/`);
 
@@ -41,7 +43,7 @@ function resolveDynamicChatModel(
 const plugin: OpenClawPluginDefinition = definePluginEntry({
   id: ACEDATA_PROVIDER_ID,
   name: "Ace Data Cloud Provider",
-  description: "Ace Data Cloud chat model and web search provider",
+  description: "Ace Data Cloud models, media generation, speech, search and creative tools",
   register(api) {
     api.registerProvider({
       id: ACEDATA_PROVIDER_ID,
@@ -112,6 +114,8 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
         })),
     });
     api.registerWebSearchProvider(createAcedataWebSearchProvider());
+    registerMediaProviders(api);
+    registerServiceTools(api);
   },
 });
 

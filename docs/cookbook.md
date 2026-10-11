@@ -1,14 +1,15 @@
 # Configure Ace Data Cloud in OpenClaw
 
-Install the published version and use the onboarding prompt for the API key:
+Download the archive from the [GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.1),
+install it, and use the onboarding prompt for the API key:
 
 ```sh
-openclaw plugins install npm:@acedatacloud/openclaw-provider@2026.10.1 --pin
+openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.1.tgz
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-Version 2026.10.1 is a release candidate until publication. The package is vendor
-maintained; an npm install does not imply OpenClaw bundling or ClawHub approval.
+The package is vendor maintained. A GitHub release does not imply npm publication,
+OpenClaw bundling or ClawHub approval. Review the host's install prompts.
 
 For environment-based authentication, set `ACEDATA_API_KEY` or
 `ACEDATACLOUD_API_KEY` in the environment where OpenClaw runs. Non-interactive
@@ -26,7 +27,7 @@ openclaw infer model run --model acedatacloud/gpt-4.1-mini --prompt "Reply with 
 Each model selects its documented API and base URL. Claude Opus/Sonnet 5.5 use
 Messages with Bearer authentication; Responses-only models use Responses. Other
 models use their family's Chat Completions endpoint. See [the supported
-catalog](model-catalog.md) for all 89 model IDs, capabilities, and reference costs.
+catalog](model-catalog.md) for all 90 model IDs, capabilities, and reference costs.
 Image, video, and music generation are separate capabilities.
 
 ```sh

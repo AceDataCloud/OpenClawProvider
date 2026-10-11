@@ -1,6 +1,7 @@
 # Ace Data Cloud provider for OpenClaw
 
-An Ace Data Cloud maintained model provider and Google web-search plugin.
+An Ace Data Cloud maintained provider for LLMs, images, video, music, speech,
+Google web search and creative tools.
 Source: [AceDataCloud/OpenClawProvider](https://github.com/AceDataCloud/OpenClawProvider).
 
 This package is not bundled with OpenClaw. ClawHub listing, security review, and
@@ -9,25 +10,46 @@ claim those approvals.
 
 ## Setup
 
-Install the exact published version from npm, then enter an API key in OpenClaw:
+Download `acedatacloud-openclaw-provider-2026.10.1.tgz` from the
+[GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.1),
+then install the reviewed archive and enter an API key:
 
 ```sh
-openclaw plugins install npm:@acedatacloud/openclaw-provider@2026.10.1 --pin
+openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.1.tgz
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-Version 2026.10.1 is a release candidate until it appears in the registry.
+Review OpenClaw's source/capability prompts before accepting installation.
+ClawHub security review and npm publication are separate; this guide does not
+claim either registry has accepted the release.
 Get an API-consumer key from [Ace Data Cloud](https://platform.acedata.cloud).
 The default model is `acedatacloud/gpt-4.1-mini`.
 
-The catalog covers 89 public chat models across OpenAI, Claude, Gemini, Grok,
+The chat catalog covers 90 public models across OpenAI, Claude, Gemini, Grok,
 DeepSeek, Kimi, and GLM. Each model uses its own supported Chat Completions,
 Responses, or Messages route, input capabilities, reasoning controls, and prices.
 See [model support and cost estimates](docs/model-catalog.md). No automatic
 fallback changes the chosen model.
 
+Native media providers cover Nano Banana, GPT Image, Seedream, Flux, Qwen Image,
+Midjourney, Seedance, Veo, Kling, Grok Video, Happy Horse, MiniMax H3, Wan, Suno
+and Fish Audio. 97 optional tools across 17 services expose advanced editing,
+voice/persona management, face transformation, search and task retrieval.
+See [capability and tool reference](docs/capabilities.md) and the
+[official-contract architecture decision](docs/architecture.md).
+
 [Setup and validation cookbook](docs/cookbook.md) includes environment-key setup,
 model selection, and optional web search.
+
+For a native image after setup:
+
+```sh
+openclaw infer image generate --model acedatacloud-nano-banana/nano-banana-2-lite \
+  --prompt "A blue circle on a white background" --count 1 --output image.jpg
+```
+
+This is a paid generation. Use the task retrieval tools to recover an existing
+result after a timeout instead of generating it again.
 
 ## Credentials and network access
 
@@ -35,6 +57,11 @@ Chat sends the selected model's prompts and tool messages to its documented
 endpoint under `https://api.acedata.cloud` with the user's API key. Native Claude
 Messages also receives an explicit Bearer header.
 Optional search sends the query to `https://api.acedata.cloud/serp/google`.
+Media generation uses the corresponding service endpoint on that same host.
+Media downloads use the host's SSRF guard without forwarding your API key.
+Billable generation and tool operations consume Ace Credits; model, count,
+resolution and duration affect cost. Optional tools follow normal OpenClaw
+policy and do not add a separate payment approval dialog.
 The plugin has no shell commands, filesystem tools, or background service.
 Use a service-scoped key where possible; cross-service use needs appropriate access.
 Never send API keys to maintainers or attach them to issue reports.
@@ -47,6 +74,7 @@ dependency, so no sibling source checkout is needed.
 ```sh
 pnpm install --frozen-lockfile
 pnpm sync-catalog:check
+pnpm sync-services:check
 pnpm typecheck
 pnpm test
 pnpm build
