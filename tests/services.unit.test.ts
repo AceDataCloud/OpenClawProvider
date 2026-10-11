@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { SERVICES, serviceById } from "../src/services/catalog.js";
 import { ServiceClient, cleanResult, normalize, prepare } from "../src/services/client.js";
-import { mapImageRequest, mapVideoRequest } from "../src/services/media.js";
+import { IMAGE_OPERATIONS, VIDEO_OPERATIONS, mapImageRequest, mapVideoRequest, operationModels } from "../src/services/media.js";
 import { toolSchema } from "../src/services/tools.js";
 
 type Example = { service: string; name: string; tool: string; inputs: Record<string, unknown>; method?: string; path?: string; body?: Record<string, unknown>; query?: Record<string, unknown>; headers?: Record<string, string>; read_only?: boolean; error?: string; body_absent?: string[] };
@@ -56,6 +56,18 @@ describe("task settlement and transport", () => {
   });
 });
 describe("native media request mapping", () => {
+  for (const [id, [op]] of Object.entries(IMAGE_OPERATIONS)) it(`validates native ${id} generation without losing host options`, () => {
+    const endpoint = serviceById(id).endpoints[op];
+    const model = String(endpoint.defaults?.model ?? operationModels(endpoint)[0]);
+    const request = mapImageRequest(id, { provider: `acedatacloud-${id}`, model, cfg: {}, prompt: "test", count: 1 });
+    expect(prepare(serviceById(id), request.tool, request.params).path).toBe(endpoint.path);
+  });
+  for (const [id, op] of Object.entries(VIDEO_OPERATIONS)) it(`validates native ${id} text generation`, () => {
+    const endpoint = serviceById(id).endpoints[op];
+    const model = String(endpoint.defaults?.model ?? operationModels(endpoint).find(m => m.endsWith("-t2v")) ?? operationModels(endpoint)[0]);
+    const request = mapVideoRequest(id, { provider: `acedatacloud-${id}`, model, cfg: {}, prompt: "test" });
+    expect(prepare(serviceById(id), request.tool, request.params).path).toBe(endpoint.path);
+  });
   it("keeps Nano Banana edit inputs and the exact selected model", () => {
     const req = mapImageRequest("nano-banana", { provider: "acedatacloud-nano-banana", model: "nano-banana-2.1", cfg: {}, prompt: "edit", inputImages: [{ buffer: Buffer.from("image"), mimeType: "image/png" }] });
     const prepared = prepare(serviceById("nano-banana"), req.tool, req.params);

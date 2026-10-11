@@ -2984,6 +2984,71 @@
             }
           },
           {
+            "id": "gpt-5.6-sol-fast",
+            "name": "GPT-5.6 Sol Fast",
+            "api": "openai-completions",
+            "baseUrl": "https://api.acedata.cloud/openai",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "contextWindow": 1050000,
+            "maxTokens": 128000,
+            "cost": {
+              "input": 2.9434629,
+              "output": 14.7173145,
+              "cacheRead": 0.294346325,
+              "cacheWrite": 3.679328625,
+              "tieredPricing": [
+                {
+                  "input": 2.9434629,
+                  "output": 14.7173145,
+                  "cacheRead": 0.294346325,
+                  "cacheWrite": 3.679328625,
+                  "range": [
+                    0,
+                    272001
+                  ]
+                },
+                {
+                  "input": 5.8869258,
+                  "output": 22.07597175,
+                  "cacheRead": 0.58869265,
+                  "cacheWrite": 7.35865725,
+                  "range": [
+                    272001
+                  ]
+                }
+              ]
+            },
+            "compat": {
+              "supportsStore": false,
+              "supportsDeveloperRole": false,
+              "supportsReasoningEffort": true,
+              "supportsUsageInStreaming": true,
+              "maxTokensField": "max_tokens",
+              "supportsTools": true,
+              "supportedReasoningEfforts": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "thinkingFormat": "openai"
+            },
+            "thinkingLevelMap": {
+              "low": "low",
+              "medium": "medium",
+              "high": "high",
+              "xhigh": "xhigh",
+              "max": "max",
+              "off": "none"
+            }
+          },
+          {
             "id": "gpt-5.6-terra",
             "name": "GPT-5.6 Terra",
             "api": "openai-completions",

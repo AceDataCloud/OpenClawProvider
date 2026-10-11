@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-06",
+  "updatedAt": "2026-10-11",
   "catalogUrl": "https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat",
   "excluded": {
     "gpt-4o-all": "Image-generation or combined image/chat product; not a standard agent text-inference model.",
@@ -3360,6 +3360,90 @@
           "price": 7.0
         },
         "limits": "https://github.com/anomalyco/models.dev/tree/dev/models"
+      },
+      "thinkingLevelMap": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high",
+        "xhigh": "xhigh",
+        "max": "max",
+        "off": "none"
+      }
+    },
+    {
+      "id": "gpt-5.6-sol-fast",
+      "name": "GPT-5.6 Sol Fast",
+      "api": "openai-completions",
+      "baseUrl": "https://api.acedata.cloud/openai",
+      "reasoning": true,
+      "input": [
+        "text",
+        "image"
+      ],
+      "contextWindow": 1050000,
+      "maxTokens": 128000,
+      "cost": {
+        "input": 2.9434629,
+        "output": 14.7173145,
+        "cacheRead": 0.294346325,
+        "cacheWrite": 3.679328625,
+        "tieredPricing": [
+          {
+            "input": 2.9434629,
+            "output": 14.7173145,
+            "cacheRead": 0.294346325,
+            "cacheWrite": 3.679328625,
+            "range": [
+              0,
+              272001
+            ]
+          },
+          {
+            "input": 5.8869258,
+            "output": 22.07597175,
+            "cacheRead": 0.58869265,
+            "cacheWrite": 7.35865725,
+            "range": [
+              272001
+            ]
+          }
+        ]
+      },
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": true,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "supportsTools": true,
+        "supportedReasoningEfforts": [
+          "none",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "thinkingFormat": "openai"
+      },
+      "reasoningEfforts": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "thinkingToggle": false,
+      "source": {
+        "api": "https://platform.acedata.cloud/api/v1/apis/c9969b66-effb-4753-b504-a82c4d16f83f",
+        "package": {
+          "amount": 40.0,
+          "price": 7.0
+        },
+        "limits": "https://github.com/anomalyco/models.dev/blob/dev/models/openai/gpt-5.6-sol.toml",
+        "checkedAt": "2026-10-11",
+        "aliasOf": "gpt-5.6-sol"
       },
       "thinkingLevelMap": {
         "low": "low",

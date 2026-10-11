@@ -64,7 +64,7 @@ export function mapImageRequest(service: string, req: ImageRequest): { tool: str
   const endpoint = serviceById(service).endpoints[tool]; exactModel(endpoint, req.model);
   const params: Values = { ...record(req.providerOptions?.acedatacloud), model: req.model, prompt: req.prompt };
   const images = req.inputImages?.map(dataUrl);
-  if (req.count !== undefined) params[["gpt-image", "qwen-image"].includes(service) ? "n" : "count"] = req.count;
+  if (req.count !== undefined && service !== "seedream" && service !== "midjourney") params[["gpt-image", "qwen-image"].includes(service) ? "n" : "count"] = req.count;
   if (images) {
     if (service === "flux" || service === "midjourney") { if (images.length !== 1) throw new Error("This edit operation accepts one image."); params.image_url = images[0]; }
     else params[["gpt-image", "seedream"].includes(service) ? "image" : "image_urls"] = images;
@@ -83,6 +83,9 @@ export function mapVideoRequest(service: string, req: VideoRequest): { tool: str
   const tool = VIDEO_OPERATIONS[service]; const endpoint = serviceById(service).endpoints[tool]; exactModel(endpoint, req.model);
   const params: Values = { ...req.providerOptions, model: req.model, prompt: req.prompt };
   const images = req.inputImages?.map(assetUrl) ?? [], videos = req.inputVideos?.map(assetUrl) ?? [], audios = req.inputAudios?.map(assetUrl) ?? [];
+  if (videos.length && !["seedance", "minimax", "happyhorse", "wan", "flux"].includes(service)) throw new Error("Use the dedicated service edit/extend tool for this video operation.");
+  if (audios.length && !["seedance", "minimax", "wan"].includes(service)) throw new Error("This native video operation does not accept reference audio.");
+  if (images.length > 1 && ["happyhorse", "grok", "wan"].includes(service) && !req.model.endsWith("-r2v") && service !== "grok") throw new Error("This native video operation accepts one image.");
   if (req.durationSeconds !== undefined) params.duration = req.durationSeconds;
   if (req.aspectRatio) params[["seedance", "happyhorse", "minimax", "wan"].includes(service) ? "ratio" : "aspect_ratio"] = req.aspectRatio;
   if (req.resolution) params.resolution = ["seedance", "grok", "veo"].includes(service) ? req.resolution.toLowerCase() : req.resolution;
@@ -102,7 +105,7 @@ export function mapVideoRequest(service: string, req: VideoRequest): { tool: str
   } else if (service === "kling") {
     params.action = images.length ? "image2video" : "text2video";
     if (images.length) { params.start_image_url = images[0]; if (images[1]) params.end_image_url = images[1]; }
-  } else if (service === "veo") { params.action = images.length ? "image2video" : "text2video"; if (images.length) params.image_urls = images; }
+  } else if (service === "veo") { params.action = req.model.endsWith("-ingredients") ? "ingredients2video" : images.length ? "image2video" : "text2video"; if (images.length) params.image_urls = images; }
   else if (service === "wan") {
     params.action = images.length ? "image2video" : "text2video";
     if (images.length) params.image_url = images[0]; if (videos.length) params.reference_video_urls = videos;
@@ -111,7 +114,7 @@ export function mapVideoRequest(service: string, req: VideoRequest): { tool: str
     params.mode = videos.length ? "v2v" : images.length ? "i2v" : "t2v";
     if (images.length) params.keyframes = images;
     if (videos.length) params.start_video = videos[0];
-  } else if (service === "grok") { if (images.length) params.image_url = images[0]; }
+  } else if (service === "grok") { if (images.length > 1) params.reference_image_urls = images; else if (images.length) params.image_url = images[0]; }
   else if (service === "midjourney") { delete params.model; if (images.length) params.image_url = images[0]; if (images[1]) params.end_image_url = images[1]; }
   return { tool, params };
 }
@@ -127,8 +130,10 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
         const mapped = mapImageRequest(id, req);
         const result = await new ServiceClient(await resolveServiceKey(api, id, req.cfg)).complete(service, mapped.tool, mapped.params, req.timeoutMs ?? 600_000);
         if (!result.media_urls.length) throw new Error(`No image output in completed task ${result.task_id}.`);
-        const images = await Promise.all(result.media_urls.map(url => downloadAsset(url, "image")));
-        return { images, model: req.model, metadata: { taskId: result.task_id, traceId: result.trace_id } };
+        let images: Array<{buffer: Buffer; mimeType: string}>;
+        try { images = await Promise.all(result.media_urls.map(url => downloadAsset(url, "image"))); }
+        catch { throw new Error(`Image task ${result.task_id || result.trace_id} completed but media delivery failed. Retrieve this task; do not regenerate.`); }
+        return { images, model: req.model, metadata: { status: result.status, taskId: result.task_id, traceId: result.trace_id } };
       },
     };
     api.registerImageGenerationProvider(provider);
@@ -159,7 +164,9 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
       exactModel(endpoint, req.model);
       const result = await new ServiceClient(await resolveServiceKey(api, "suno", req.cfg)).complete(suno, "suno_generate_audios", { model: req.model, prompt: req.prompt, ...(req.lyrics ? { custom: true, lyric: req.lyrics } : {}), ...(req.instrumental !== undefined ? { instrumental: req.instrumental } : {}) }, req.timeoutMs ?? 900_000);
       if (!result.media_urls.length) throw new Error(`No music output in completed task ${result.task_id}.`);
-      const tracks = await Promise.all(result.media_urls.filter(url => !/\.(png|jpe?g|webp)(\?|$)/i.test(url)).map(url => downloadAsset(url, "audio")));
+      let tracks: Array<{buffer: Buffer; mimeType: string}>;
+      try { tracks = await Promise.all(result.media_urls.filter(url => !/\.(png|jpe?g|webp)(\?|$)/i.test(url)).map(url => downloadAsset(url, "audio"))); }
+      catch { throw new Error(`Music task ${result.task_id || result.trace_id} completed but media delivery failed. Retrieve this task; do not regenerate.`); }
       if (!tracks.length) throw new Error("No audio tracks in completed task.");
       return { tracks, model: req.model, metadata: { taskId: result.task_id, traceId: result.trace_id } };
     },
@@ -170,10 +177,13 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
     id: providerId("fish-audio"), label: "Ace Data Cloud — Fish Audio", defaultModel: "s2-pro", models: ["s1", "s2-pro", "s2.1-pro"], defaultTimeoutMs: 300_000,
     isConfigured: ({ cfg }) => !!(cfg?.models?.providers?.acedatacloud || process.env.ACEDATA_API_KEY || process.env.ACEDATACLOUD_API_KEY),
     async synthesize(req) {
-      const params = { ...req.providerConfig, ...req.providerOverrides, text: req.text, format: "mp3" };
+      const { apiKey: _key, ...settings } = req.providerConfig;
+      const params = { ...settings, ...req.providerOverrides, text: req.text, format: "mp3" };
       const result = await new ServiceClient(await resolveServiceKey(api, "fish-audio", req.cfg)).complete(serviceById("fish-audio"), "fish_generate_audio", params, req.timeoutMs);
       if (!result.media_urls[0]) throw new Error(`No speech audio in completed task ${result.task_id}.`);
-      const asset = await downloadAsset(result.media_urls[0], "audio");
+      let asset: {buffer: Buffer; mimeType: string};
+      try { asset = await downloadAsset(result.media_urls[0], "audio"); }
+      catch { throw new Error(`Speech task ${result.task_id || result.trace_id} completed but media delivery failed. Retrieve this task; do not synthesize again.`); }
       return { audioBuffer: asset.buffer, outputFormat: "mp3", fileExtension: ".mp3", voiceCompatible: false };
     },
   });

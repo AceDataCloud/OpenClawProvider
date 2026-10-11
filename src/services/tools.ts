@@ -1,11 +1,16 @@
 import type { AnyAgentTool, OpenClawConfig, OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-entry";
+import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
 import { SERVICES, type Service, type Endpoint, type Schema } from "./catalog.js";
 import { ServiceClient, record } from "./client.js";
 
 export async function resolveServiceKey(api: OpenClawPluginApi, service: string, config?: OpenClawConfig): Promise<string> {
   const entry = record(config?.plugins?.entries?.acedatacloud?.config);
   const credential = record(record(entry.serviceCredentials)[service]).apiKey;
-  if (typeof credential === "string" && credential.trim()) return credential;
+  if (credential !== undefined) {
+    const key = normalizeResolvedSecretInputString({ value: credential, path: `plugins.entries.acedatacloud.config.serviceCredentials.${service}.apiKey` });
+    if (!key?.trim()) throw new Error(`The ${service} credential is unresolved or empty.`);
+    return key;
+  }
   const auth = await api.runtime.modelAuth.resolveApiKeyForProvider({ provider: "acedatacloud", cfg: config });
   if (!auth.apiKey) throw new Error("Configure an Ace Data Cloud API key with access to this service.");
   return auth.apiKey;
@@ -41,7 +46,7 @@ export function registerServiceTools(api: OpenClawPluginApi): void {
         async execute(_id, args, signal) {
           const config = ctx.getRuntimeConfig?.() ?? ctx.runtimeConfig ?? ctx.config;
           const serviceKey = record(record(record(config?.plugins?.entries?.acedatacloud?.config).serviceCredentials)[service.id]).apiKey;
-          const key = typeof serviceKey === "string" ? serviceKey : await ctx.resolveApiKeyForProvider?.("acedatacloud") ?? await resolveServiceKey(api, service.id, config);
+          const key = serviceKey !== undefined ? await resolveServiceKey(api, service.id, config) : await ctx.resolveApiKeyForProvider?.("acedatacloud") ?? await resolveServiceKey(api, service.id, config);
           const result = await new ServiceClient(key).invoke(service, name, record(args), signal);
           return { content: [{ type: "text", text: JSON.stringify(result) }], details: result };
         },

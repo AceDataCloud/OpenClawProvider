@@ -21,7 +21,7 @@ Version 2026.10.1 is a release candidate until it appears in the registry.
 Get an API-consumer key from [Ace Data Cloud](https://platform.acedata.cloud).
 The default model is `acedatacloud/gpt-4.1-mini`.
 
-The chat catalog covers 89 public models across OpenAI, Claude, Gemini, Grok,
+The chat catalog covers 90 public models across OpenAI, Claude, Gemini, Grok,
 DeepSeek, Kimi, and GLM. Each model uses its own supported Chat Completions,
 Responses, or Messages route, input capabilities, reasoning controls, and prices.
 See [model support and cost estimates](docs/model-catalog.md). No automatic

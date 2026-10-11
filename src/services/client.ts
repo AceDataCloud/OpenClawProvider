@@ -8,7 +8,7 @@ const ajv = new Ajv2020({ strict: false, allErrors: false, validateFormats: fals
 const validators = new WeakMap<Schema, ReturnType<typeof ajv.compile>>();
 const FAILED = new Set(["failed", "error", "cancelled", "canceled", "rejected"]);
 const COMPLETE = new Set(["complete", "completed", "succeeded", "succeed", "success", "finished"]);
-const sensitive = /^(request|request_body|headers|user_id|actor_user_id|credential_id|authorization_id|application_id|api_key|access_token|refresh_token|authorization)$|supplier|upstream|(?:^|_)secret(?:_|$)|^internal/i;
+const sensitive = /^(request|request_body|headers|user_id|actor_user_id|credential_id|authorization_id|application_id|api_key|access_token|refresh_token|authorization|actual_model|provider_route)$|supplier|upstream|(?:^|_)secret(?:_|$)|^internal/i;
 export const record = (x: unknown): Values => x && typeof x === "object" && !Array.isArray(x) ? x as Values : {};
 
 export function cleanResult(x: unknown): unknown {
@@ -75,6 +75,9 @@ export function prepare(service: Service, tool: string, parameters: Values): Pre
   }
   const params = adaptParameters(service.id, Object.fromEntries(Object.entries(parameters).filter(([, v]) => v !== undefined && v !== null)), endpoint);
   const values = { ...endpoint.defaults, ...params, ...endpoint.fixed };
+  const allowed = new Set([...Object.keys(endpoint.properties), ...(endpoint.parameters ?? []).map(p => p.name.toLowerCase() === "idempotency-key" ? "idempotency_key" : p.name), ...Object.keys(endpoint.defaults ?? {}), "confirm", "wait_seconds", "task_id"]);
+  if (service.endpoints[tool].selector) allowed.add("action");
+  for (const name of Object.keys(params)) if (!allowed.has(name)) throw new Error(`Unsupported parameter: ${name}`);
   const body: Values = {};
   for (const [key, schema] of Object.entries(endpoint.properties)) {
     if (values[key] !== undefined && (values[key] !== "" || endpoint.allow_empty?.includes(key))) body[key] = coerce(values[key], schema);
@@ -102,8 +105,8 @@ export function prepare(service: Service, tool: string, parameters: Values): Pre
   if (!path.startsWith("/") || path.startsWith("//") || path.includes("{") || new URL(path, BASE).origin !== BASE) throw new Error("Invalid service endpoint.");
   return { method: endpoint.method, path, body, query, headers, asynchronous: endpoint.asynchronous === true || body.async === true, readOnly: endpoint.method === "GET" || endpoint.read_only === true || !!queryAction, endpoint };
 }
-export type ServiceResult = { status: "pending" | "succeeded" | "failed"; success: boolean; task_id: string; trace_id: string; media_urls: string[]; data: unknown; result: unknown };
-export function normalize(body: unknown, taskId = "", retrieved = false, synchronous = false): ServiceResult {
+export type ServiceResult = { status: "pending" | "succeeded" | "failed" | "partial"; success: boolean; task_id: string; trace_id: string; media_urls: string[]; data: unknown; result: unknown };
+export function normalize(body: unknown, taskId = "", retrieved = false, synchronous = false, allowPartial = false): ServiceResult {
   const envelope = record(body);
   let result = retrieved && "response" in envelope ? envelope.response : body;
   if (typeof result === "string") { try { result = JSON.parse(result); } catch { result = {}; } }
@@ -123,10 +126,11 @@ export function normalize(body: unknown, taskId = "", retrieved = false, synchro
   failed ||= states.some(s => FAILED.has(s));
   const unfinished = retrieved && "finished_at" in envelope && envelope.finished_at === null;
   const empty = result == null || (typeof result === "object" && !Object.keys(result).length);
-  const done = !unfinished && !empty && ((synchronous && !id) || (states.length > 0 && states.every(s => COMPLETE.has(s))) || (!states.length && (urls.length > 0 || retrieved && !!envelope.finished_at)));
-  if (failed && !unfinished) throw new Error(`Ace Data Cloud task failed${id ? ` (${id})` : ""}${trace ? `; trace ${trace}` : ""}.`);
+  const partial = allowPartial && failed && urls.length > 0 && states.every(s => COMPLETE.has(s) || FAILED.has(s));
+  const done = !unfinished && !empty && (partial || (synchronous && !id) || (states.length > 0 && states.every(s => COMPLETE.has(s))) || (!states.length && (urls.length > 0 || retrieved && !!envelope.finished_at)));
+  if (failed && !unfinished && !partial) throw new Error(`Ace Data Cloud task failed${id ? ` (${id})` : ""}${trace ? `; trace ${trace}` : ""}.`);
   if (!done && !id) throw new Error(`No task ID or completed result; inspect request history before resubmitting${trace ? ` (trace ${trace})` : ""}.`);
-  return { status: done ? "succeeded" : "pending", success: done, task_id: id, trace_id: trace, media_urls: done ? urls : [], data: done ? cleanResult(obj.data ?? obj.content ?? result) : {}, result: done ? clean : {} };
+  return { status: done ? partial ? "partial" : "succeeded" : "pending", success: done && !partial, task_id: id, trace_id: trace, media_urls: done ? urls : [], data: done ? cleanResult(obj.data ?? obj.content ?? result) : {}, result: done ? clean : {} };
 }
 export async function readLimited(response: Response, limit: number): Promise<Buffer> {
   if (Number(response.headers.get("content-length")) > limit) throw new Error("Response exceeds the configured size limit.");
@@ -170,7 +174,7 @@ export class ServiceClient {
         signal?.throwIfAborted();
         const request = prepare(service, tool, { ...params, action: "retrieve", ...(id ? { id } : {}), ...(trace ? { trace_id: trace } : {}) });
         const body = await this.request(request, signal);
-        const result = normalize(body, String(id || record(body).id || ""), true);
+        const result = normalize(body, String(id || record(body).id || ""), true, false, service.id === "seedream");
         if (result.status !== "pending" || Date.now() >= end) return result;
         await delay(Math.min(5000, end - Date.now()), signal);
       }
@@ -183,7 +187,7 @@ export class ServiceClient {
       const status = results.some(r => r.status === "pending") ? "pending" : results.some(r => r.status === "failed") ? "failed" : "succeeded";
       return { status, success: status === "succeeded", task_id: "", trace_id: "", media_urls: results.flatMap(r => r.media_urls), data: results, result: { items: results } };
     }
-    return normalize(body, "", false, !req.asynchronous);
+    return normalize(body, "", false, !req.asynchronous, service.id === "seedream");
   }
   async complete(service: Service, tool: string, params: Values, timeoutMs = 600_000): Promise<ServiceResult> {
     const signal = AbortSignal.timeout(timeoutMs); let result = await this.invoke(service, tool, params, signal);

@@ -1,6 +1,6 @@
 # Service capability reference
 
-One Ace Data Cloud provider package includes the existing 89-model chat catalog and
+One Ace Data Cloud provider package includes the existing 90-model chat catalog and
 17 service modules with 97 optional operations. The source baseline is the current
 Dify service repositories, verified on October 11, 2026. Each contract records its
 immutable repository commit. Full operation parameters are exposed in the tool schema.
