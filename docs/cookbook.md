@@ -1,15 +1,16 @@
 # Configure Ace Data Cloud in OpenClaw
 
-Download the archive from the [GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.2),
-install it, and use the onboarding prompt for the API key:
+Install the package from [ClawHub](https://clawhub.ai/acedatacloud/plugins/openclaw-provider)
+and use the onboarding prompt for the API key:
 
 ```sh
-openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.2.tgz
+openclaw plugins install clawhub:@acedatacloud/openclaw-provider@2026.10.3
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-The package is vendor maintained. A GitHub release does not imply npm publication,
-OpenClaw bundling or ClawHub approval. Review the host's install prompts.
+The package is vendor maintained. Review the host's install prompts and the
+listing's security audit. Official publisher status and default bundling are
+separate OpenClaw decisions.
 
 For environment-based authentication, set `ACEDATA_API_KEY` or
 `ACEDATACLOUD_API_KEY` in the environment where OpenClaw runs. Non-interactive
@@ -42,8 +43,9 @@ reasoning controls; account access and balance still apply.
 
 ## Optional web search
 
-An appropriately scoped search API key is required. The plugin reuses the named
-environment variables, or reads an explicit plugin-scoped search key:
+Your API key must allow Google Search. The plugin uses the shared Ace Data Cloud
+auth profile or the named environment variables by default. An explicit
+plugin-scoped search key can override it:
 
 ```json
 {
@@ -64,8 +66,8 @@ openclaw infer web search --provider acedatacloud --query "OpenClaw" --limit 2 -
 
 Search uses `/serp/google`, separately from the model base URL. If required, the
 plugin's `webSearch.baseUrl` overrides the search service origin; only set it to a
-service you trust with that search key. The model authentication profile is not
-automatically the search credential.
+service you trust with that search key. The shared model authentication profile is used when no search-specific key
+is configured; it must include search access.
 
 ## Publishing and verification
 
