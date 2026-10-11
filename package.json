@@ -76,6 +76,7 @@
       "./dist/index.js"
     ],
     "install": {
+      "clawhubSpec": "@acedatacloud/openclaw-provider",
       "npmSpec": "@acedatacloud/openclaw-provider",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.6.8"
