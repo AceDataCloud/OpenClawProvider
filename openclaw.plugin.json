@@ -4233,5 +4233,21 @@
   },
   "skills": [
     "./skills"
-  ]
+  ],
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "webSearch.apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        },
+        {
+          "path": "serviceCredentials.*.apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  }
 }

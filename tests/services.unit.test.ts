@@ -65,8 +65,19 @@ describe("native media request mapping", () => {
   for (const [id, op] of Object.entries(VIDEO_OPERATIONS)) it(`validates native ${id} text generation`, () => {
     const endpoint = serviceById(id).endpoints[op];
     const model = String(endpoint.defaults?.model ?? operationModels(endpoint).find(m => m.endsWith("-t2v")) ?? operationModels(endpoint)[0]);
-    const request = mapVideoRequest(id, { provider: `acedatacloud-${id}`, model, cfg: {}, prompt: "test" });
+    const request = mapVideoRequest(id, { provider: `acedatacloud-${id}`, model, cfg: {}, prompt: "test", ...(id === "midjourney" ? { inputImages: [{ url: "https://example.org/image.png" }] } : {}) });
     expect(prepare(serviceById(id), request.tool, request.params).path).toBe(endpoint.path);
+  });
+  it("rejects incompatible native modes without changing the selected model", () => {
+    expect(() => mapVideoRequest("veo", { provider: "acedatacloud-veo", model: "veo31-fast-ingredients", cfg: {}, prompt: "test" })).toThrow("reference images");
+    expect(() => mapVideoRequest("wan", { provider: "acedatacloud-wan", model: "wan2.6-i2v", cfg: {}, prompt: "test" })).toThrow("input image");
+    expect(() => prepare(serviceById("veo"), "veo_generate_video", { prompt: "test", unsupported: true })).toThrow("Unsupported parameter");
+  });
+  it("keeps Wan 3 reference media and native boolean options", () => {
+    const request = mapVideoRequest("wan", { provider: "acedatacloud-wan", model: "wan3.0-video", cfg: {}, prompt: "test", audio: false, inputImages: [{url:"https://example.org/ref.png",role:"reference_image"}], inputVideos:[{url:"https://example.org/ref.mp4"}] });
+    const body = prepare(serviceById("wan"), request.tool, request.params).body;
+    expect(body.audio).toBe(false);
+    expect(body.media).toEqual([{type:"reference_image",url:"https://example.org/ref.png"},{type:"reference_video",url:"https://example.org/ref.mp4"}]);
   });
   it("keeps Nano Banana edit inputs and the exact selected model", () => {
     const req = mapImageRequest("nano-banana", { provider: "acedatacloud-nano-banana", model: "nano-banana-2.1", cfg: {}, prompt: "edit", inputImages: [{ buffer: Buffer.from("image"), mimeType: "image/png" }] });

@@ -125,7 +125,7 @@ export function normalize(body: unknown, taskId = "", retrieved = false, synchro
   else if (obj.error || obj.success === false) failed = true;
   failed ||= states.some(s => FAILED.has(s));
   const unfinished = retrieved && "finished_at" in envelope && envelope.finished_at === null;
-  const empty = result == null || (typeof result === "object" && !Object.keys(result).length);
+  const empty = result == null || (retrieved && typeof result === "object" && !Object.keys(result).length);
   const partial = allowPartial && failed && urls.length > 0 && states.every(s => COMPLETE.has(s) || FAILED.has(s));
   const done = !unfinished && !empty && (partial || (synchronous && !id) || (states.length > 0 && states.every(s => COMPLETE.has(s))) || (!states.length && (urls.length > 0 || retrieved && !!envelope.finished_at)));
   if (failed && !unfinished && !partial) throw new Error(`Ace Data Cloud task failed${id ? ` (${id})` : ""}${trace ? `; trace ${trace}` : ""}.`);
@@ -183,8 +183,8 @@ export class ServiceClient {
     if (endpoint.operation === "batch") {
       const obj = record(body); const items = Array.isArray(body) ? body : obj.items ?? obj.tasks ?? obj.data;
       if (!Array.isArray(items)) throw new Error("Invalid task batch response.");
-      const results = items.map(item => { const id = String(record(item).id ?? record(item).task_id ?? ""); try { return normalize(item, id, true); } catch { return { status: "failed", success: false, task_id: id, trace_id: "", media_urls: [], data: {}, result: {} } as ServiceResult; } });
-      const status = results.some(r => r.status === "pending") ? "pending" : results.some(r => r.status === "failed") ? "failed" : "succeeded";
+      const results = items.map(item => { const id = String(record(item).id ?? record(item).task_id ?? ""); try { return normalize(item, id, true, false, service.id === "seedream"); } catch { return { status: "failed", success: false, task_id: id, trace_id: "", media_urls: [], data: {}, result: {} } as ServiceResult; } });
+      const status = results.some(r => r.status === "pending") ? "pending" : results.some(r => r.status === "failed") ? "failed" : results.some(r => r.status === "partial") ? "partial" : "succeeded";
       return { status, success: status === "succeeded", task_id: "", trace_id: "", media_urls: results.flatMap(r => r.media_urls), data: results, result: { items: results } };
     }
     return normalize(body, "", false, !req.asynchronous, service.id === "seedream");

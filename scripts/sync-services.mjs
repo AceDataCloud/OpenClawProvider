@@ -12,6 +12,10 @@ manifest.description = "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, F
 manifest.contracts = { ...manifest.contracts, imageGenerationProviders: image.map(s => `acedatacloud-${s}`), videoGenerationProviders: video.map(s => `acedatacloud-${s}`), musicGenerationProviders: ["acedatacloud-suno"], speechProviders: ["acedatacloud-fish-audio"], tools };
 manifest.toolMetadata = Object.fromEntries(tools.map(name => [name, { optional: true }]));
 manifest.skills = ["./skills"];
+manifest.configContracts = { ...manifest.configContracts, secretInputs: { paths: [
+  { path: "webSearch.apiKey", expected: "string", ownerKind: "capability" },
+  { path: "serviceCredentials.*.apiKey", expected: "string", ownerKind: "capability" },
+] } };
 manifest.configSchema.properties.serviceCredentials = { type: "object", additionalProperties: false, properties: Object.fromEntries(services.map(s => [s.id, { type: "object", additionalProperties: false, properties: { apiKey: { type: ["string", "object"] } } }])) };
 for (const s of services) manifest.uiHints[`serviceCredentials.${s.id}.apiKey`] = { label: `${s.label} API key (optional override)`, sensitive: true, help: "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service." };
 const rendered = JSON.stringify(manifest, null, 2) + "\n";
