@@ -9,6 +9,20 @@ The package is vendor maintained and is not bundled with OpenClaw. Security
 audit results are shown on the listing; an official publisher badge is a separate
 review and has not been granted.
 
+## Get your Ace Data Cloud API key
+
+1. Open [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=openclawprovider_readme_api_key). Sign in, or register an account first.
+2. Find **General application**. If it has not been created, choose **Initialize General Application**. A general key can use the services available to your account; a dedicated application's key is limited to its service. Check the required service/model access and [current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=openclawprovider_readme_pricing).
+3. Copy the **API Key** from the application card, or open **Keys / Manage Keys → Create** to create a separate key for this integration. Give it a recognizable name so you can revoke or rotate it independently.
+4. When creating a key, review **Expiration Time**, **Set Usage Limitation**, and **Allowed APIs**. Enable only the restrictions you need, allow the operations you will call, then click **Create** and copy the token from the key list. Task lookup does not grant permission to submit a generation. Confirm the application's balance can cover your first request; any trial allowance is whatever your account currently displays.
+5. Copy only the token value, without quotation marks, spaces, or `Bearer `. An API Key / API Token field expects this raw value; only a manually configured HTTP `Authorization` header needs the `Bearer ` prefix. A `platform-...` account-management token cannot replace a generation API key.
+
+![Copy an application API key or open Manage Keys](https://raw.githubusercontent.com/AceDataCloud/NanoBananaDify/2522b2f57210597af2db866445319334a1677a23/_assets/tutorial/get-api-key-en.png)
+
+![Create a separately named key with optional restrictions](https://raw.githubusercontent.com/AceDataCloud/NanoBananaDify/2522b2f57210597af2db866445319334a1677a23/_assets/tutorial/create-api-key-en.png)
+
+Save the key in the client's credential store or the environment variable shown below. Never put it in a prompt, shared workflow, screenshot, or Git commit. If authentication fails, check the full copied value, application/service access, expiration, usage limit, and balance before creating another key.
+
 ## Setup
 
 Install from ClawHub and enter an API key through the onboarding prompt:
@@ -22,7 +36,7 @@ Review OpenClaw's source/capability prompts before accepting installation. To pi
 an exact release, append `@2026.10.3` to the ClawHub package spec. The same package
 is distributed on [npm](https://www.npmjs.com/package/@acedatacloud/openclaw-provider)
 and as a `.tgz` on [GitHub Releases](https://github.com/AceDataCloud/OpenClawProvider/releases).
-Get an API-consumer key from [Ace Data Cloud](https://platform.acedata.cloud).
+Follow the [API key steps above](#get-your-ace-data-cloud-api-key) before onboarding.
 The default model is `acedatacloud/gpt-4.1-mini`.
 
 The chat catalog covers 90 public models across OpenAI, Claude, Gemini, Grok,
