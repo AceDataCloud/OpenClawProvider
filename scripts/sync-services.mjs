@@ -10,7 +10,12 @@ const tools = services.flatMap(s => Object.keys(s.endpoints).filter(k => !k.incl
 if (new Set(tools).size !== tools.length || tools.length !== 97) throw new Error("Unexpected Dify operation coverage");
 manifest.description = "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, Suno, Fish Audio, Google Search and face tools.";
 manifest.contracts = { ...manifest.contracts, imageGenerationProviders: image.map(s => `acedatacloud-${s}`), videoGenerationProviders: video.map(s => `acedatacloud-${s}`), musicGenerationProviders: ["acedatacloud-suno"], speechProviders: ["acedatacloud-fish-audio"], tools };
-manifest.toolMetadata = Object.fromEntries(tools.map(name => [name, { optional: true }]));
+const metadata = id => ({ authProviders: ["acedatacloud"], configSignals: [{rootPath: `plugins.entries.acedatacloud.config.serviceCredentials.${id}`, required: ["apiKey"]}] });
+manifest.imageGenerationProviderMetadata = Object.fromEntries(image.map(id => [`acedatacloud-${id}`, metadata(id)]));
+manifest.videoGenerationProviderMetadata = Object.fromEntries(video.map(id => [`acedatacloud-${id}`, {...metadata(id), ...(["seedance", "minimax", "wan"].includes(id) ? {referenceAudioInputs:true} : {})}]));
+manifest.musicGenerationProviderMetadata = {"acedatacloud-suno": metadata("suno")};
+manifest.providerAuthAliases = Object.fromEntries([...new Set([...image, ...video, "suno", "fish-audio"])].map(id => [`acedatacloud-${id}`, "acedatacloud"]));
+manifest.toolMetadata = Object.fromEntries(services.flatMap(service => Object.entries(service.endpoints).filter(([name]) => !name.includes(":" )).map(([name, e]) => [`acedata_${name}`, { optional: true, ...metadata(service.id), replaySafe: e.method === "GET" || e.read_only === true || ["task", "batch"].includes(e.operation), sideEffecting: !(e.method === "GET" || e.read_only === true || ["task", "batch"].includes(e.operation)) }])));
 manifest.skills = ["./skills"];
 manifest.configContracts = { ...manifest.configContracts, secretInputs: { paths: [
   { path: "webSearch.apiKey", expected: "string", ownerKind: "capability" },

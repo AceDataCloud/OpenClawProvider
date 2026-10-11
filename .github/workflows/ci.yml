@@ -83,7 +83,7 @@ jobs:
 
       - name: Verify guarded downloads of existing media
         working-directory: OpenClawProvider
-        run: node scripts/verify-public-media.mjs
+        run: node scripts/verify-public-media.mjs && node scripts/verify-media-adapters.mjs
 
       - name: Save build and resolved lockfile
         uses: actions/upload-artifact@v4
@@ -95,3 +95,4 @@ jobs:
             OpenClawProvider/*runtime-inspect.json
             OpenClawProvider/stable-models.json
             OpenClawProvider/media-download-proof.json
+            OpenClawProvider/media-adapter-proof.json
