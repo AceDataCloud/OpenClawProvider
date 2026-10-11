@@ -1,7 +1,4 @@
-import {
-  applyAgentDefaultModelPrimary,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
 import { ACEDATA_DEFAULT_MODEL_REF } from "../constants.js";
 
 export { ACEDATA_DEFAULT_MODEL_REF };
@@ -26,8 +23,16 @@ export function applyAcedataProviderConfig(cfg: OpenClawConfig): OpenClawConfig 
 }
 
 export function applyAcedataConfig(cfg: OpenClawConfig): OpenClawConfig {
-  return applyAgentDefaultModelPrimary(
-    applyAcedataProviderConfig(cfg),
-    ACEDATA_DEFAULT_MODEL_REF,
-  );
+  const next = applyAcedataProviderConfig(cfg);
+  if (cfg.agents?.defaults?.model) return next;
+  return {
+    ...next,
+    agents: {
+      ...next.agents,
+      defaults: {
+        ...next.agents?.defaults,
+        model: { primary: ACEDATA_DEFAULT_MODEL_REF },
+      },
+    },
+  };
 }

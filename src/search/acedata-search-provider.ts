@@ -1,5 +1,5 @@
 import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
-import type { WebSearchProviderPlugin } from "openclaw/plugin-sdk/provider-web-search-contract";
+import type { WebSearchProviderPlugin } from "./acedata-search-shared.js";
 import { runAcedataSearch, type AcedataSearchType } from "./acedata-search-client.js";
 import { buildAcedataSearchProviderBase } from "./acedata-search-shared.js";
 

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { applyAcedataConfig } from "../src/chat/onboard.js";
 import pluginEntry, {
   resolveDynamicChatModel,
   stripAcedataProviderPrefix,
@@ -22,6 +23,31 @@ describe("plugin manifest", () => {
     expect(pluginEntry.id).toBe("acedatacloud");
     expect(pluginEntry.name).toContain("Ace Data Cloud");
     expect(typeof pluginEntry.register).toBe("function");
+  });
+
+  it("onboarding preserves an existing explicit model selection", () => {
+    const config = {
+      agents: {
+        defaults: {
+          model: { primary: "other/chosen", fallbacks: ["other/backup"] },
+        },
+      },
+    };
+    expect(applyAcedataConfig(config).agents?.defaults?.model).toEqual(
+      config.agents.defaults.model,
+    );
+    expect(applyAcedataConfig({}).agents?.defaults?.model).toEqual({
+      primary: "acedatacloud/gpt-4.1-mini",
+    });
+  });
+
+  it("keeps the provider namespace separate from the wire model ID", () => {
+    const manifest = JSON.parse(
+      readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
+    );
+    expect(manifest.modelIdNormalization.providers.acedatacloud).toEqual({
+      stripPrefixes: ["acedatacloud/"],
+    });
   });
 
   it("non-interactive auth optionKey matches the CLI flag Commander parses", () => {
@@ -52,14 +78,18 @@ describe("resolveDynamicChatModel", () => {
     expect(stripAcedataProviderPrefix("gpt-5.4-mini")).toBe("gpt-5.4-mini");
   });
 
-  it("returns a runtime model whose id matches the bare upstream model id", () => {
-    const model = resolveDynamicChatModel({
-      modelId: "acedatacloud/claude-opus-4-8",
+  it("resolves exact known ids without inventing model capabilities", () => {
+    const known = resolveDynamicChatModel({
+      modelId: "acedatacloud/gpt-4.1-mini",
     } as Parameters<typeof resolveDynamicChatModel>[0]);
-    expect(model.id).toBe("claude-opus-4-8");
-    expect(model.name).toBe("claude-opus-4-8");
-    expect(model.provider).toBe("acedatacloud");
-    expect(model.api).toBe("openai-completions");
-    expect(model.baseUrl).toContain("api.acedata.cloud");
+    expect(known?.id).toBe("gpt-4.1-mini");
+    expect(known?.input).toEqual(["text", "image"]);
+    for (const modelId of ["unknown-model", "gpt-4o-image"]) {
+      expect(
+        resolveDynamicChatModel({ modelId } as Parameters<
+          typeof resolveDynamicChatModel
+        >[0]),
+      ).toBeUndefined();
+    }
   });
 });

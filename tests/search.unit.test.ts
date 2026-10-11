@@ -1,4 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
+import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { resolveAcedataSearchApiKey } from "../src/search/acedata-search-config.js";
 import { runAcedataSearch } from "../src/search/acedata-search-client.js";
 import { createAcedataWebSearchProvider } from "../src/search/acedata-search-provider.js";
 
@@ -82,6 +84,16 @@ describe("acedata web search provider", () => {
     expect(provider.envVars).toContain("ACEDATA_API_KEY");
     expect(provider.envVars).toContain("ACEDATACLOUD_API_KEY");
     expect(provider.credentialPath).toBe("plugins.entries.acedatacloud.config.webSearch.apiKey");
+  });
+
+  test("setup writes the same plugin-scoped search credential runtime reads", () => {
+    const provider = createAcedataWebSearchProvider();
+    const config: OpenClawConfig = {};
+    provider.setConfiguredCredentialValue?.(config, "search-test-key");
+    expect(provider.getConfiguredCredentialValue?.(config)).toBe(
+      "search-test-key",
+    );
+    expect(resolveAcedataSearchApiKey(config)).toBe("search-test-key");
   });
 
   test("createTool exposes schema and calls runAcedataSearch", async () => {
