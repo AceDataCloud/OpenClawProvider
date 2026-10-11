@@ -3,9 +3,7 @@ import { ACEDATA_DEFAULT_MODEL_REF } from "../constants.js";
 
 export { ACEDATA_DEFAULT_MODEL_REF };
 
-export function applyAcedataProviderConfig(
-  cfg: OpenClawConfig,
-): OpenClawConfig {
+export function applyAcedataProviderConfig(cfg: OpenClawConfig): OpenClawConfig {
   const models = { ...cfg.agents?.defaults?.models };
   models[ACEDATA_DEFAULT_MODEL_REF] = {
     ...models[ACEDATA_DEFAULT_MODEL_REF],

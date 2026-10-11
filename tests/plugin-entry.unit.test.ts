@@ -53,9 +53,7 @@ describe("plugin manifest", () => {
   it("non-interactive auth optionKey matches the CLI flag Commander parses", () => {
     const manifest = JSON.parse(
       readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"),
-    ) as {
-      providerAuthChoices?: Array<{ cliFlag?: string; optionKey?: string }>;
-    };
+    ) as { providerAuthChoices?: Array<{ cliFlag?: string; optionKey?: string }> };
     const choices = manifest.providerAuthChoices ?? [];
     expect(choices.length).toBeGreaterThan(0);
     for (const choice of choices) {
@@ -74,9 +72,9 @@ describe("resolveDynamicChatModel", () => {
     expect(stripAcedataProviderPrefix("acedatacloud/claude-opus-4-8")).toBe(
       "claude-opus-4-8",
     );
-    expect(
-      stripAcedataProviderPrefix("acedatacloud/claude-haiku-4-5-20251001"),
-    ).toBe("claude-haiku-4-5-20251001");
+    expect(stripAcedataProviderPrefix("acedatacloud/claude-haiku-4-5-20251001")).toBe(
+      "claude-haiku-4-5-20251001",
+    );
     expect(stripAcedataProviderPrefix("gpt-5.4-mini")).toBe("gpt-5.4-mini");
   });
 

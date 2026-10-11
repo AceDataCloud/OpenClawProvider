@@ -19,12 +19,8 @@ type PluginEntryConfig = {
   providerCredentials?: { acedatacloud?: { apiKey?: unknown } };
 };
 
-export function resolveAcedataSearchConfig(
-  cfg?: OpenClawConfig,
-): AcedataSearchConfig {
-  const pluginConfig = cfg?.plugins?.entries?.acedatacloud?.config as
-    | PluginEntryConfig
-    | undefined;
+export function resolveAcedataSearchConfig(cfg?: OpenClawConfig): AcedataSearchConfig {
+  const pluginConfig = cfg?.plugins?.entries?.acedatacloud?.config as PluginEntryConfig | undefined;
   const ws = pluginConfig?.webSearch;
   if (ws && typeof ws === "object" && !Array.isArray(ws)) {
     return ws;
@@ -32,10 +28,7 @@ export function resolveAcedataSearchConfig(
   return undefined;
 }
 
-function normalizeConfiguredSecret(
-  value: unknown,
-  path: string,
-): string | undefined {
+function normalizeConfiguredSecret(value: unknown, path: string): string | undefined {
   return normalizeSecretInput(
     normalizeResolvedSecretInputString({
       value,
@@ -44,9 +37,7 @@ function normalizeConfiguredSecret(
   );
 }
 
-export function resolveAcedataSearchApiKey(
-  cfg?: OpenClawConfig,
-): string | undefined {
+export function resolveAcedataSearchApiKey(cfg?: OpenClawConfig): string | undefined {
   const search = resolveAcedataSearchConfig(cfg);
   const fromSearch = normalizeConfiguredSecret(
     search?.apiKey,
@@ -54,11 +45,8 @@ export function resolveAcedataSearchApiKey(
   );
   if (fromSearch) return fromSearch;
   const fromChat = normalizeConfiguredSecret(
-    (
-      cfg?.plugins?.entries?.acedatacloud?.config as
-        | PluginEntryConfig
-        | undefined
-    )?.providerCredentials?.acedatacloud?.apiKey,
+    (cfg?.plugins?.entries?.acedatacloud?.config as PluginEntryConfig | undefined)
+      ?.providerCredentials?.acedatacloud?.apiKey,
     "plugins.entries.acedatacloud.config.providerCredentials.acedatacloud.apiKey",
   );
   if (fromChat) return fromChat;
