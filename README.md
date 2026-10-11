@@ -10,12 +10,12 @@ claim those approvals.
 
 ## Setup
 
-Download `acedatacloud-openclaw-provider-2026.10.1.tgz` from the
-[GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.1),
+Download `acedatacloud-openclaw-provider-2026.10.2.tgz` from the
+[GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.2),
 then install the reviewed archive and enter an API key:
 
 ```sh
-openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.1.tgz
+openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.2.tgz
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 

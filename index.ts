@@ -18,7 +18,7 @@ import {
   prepareAcedataRuntimeAuth,
 } from "./src/chat/runtime.js";
 import { createAcedataWebSearchProvider } from "./src/search/acedata-search-provider.js";
-import { registerServiceTools } from "./src/services/tools.js";
+import { registerServiceTools, resolveServiceKey } from "./src/services/tools.js";
 import { registerMediaProviders } from "./src/services/media.js";
 
 const ACEDATA_MODEL_ID_PREFIX_RE = new RegExp(`^${ACEDATA_PROVIDER_ID}\\/`);
@@ -113,7 +113,7 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
           source: "static",
         })),
     });
-    api.registerWebSearchProvider(createAcedataWebSearchProvider());
+    api.registerWebSearchProvider(createAcedataWebSearchProvider(cfg => resolveServiceKey(api, "google-search", cfg)));
     registerMediaProviders(api);
     registerServiceTools(api);
   },
