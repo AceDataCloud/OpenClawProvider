@@ -4,41 +4,41 @@ An Ace Data Cloud maintained provider for LLMs, images, video, music, speech,
 Google web search and creative tools.
 Source: [AceDataCloud/OpenClawProvider](https://github.com/AceDataCloud/OpenClawProvider).
 
-This package is not bundled with OpenClaw. ClawHub listing, security review, and
-an official publisher badge are separate approval steps; this release does not
-claim those approvals.
+Install from the [ClawHub listing](https://clawhub.ai/acedatacloud/plugins/openclaw-provider).
+The package is vendor maintained and is not bundled with OpenClaw. Security
+audit results are shown on the listing; an official publisher badge is a separate
+review and has not been granted.
 
 ## Setup
 
-Download `acedatacloud-openclaw-provider-2026.10.2.tgz` from the
-[GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.2),
-then install the reviewed archive and enter an API key:
+Install from ClawHub and enter an API key through the onboarding prompt:
 
 ```sh
-openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.2.tgz
+openclaw plugins install clawhub:@acedatacloud/openclaw-provider
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-Review OpenClaw's source/capability prompts before accepting installation.
-ClawHub security review and npm publication are separate; this guide does not
-claim either registry has accepted the release.
+Review OpenClaw's source/capability prompts before accepting installation. To pin
+an exact release, append `@2026.10.3` to the ClawHub package spec. The same package
+is distributed on [npm](https://www.npmjs.com/package/@acedatacloud/openclaw-provider)
+and as a `.tgz` on [GitHub Releases](https://github.com/AceDataCloud/OpenClawProvider/releases).
 Get an API-consumer key from [Ace Data Cloud](https://platform.acedata.cloud).
 The default model is `acedatacloud/gpt-4.1-mini`.
 
 The chat catalog covers 90 public models across OpenAI, Claude, Gemini, Grok,
 DeepSeek, Kimi, and GLM. Each model uses its own supported Chat Completions,
 Responses, or Messages route, input capabilities, reasoning controls, and prices.
-See [model support and cost estimates](docs/model-catalog.md). No automatic
+See [model support and cost estimates](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.10.3/docs/model-catalog.md). No automatic
 fallback changes the chosen model.
 
 Native media providers cover Nano Banana, GPT Image, Seedream, Flux, Qwen Image,
 Midjourney, Seedance, Veo, Kling, Grok Video, Happy Horse, MiniMax H3, Wan, Suno
 and Fish Audio. 97 optional tools across 17 services expose advanced editing,
 voice/persona management, face transformation, search and task retrieval.
-See [capability and tool reference](docs/capabilities.md) and the
-[official-contract architecture decision](docs/architecture.md).
+See [capability and tool reference](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.10.3/docs/capabilities.md) and the
+[official-contract architecture decision](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.10.3/docs/architecture.md).
 
-[Setup and validation cookbook](docs/cookbook.md) includes environment-key setup,
+[Setup and validation cookbook](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.10.3/docs/cookbook.md) includes environment-key setup,
 model selection, and optional web search.
 
 For a native image after setup:
