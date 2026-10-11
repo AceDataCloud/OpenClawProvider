@@ -1,10 +1,10 @@
 # Configure Ace Data Cloud in OpenClaw
 
-Download the archive from the [GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.1),
+Download the archive from the [GitHub release](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.10.2),
 install it, and use the onboarding prompt for the API key:
 
 ```sh
-openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.1.tgz
+openclaw plugins install npm-pack:./acedatacloud-openclaw-provider-2026.10.2.tgz
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 

@@ -1,4 +1,6 @@
 import { readPositiveIntegerParam } from "openclaw/plugin-sdk/param-readers";
+import type { OpenClawConfig } from "openclaw/plugin-sdk/config-contracts";
+import { resolveAcedataSearchApiKey } from "./acedata-search-config.js";
 import type { WebSearchProviderPlugin } from "./acedata-search-shared.js";
 import { runAcedataSearch, type AcedataSearchType } from "./acedata-search-client.js";
 import { buildAcedataSearchProviderBase } from "./acedata-search-shared.js";
@@ -48,14 +50,14 @@ function normalizeSearchType(value: unknown): AcedataSearchType | undefined {
   return (SUPPORTED_TYPES as string[]).includes(value) ? (value as AcedataSearchType) : undefined;
 }
 
-export function createAcedataWebSearchProvider(): WebSearchProviderPlugin {
+export function createAcedataWebSearchProvider(resolveSharedKey?: (cfg?: OpenClawConfig) => Promise<string>): WebSearchProviderPlugin {
   return {
     ...buildAcedataSearchProviderBase(),
     createTool: (ctx) => ({
       description:
         "Search the web using Ace Data Cloud's Google SERP API. Returns structured organic results plus optional knowledge graph and answer box. Supports image/news/video/maps verticals.",
       parameters: AcedataSearchSchema,
-      execute: async (args) => {
+      execute: async (args, execution) => {
         const query = typeof args.query === "string" ? args.query : "";
         const count = readPositiveIntegerParam(args, "count", {
           message: "count must be an integer from 1 to 100",
@@ -66,6 +68,8 @@ export function createAcedataWebSearchProvider(): WebSearchProviderPlugin {
         });
         return await runAcedataSearch({
           cfg: ctx.config,
+          apiKey: resolveAcedataSearchApiKey(ctx.config) ?? await resolveSharedKey?.(ctx.config),
+          signal: execution?.signal,
           query,
           type: normalizeSearchType(args.type) ?? "search",
           country: typeof args.country === "string" ? args.country : undefined,

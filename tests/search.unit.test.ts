@@ -75,9 +75,34 @@ describe("acedata search client", () => {
       new Response("rate limited", { status: 429 })) as typeof globalThis.fetch;
     await expect(runAcedataSearch({ query: "openclaw" })).rejects.toThrow(/HTTP 429/);
   });
+
+  test("keeps the actual organic response and rejects credential redirects", async () => {
+    const fetchMock = vi.fn(async (_url, options) => {
+      expect(options.redirect).toBe("error");
+      return new Response(JSON.stringify({organic:[{title:"Found",url:"https://example.org/result"}]}));
+    });
+    globalThis.fetch = fetchMock;
+    const result = await runAcedataSearch({query:"test",apiKey:"shared-key"});
+    expect(result.organic_results[0]).toMatchObject({title:"Found",link:"https://example.org/result"});
+  });
+
+  test("does not reflect response secrets in errors", async () => {
+    globalThis.fetch = vi.fn(async () => new Response("shared-key upstream private detail",{status:403}));
+    await expect(runAcedataSearch({query:"test",apiKey:"shared-key"})).rejects.toThrow(/^Ace Data Cloud search API returned HTTP 403$/);
+  });
 });
 
 describe("acedata web search provider", () => {
+  test("resolves the shared provider credential when search has no override", async () => {
+    const resolve = vi.fn(async () => "shared-key");
+    globalThis.fetch = vi.fn(async (_url, init) => {
+      expect((init?.headers as Record<string,string>).Authorization).toBe("Bearer shared-key");
+      return new Response(JSON.stringify({organic:[{title:"Result"}]}));
+    });
+    const tool = createAcedataWebSearchProvider(resolve).createTool({config:{}});
+    expect((await tool!.execute({query:"test"})).organic_results).toHaveLength(1);
+    expect(resolve).toHaveBeenCalledOnce();
+  });
   test("exposes contract metadata", () => {
     const provider = createAcedataWebSearchProvider();
     expect(provider.id).toBe("acedatacloud");
