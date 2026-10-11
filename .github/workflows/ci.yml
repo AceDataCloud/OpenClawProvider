@@ -61,7 +61,7 @@ jobs:
           node -e 'const x = require("./runtime-inspect.json"); if (x.plugin.status !== "loaded" || !x.plugin.providerIds.includes("acedatacloud") || x.diagnostics.length) process.exit(1)'
 
       - name: Install current stable compatibility host
-        run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.9.9
+        run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.10.1
 
       - name: Verify current stable SDK and packed-plugin compatibility
         working-directory: OpenClawProvider
