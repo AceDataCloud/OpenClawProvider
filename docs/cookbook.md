@@ -4,9 +4,13 @@ Install the package from [ClawHub](https://clawhub.ai/acedatacloud/plugins/openc
 and use the onboarding prompt for the API key:
 
 ```sh
-openclaw plugins install clawhub:@acedatacloud/openclaw-provider@2026.10.3
+openclaw plugins install clawhub:@acedatacloud/openclaw-provider
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
+
+The command installs the latest release published on ClawHub. To pin a release,
+append the version shown on the listing, for example `@2026.10.12`. Check that
+channel before reusing a version from npm or GitHub Releases.
 
 The package is vendor maintained. Review the host's install prompts and the
 listing's security audit. Official publisher status and default bundling are
