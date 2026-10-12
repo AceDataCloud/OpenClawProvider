@@ -85,7 +85,7 @@ jobs:
         working-directory: OpenClawProvider
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish acedatacloud-openclaw-provider-2026.10.3.tgz --access public
+        run: npm publish acedatacloud-openclaw-provider-*.tgz --access public
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

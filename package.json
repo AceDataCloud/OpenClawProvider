@@ -1,6 +1,6 @@
 {
   "name": "@acedatacloud/openclaw-provider",
-  "version": "2026.10.3",
+  "version": "2026.10.12",
   "description": "Ace Data Cloud models, image, video, music, speech, search and creative tools for OpenClaw.",
   "keywords": [
     "openclaw",
