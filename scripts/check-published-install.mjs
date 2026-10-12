@@ -14,7 +14,7 @@ const expectedVersion = process.env.PUBLISHED_VERSION;
 if (pkg.name !== "@acedatacloud/openclaw-provider" || pkg.version !== expectedVersion || plugin.packageVersion !== expectedVersion) {
   throw new Error("The host did not load the requested published release");
 }
-execFileSync(process.execPath, ["scripts/check-runtime.mjs", join(evidenceDir, "runtime.json"), manifestPath], { stdio: "inherit" });
+execFileSync(process.execPath, ["scripts/check-runtime.mjs", join(evidenceDir, "runtime.json"), manifestPath, "--allow-community-provenance-warning"], { stdio: "inherit" });
 const expectedModels = manifest.modelCatalog.providers.acedatacloud.models.map(model => `acedatacloud/${model.id}`).sort();
 const actualModels = readJson(join(evidenceDir, "models.json")).models.map(model => model.key).sort();
 if (JSON.stringify(expectedModels) !== JSON.stringify(actualModels)) throw new Error("Public install model catalog differs from its manifest");
@@ -24,7 +24,7 @@ const proof = {
   checkedAt: new Date().toISOString(), channel: process.env.INSTALL_CHANNEL,
   package: pkg.name, version: pkg.version, hostVersion: readFileSync(join(evidenceDir, "host-version.txt"), "utf8").trim(),
   modelCount: actualModels.length, toolCount: plugin.toolNames.length,
-  status: plugin.status, diagnostics: runtime.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0,
+  status: plugin.status, trust: plugin.trust, diagnostics: runtime.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0,
 };
 writeFileSync(join(evidenceDir, "public-install-proof.json"), JSON.stringify(proof, null, 2) + "\n");
 console.log(JSON.stringify(proof));

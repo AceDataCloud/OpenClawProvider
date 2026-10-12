@@ -14,7 +14,10 @@ channel before reusing a version from npm or GitHub Releases.
 
 The package is vendor maintained. Review the host's install prompts and the
 listing's security audit. Official publisher status and default bundling are
-separate OpenClaw decisions.
+separate OpenClaw decisions. On OpenClaw 2026.10.1, this community release can
+load with a `provenance-invalid` warning. Review the source and diagnostics with
+`openclaw plugins inspect acedatacloud --runtime --json`; installation does not
+grant official-publisher status or trusted-only host features.
 
 For environment-based authentication, set `ACEDATA_API_KEY` or
 `ACEDATACLOUD_API_KEY` in the environment where OpenClaw runs. Non-interactive

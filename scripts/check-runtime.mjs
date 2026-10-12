@@ -2,7 +2,11 @@ import { readFileSync } from "node:fs";
 const result = JSON.parse(readFileSync(process.argv[2], "utf8"));
 const manifest = JSON.parse(readFileSync(process.argv[3] ?? "openclaw.plugin.json", "utf8"));
 const plugin = result.plugin;
-if (plugin.status !== "loaded" || !plugin.providerIds.includes("acedatacloud") || result.diagnostics.length) throw new Error("Plugin did not load cleanly");
+const allowPublicProvenanceWarning = process.argv.includes("--allow-community-provenance-warning") && plugin.trust?.reason === "provenance-invalid";
+const blockingDiagnostics = result.diagnostics.filter(diagnostic => !(
+  allowPublicProvenanceWarning && diagnostic.level === "warn" && diagnostic.pluginId === "acedatacloud" && diagnostic.message.includes("reason=provenance-invalid")
+));
+if (plugin.status !== "loaded" || !plugin.providerIds.includes("acedatacloud") || blockingDiagnostics.length) throw new Error("Plugin did not load cleanly");
 for (const [field, contract] of [
   ["toolNames", "tools"], ["imageGenerationProviderIds", "imageGenerationProviders"],
   ["videoGenerationProviderIds", "videoGenerationProviders"], ["musicGenerationProviderIds", "musicGenerationProviders"],
