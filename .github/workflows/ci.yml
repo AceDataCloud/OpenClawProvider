@@ -56,7 +56,8 @@ jobs:
           OPENCLAW_STATE_DIR: ${{ runner.temp }}/provider-state
           OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/provider-state/openclaw.json
         run: |
-          pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.3.tgz" --force --accept-capabilities
+          package_version=$(node -p "require('./package.json').version")
+          pnpm exec openclaw plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-${package_version}.tgz" --force --accept-capabilities
           pnpm exec openclaw plugins inspect acedatacloud --runtime --json > runtime-inspect.json
           node scripts/check-runtime.mjs runtime-inspect.json
 
@@ -75,7 +76,8 @@ jobs:
           ln -sfn "$stable_host" node_modules/openclaw
           pnpm typecheck
           pnpm test
-          node "$stable_host/openclaw.mjs" plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-2026.10.3.tgz" --force --accept-capabilities
+          package_version=$(node -p "require('./package.json').version")
+          node "$stable_host/openclaw.mjs" plugins install "npm-pack:$PWD/acedatacloud-openclaw-provider-${package_version}.tgz" --force --accept-capabilities
           node "$stable_host/openclaw.mjs" plugins inspect acedatacloud --runtime --json > stable-runtime-inspect.json
           node scripts/check-runtime.mjs stable-runtime-inspect.json
           node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
