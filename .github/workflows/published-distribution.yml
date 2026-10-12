@@ -29,9 +29,6 @@ jobs:
     env:
       PUBLISHED_VERSION: ${{ inputs.provider_version || '2026.10.12' }}
       INSTALL_CHANNEL: ${{ matrix.channel }}
-      OPENCLAW_HOME: ${{ runner.temp }}/published-home
-      OPENCLAW_STATE_DIR: ${{ runner.temp }}/published-state
-      OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/published-state/openclaw.json
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,6 +40,10 @@ jobs:
       - name: Install current stable OpenClaw
         run: npm install --prefix "$RUNNER_TEMP/host" --no-audit --no-fund --package-lock=false openclaw@2026.10.1
       - name: Discover and install the public release in fresh state
+        env:
+          OPENCLAW_HOME: ${{ runner.temp }}/published-home
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/published-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/published-state/openclaw.json
         run: |
           mkdir -p evidence
           host="$RUNNER_TEMP/host/node_modules/openclaw/openclaw.mjs"
