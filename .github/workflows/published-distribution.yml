@@ -38,7 +38,7 @@ jobs:
       - name: Validate release input
         run: node -e 'if (!/^\d{4}\.\d+\.\d+$/.test(process.env.PUBLISHED_VERSION)) throw new Error("Expected a CalVer release")'
       - name: Install current stable OpenClaw
-        run: npm install --prefix "$RUNNER_TEMP/host" --no-audit --no-fund --package-lock=false openclaw@2026.10.1
+        run: npm install --prefix "$RUNNER_TEMP/host" --no-audit --no-fund --package-lock=false openclaw@2026.10.4
       - name: Discover and install the public release in fresh state
         env:
           OPENCLAW_HOME: ${{ runner.temp }}/published-home

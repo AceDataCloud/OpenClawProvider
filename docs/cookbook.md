@@ -19,6 +19,23 @@ load with a `provenance-invalid` warning. Review the source and diagnostics with
 `openclaw plugins inspect acedatacloud --runtime --json`; installation does not
 grant official-publisher status or trusted-only host features.
 
+## Self-installed plugin and managed deployment
+
+The installation above adds this provider to an OpenClaw instance that you
+operate. It supplies the model catalog and optional media/search tools described
+in this package; allowlist only the tools that you need.
+
+An Ace Data Cloud managed OpenClaw deployment is a separate setup path. Its
+creation wizard can seed one platform chat model and an instance-specific
+credential into the native configuration. The pinned runtime does not install
+this provider package or its 97 optional tools automatically. Connect to that
+instance's native dashboard for chat; check its OpenClaw version and install the
+provider separately if you need these plugin capabilities. Redeployment preserves
+existing native settings. Deployment duration and model/API usage are billed
+separately.
+
+## Authentication and model selection
+
 For environment-based authentication, set `ACEDATA_API_KEY` or
 `ACEDATACLOUD_API_KEY` in the environment where OpenClaw runs. Non-interactive
 onboarding accepts `--acedata-api-key`; prefer the interactive prompt to avoid
