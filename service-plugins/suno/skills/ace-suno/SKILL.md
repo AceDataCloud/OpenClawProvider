@@ -1,6 +1,6 @@
 ---
 name: ace-suno
-description: Use Suno through Ace Data Cloud for generate audios, generate lyrics, upload reference audio, get mp4, get mp3.
+description: Use Suno through Ace Data Cloud for music and lyrics generation, reference uploads, MP3/WAV/MP4/MIDI/timing retrieval, voice and persona creation/deletion, projects/custom models, mashup/style enhancement, and same-task status retrieval; paid and destructive operations need user authorization.
 ---
 
 # Suno via Ace Data Cloud
