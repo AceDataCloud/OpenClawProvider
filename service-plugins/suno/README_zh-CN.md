@@ -1,8 +1,8 @@
 # Suno by Ace Data Cloud：OpenClaw 独立插件
 
-**发布候选，尚未在独立商店条目公开，安装命令需待审核发布后才可用。** 本包只注册Suno的原生music能力、19个可选工具及使用Skill，不自动替换聊天服务商，也不需要安装Ace合集。非Suno官方背书。
+**独立服务插件。安装前检查ClawHub条目是否显示本包及已公开版本；源码/CI不代表已上架，ClawHub发布与npm发布也分别验证。** 本包只注册Suno的原生music能力、19个可选工具及使用Skill，不自动替换聊天服务商，也不需要安装Ace合集。非Suno官方背书。
 
-1. 发布后在[ClawHub插件](https://clawhub.ai/plugins)搜索Suno，确认作者acedatacloud、包@acedatacloud/suno-openclaw，再安装。
+1. 在[ClawHub插件](https://clawhub.ai/plugins)搜索Suno，确认作者acedatacloud、包@acedatacloud/suno-openclaw，再安装。
 2. 注册/登录[Ace应用列表](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_openclaw_readme_api_key)，打开General application；没有则初始化。复制API Key，或Manage Keys→Create创建独立密钥。核对Suno权限、生成及查询API、有效期、用量限制和[实时价格/余额](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_openclaw_readme_pricing)。只复制token，不加Bearer，不使用平台管理Token。
 3. 运行`openclaw models auth login --provider ace-suno --method api-key`，在该服务的交互提示粘贴；可用专属环境变量`ACEDATA_SUNO_API_KEY`或`plugins.entries.ace-suno.config.apiKey`。
 4. 先用`openclaw plugins inspect ace-suno --runtime --json`检查安装。确认预算后再发一次music请求；该操作收费。异步保存task_id，使用`ace_service_suno_task_retrieve`查询同一ID，等待终态后获取结果；超时不重复生成。

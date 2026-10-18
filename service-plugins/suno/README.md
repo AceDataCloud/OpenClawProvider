@@ -2,17 +2,17 @@
 
 Use Suno through Ace Data Cloud without installing the all-services provider. This vendor-maintained integration is not an official Suno endorsement. It registers only this service's native music provider, 19 optional tools, and a service usage skill. Your chat provider stays unchanged.
 
-**Release candidate: package source and installation checks are being reviewed. The dedicated ClawHub/npm listing is not published yet. Do not treat the planned install command as currently available.**
+**Independent service release. Before installing, check that the linked ClawHub listing shows this package and an approved published version; source code or CI alone does not prove publication. The package may be available on ClawHub before npm.**
 
 ## 1. Find and install the dedicated plugin
 
-After approval, search **Suno** in [ClawHub Plugins](https://clawhub.ai/plugins) and verify **by Ace Data Cloud**, owner **acedatacloud**, package **@acedatacloud/suno-openclaw**. Planned official distribution URL: [Suno listing](https://clawhub.ai/acedatacloud/plugins/suno-openclaw).
+Search **Suno** in [ClawHub Plugins](https://clawhub.ai/plugins) and verify **by Ace Data Cloud**, owner **acedatacloud**, package **@acedatacloud/suno-openclaw**. Official distribution URL: [Suno listing](https://clawhub.ai/acedatacloud/plugins/suno-openclaw).
 
 ```sh
 openclaw plugins install clawhub:@acedatacloud/suno-openclaw
 ```
 
-The command is for the planned public release; before publication, maintainers validate a local packed archive. This plugin has its own runtime ID, native provider and tool names, so it can coexist with the Ace collection and other service plugins without duplicate registrations. A Skill-only ClawHub entry is a separate product: it does not install this code plugin.
+Use the public command only when the listing shows a published version. Maintainers separately verify exact packed archives before upload. This plugin has its own runtime ID, native provider and tool names, so it can coexist with the Ace collection and other service plugins without duplicate registrations. A Skill-only ClawHub entry is a separate product: it does not install this code plugin.
 
 ## 2. Register, sign in and copy a scoped API token
 

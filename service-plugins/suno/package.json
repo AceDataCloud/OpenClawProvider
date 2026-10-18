@@ -1,6 +1,6 @@
 {
   "name": "@acedatacloud/suno-openclaw",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Suno by Ace Data Cloud: native music generation and 19 optional service tools for OpenClaw.",
   "keywords": [
     "openclaw-plugin",

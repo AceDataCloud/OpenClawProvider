@@ -1,6 +1,6 @@
 {
   "name": "@acedatacloud/seedance-openclaw",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Seedance by Ace Data Cloud: native video generation and 3 optional service tools for OpenClaw.",
   "keywords": [
     "openclaw-plugin",
