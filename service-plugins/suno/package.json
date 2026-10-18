@@ -1,0 +1,68 @@
+{
+  "name": "@acedatacloud/suno-openclaw",
+  "version": "0.1.0",
+  "description": "Suno by Ace Data Cloud: native music generation and 19 optional service tools for OpenClaw.",
+  "keywords": [
+    "openclaw-plugin",
+    "suno",
+    "suno",
+    "music",
+    "lyrics",
+    "acedatacloud"
+  ],
+  "license": "MIT",
+  "author": "Ace Data Cloud <dev@acedata.cloud>",
+  "type": "module",
+  "files": [
+    "dist",
+    "index.js",
+    "assets",
+    "skills",
+    "openclaw.plugin.json",
+    "README.md",
+    "README_zh-CN.md",
+    "LICENSE"
+  ],
+  "homepage": "https://github.com/AceDataCloud/OpenClawProvider/tree/main/service-plugins/suno",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AceDataCloud/OpenClawProvider.git",
+    "directory": "service-plugins/suno"
+  },
+  "bugs": "https://github.com/AceDataCloud/OpenClawProvider/issues",
+  "engines": {
+    "node": ">=24.16.0 <25 || >=26.1.0"
+  },
+  "dependencies": {
+    "ajv": "8.20.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.6.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.js"
+    ],
+    "install": {
+      "clawhubSpec": "@acedatacloud/suno-openclaw",
+      "npmSpec": "@acedatacloud/suno-openclaw",
+      "defaultChoice": "clawhub",
+      "minHostVersion": ">=2026.6.8"
+    },
+    "compat": {
+      "pluginApi": ">=2026.6.8"
+    },
+    "build": {
+      "openclawVersion": "2026.9.8",
+      "pluginSdkVersion": "2026.9.8",
+      "bundledDist": false
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

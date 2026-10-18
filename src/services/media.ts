@@ -34,8 +34,8 @@ export function operationModels(endpoint: Endpoint): string[] {
   if (endpoint.path.startsWith("/midjourney/")) return endpoint.path.endsWith("/videos") ? ["midjourney-video"] : ["midjourney"];
   return [];
 }
-function catalog(api: OpenClawPluginApi, provider: string, kind: "image_generation" | "video_generation" | "music_generation" | "voice", models: readonly string[], label: string, capabilities?: unknown): void {
-  api.registerModelCatalogProvider({ provider, kinds: [kind], staticCatalog: () => models.map(model => ({ kind, provider, model, label: `${label} / ${model}`, source: "static", capabilities, authEnvVars: ["ACEDATA_API_KEY", "ACEDATACLOUD_API_KEY"] })) });
+function catalog(api: OpenClawPluginApi, provider: string, kind: "image_generation" | "video_generation" | "music_generation" | "voice", models: readonly string[], label: string, capabilities?: unknown, authEnvVars = ["ACEDATA_API_KEY", "ACEDATACLOUD_API_KEY"]): void {
+  api.registerModelCatalogProvider({ provider, kinds: [kind], staticCatalog: () => models.map(model => ({ kind, provider, model, label: `${label} / ${model}`, source: "static", capabilities, authEnvVars })) });
 }
 function exactModel(endpoint: Endpoint, model: string): void {
   if (!operationModels(endpoint).includes(model)) throw new Error(`Unsupported model for ${endpoint.path}: ${model}`);
@@ -143,18 +143,32 @@ export function mapVideoRequest(service: string, req: VideoRequest): { tool: str
   else if (service === "midjourney") { delete params.model; if (images.length) params.image_url = images[0]; if (images[1]) params.end_image_url = images[1]; }
   return { tool, params };
 }
-export function registerMediaProviders(api: OpenClawPluginApi): void {
+export type MediaRegistrationOptions = {
+  services?: readonly string[];
+  resolveKey?: (service: string, cfg?: ImageRequest["cfg"]) => Promise<string>;
+  isConfigured?: (service: string, cfg?: ImageRequest["cfg"], agentDir?: string) => boolean;
+  providerId?: (service: string) => string;
+  label?: (service: string, label: string) => string;
+  authEnvVars?: string[];
+};
+export function registerMediaProviders(api: OpenClawPluginApi, options: MediaRegistrationOptions = {}): void {
+  const includes = (service: string) => !options.services || options.services.includes(service);
+  const resolveKey = options.resolveKey ?? ((service: string, cfg?: ImageRequest["cfg"]) => resolveServiceKey(api, service, cfg));
+  const isConfigured = options.isConfigured ?? configured;
+  const mediaProviderId = options.providerId ?? providerId;
+  const label = options.label ?? ((_service: string, name: string) => `Ace Data Cloud — ${name}`);
   for (const [id, [generate, edit]] of Object.entries(IMAGE_OPERATIONS)) {
+    if (!includes(id)) continue;
     const service = serviceById(id), endpoint = service.endpoints[generate];
     const models = operationModels(endpoint);
     const provider: ImageProvider = {
-      id: providerId(id), label: `Ace Data Cloud — ${service.label}`, models,
+      id: mediaProviderId(id), label: label(id, service.label), models,
       defaultModel: String(endpoint.defaults?.model ?? models[0]), defaultTimeoutMs: 600_000,
-      isConfigured: ({cfg, agentDir}) => configured(id, cfg, agentDir),
+      isConfigured: ({cfg, agentDir}) => isConfigured(id, cfg, agentDir),
       capabilities: { generate: { maxCount: id === "nano-banana" ? 4 : id === "gpt-image" ? 10 : id === "qwen-image" ? 6 : 1, supportsSize: !!endpoint.properties.size, supportsAspectRatio: !!endpoint.properties.aspect_ratio || id === "flux", supportsResolution: !!endpoint.properties.resolution || id === "seedream" }, edit: { enabled: !!edit, maxInputImages: ["flux", "midjourney"].includes(id) ? 1 : id === "seedream" ? 10 : 4, ...(id === "gpt-image" ? {maxInputImagesByModel: { "dall-e-2": 0, "dall-e-3": 0 }} : {}), ...(id === "seedream" ? {maxInputImagesByModel: { "doubao-seedream-5-0-lite-260128": 14, "doubao-seedream-5-0-pro-260628": 10 }} : {}) }, ...(id === "nano-banana" ? { geometry: { aspectRatios: endpoint.properties.aspect_ratio.enum as string[], resolutions: ["1K", "2K", "4K"] } } : {}) },
       async generateImage(req) {
         const mapped = mapImageRequest(id, req);
-        const result = await new ServiceClient(await resolveServiceKey(api, id, req.cfg)).complete(service, mapped.tool, mapped.params, req.timeoutMs ?? 600_000);
+        const result = await new ServiceClient(await resolveKey(id, req.cfg)).complete(service, mapped.tool, mapped.params, req.timeoutMs ?? 600_000);
         if (!result.media_urls.length) throw new Error(`No image output in completed task ${result.task_id}.`);
         let images: Array<{buffer: Buffer; mimeType: string}>;
         try { images = await Promise.all(result.media_urls.map(url => downloadAsset(url, "image"))); }
@@ -163,34 +177,36 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
       },
     };
     api.registerImageGenerationProvider(provider);
-    catalog(api, provider.id, "image_generation", models, service.label, provider.capabilities);
+    catalog(api, provider.id, "image_generation", models, service.label, provider.capabilities, options.authEnvVars);
   }
   for (const [id, operation] of Object.entries(VIDEO_OPERATIONS)) {
+    if (!includes(id)) continue;
     const service = serviceById(id), endpoint = service.endpoints[operation], models = operationModels(endpoint);
     const limits = { maxVideos: 1, supportsResolution: !!endpoint.properties.resolution, supportsAspectRatio: !!(endpoint.properties.aspect_ratio || endpoint.properties.ratio), supportsAudio: !!(endpoint.properties.generate_audio || endpoint.properties.audio), supportsWatermark: !!endpoint.properties.watermark, ...(Array.isArray(endpoint.properties.resolution?.enum) ? { resolutions: (endpoint.properties.resolution.enum as string[]).filter(r => id !== "minimax" || r !== "480P") } : {}) };
     const provider: VideoProvider = {
-      id: providerId(id), label: `Ace Data Cloud — ${service.label}`, models,
+      id: mediaProviderId(id), label: label(id, service.label), models,
       defaultModel: String(endpoint.defaults?.model ?? models.find(m => !m.endsWith("-i2v") && !m.endsWith("-r2v")) ?? models[0]), defaultTimeoutMs: 900_000,
-      isConfigured: ({cfg, agentDir}) => configured(id, cfg, agentDir),
+      isConfigured: ({cfg, agentDir}) => isConfigured(id, cfg, agentDir),
       capabilities: { generate: limits, imageToVideo: { ...limits, enabled: true, maxInputImages: ["seedance", "minimax", "grok"].includes(id) ? 9 : id === "veo" ? 3 : ["kling", "flux", "midjourney"].includes(id) ? 2 : 1 }, videoToVideo: { enabled: ["seedance", "minimax", "happyhorse", "wan", "flux"].includes(id), maxInputVideos: 1 } },
       async generateVideo(req) {
         const mapped = mapVideoRequest(id, req);
-        const result = await new ServiceClient(await resolveServiceKey(api, id, req.cfg)).complete(service, mapped.tool, mapped.params, req.timeoutMs ?? 900_000);
+        const result = await new ServiceClient(await resolveKey(id, req.cfg)).complete(service, mapped.tool, mapped.params, req.timeoutMs ?? 900_000);
         if (!result.media_urls.length) throw new Error(`No video output in completed task ${result.task_id}.`);
         return { videos: result.media_urls.map(url => ({ url, mimeType: "video/mp4" })), model: req.model, metadata: { taskId: result.task_id, traceId: result.trace_id } };
       },
     };
     api.registerVideoGenerationProvider(provider);
-    catalog(api, provider.id, "video_generation", models, service.label, provider.capabilities);
+    catalog(api, provider.id, "video_generation", models, service.label, provider.capabilities, options.authEnvVars);
   }
+  if (includes("suno")) {
   const suno = serviceById("suno"), endpoint = suno.endpoints.suno_generate_audios;
   const music: MusicProvider = {
-    id: providerId("suno"), label: "Ace Data Cloud — Suno", models: operationModels(endpoint), defaultModel: String(endpoint.defaults?.model ?? "chirp-v6"),
-    isConfigured: ({cfg, agentDir}) => configured("suno", cfg, agentDir),
+    id: mediaProviderId("suno"), label: label("suno", "Suno"), models: operationModels(endpoint), defaultModel: String(endpoint.defaults?.model ?? "chirp-v6"),
+    isConfigured: ({cfg, agentDir}) => isConfigured("suno", cfg, agentDir),
     capabilities: { generate: { maxTracks: 2, supportsLyrics: true, supportsInstrumental: true }, edit: { enabled: false } },
     async generateMusic(req) {
       exactModel(endpoint, req.model);
-      const result = await new ServiceClient(await resolveServiceKey(api, "suno", req.cfg)).complete(suno, "suno_generate_audios", { model: req.model, prompt: req.prompt, ...(req.lyrics ? { custom: true, lyric: req.lyrics } : {}), ...(req.instrumental !== undefined ? { instrumental: req.instrumental } : {}) }, req.timeoutMs ?? 900_000);
+      const result = await new ServiceClient(await resolveKey("suno", req.cfg)).complete(suno, "suno_generate_audios", { model: req.model, prompt: req.prompt, ...(req.lyrics ? { custom: true, lyric: req.lyrics } : {}), ...(req.instrumental !== undefined ? { instrumental: req.instrumental } : {}) }, req.timeoutMs ?? 900_000);
       if (!result.media_urls.length) throw new Error(`No music output in completed task ${result.task_id}.`);
       let tracks: Array<{buffer: Buffer; mimeType: string}>;
       try { tracks = await Promise.all(result.media_urls.filter(url => /\.(mp3|wav|ogg|flac|m4a)(\?|$)/i.test(url)).map(url => downloadAsset(url, "audio"))); }
@@ -200,9 +216,11 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
     },
   };
   api.registerMusicGenerationProvider(music);
-  catalog(api, music.id, "music_generation", music.models ?? [], "Suno", music.capabilities);
+  catalog(api, music.id, "music_generation", music.models ?? [], "Suno", music.capabilities, options.authEnvVars);
+  }
+  if (includes("fish-audio")) {
   api.registerSpeechProvider({
-    id: providerId("fish-audio"), label: "Ace Data Cloud — Fish Audio", defaultModel: "s2-pro", models: ["s1", "s2-pro", "s2.1-pro"], defaultTimeoutMs: 300_000,
+    id: mediaProviderId("fish-audio"), label: "Ace Data Cloud — Fish Audio", defaultModel: "s2-pro", models: ["s1", "s2-pro", "s2.1-pro"], defaultTimeoutMs: 300_000,
     resolveConfig: ({rawConfig}) => {
       const source = record(rawConfig);
       const settings = record(record(source.providers)[providerId("fish-audio")] ?? source);
@@ -210,13 +228,13 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
       return { ...Object.fromEntries(Object.entries(settings).filter(([key]) => allowed.has(key))), model: settings.model ?? "s2-pro" };
     },
     resolveTalkOverrides: ({params}) => ({ ...(params.voiceId ? {voice: params.voiceId} : {}), ...(params.modelId ? {model: params.modelId} : {}) }),
-    isConfigured: ({ cfg }) => configured("fish-audio", cfg),
+    isConfigured: ({ cfg }) => isConfigured("fish-audio", cfg),
     async synthesize(req) {
       const { apiKey: _key, ...settings } = req.providerConfig;
       const merged = { ...settings, ...req.providerOverrides };
       const { voice, modelId, voiceId, responseFormat, ...rest } = merged;
       const params = { ...rest, ...(modelId ? {model: modelId} : {}), ...(voice || voiceId ? {reference_id: voice || voiceId} : {}), text: req.text, format: responseFormat ?? rest.format ?? "mp3" };
-      const result = await new ServiceClient(await resolveServiceKey(api, "fish-audio", req.cfg)).complete(serviceById("fish-audio"), "fish_generate_audio", params, req.timeoutMs);
+      const result = await new ServiceClient(await resolveKey("fish-audio", req.cfg)).complete(serviceById("fish-audio"), "fish_generate_audio", params, req.timeoutMs);
       if (!result.media_urls[0]) throw new Error(`No speech audio in completed task ${result.task_id}.`);
       let asset: {buffer: Buffer; mimeType: string};
       try { asset = await downloadAsset(result.media_urls[0], "audio"); }
@@ -225,10 +243,11 @@ export function registerMediaProviders(api: OpenClawPluginApi): void {
       return { audioBuffer: asset.buffer, outputFormat: format, fileExtension: `.${format}`, voiceCompatible: false };
     },
     async listVoices(req) {
-      const result = await new ServiceClient(await resolveServiceKey(api, "fish-audio", req.cfg)).invoke(serviceById("fish-audio"), "fish_search_voices", {page_size: 20});
+      const result = await new ServiceClient(await resolveKey("fish-audio", req.cfg)).invoke(serviceById("fish-audio"), "fish_search_voices", {page_size: 20});
       const data = record(result.result); const voices = data.items ?? data.data;
       return Array.isArray(voices) ? voices.map(v => { const row=record(v); return {id:String(row._id ?? row.id), name:String(row.title ?? row.name ?? row._id ?? row.id)}; }) : [];
     },
   });
-  catalog(api, providerId("fish-audio"), "voice", ["s1", "s2-pro", "s2.1-pro"], "Fish Audio");
+  catalog(api, mediaProviderId("fish-audio"), "voice", ["s1", "s2-pro", "s2.1-pro"], "Fish Audio");
+  }
 }

@@ -1,0 +1,168 @@
+{
+  "id": "ace-nano-banana",
+  "name": "Nano Banana by Ace Data Cloud",
+  "description": "Nano Banana by Ace Data Cloud: native image generation and 4 optional service tools for OpenClaw.",
+  "categories": [
+    "media"
+  ],
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": [
+    "ace-nano-banana"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ace-nano-banana",
+        "envVars": [
+          "ACEDATA_NANO_BANANA_API_KEY"
+        ]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ace-nano-banana",
+      "method": "api-key",
+      "choiceId": "ace-nano-banana-api-key",
+      "choiceLabel": "Nano Banana by Ace Data Cloud",
+      "groupId": "ace-nano-banana",
+      "groupLabel": "Nano Banana by Ace Data Cloud",
+      "groupHint": "Nano Banana image",
+      "onboardingScopes": [
+        "image-generation"
+      ],
+      "optionKey": "nanoBananaAceApiKey",
+      "cliFlag": "--nano-banana-ace-api-key",
+      "cliOption": "--nano-banana-ace-api-key <key>",
+      "cliDescription": "Nano Banana Ace Data Cloud API key"
+    }
+  ],
+  "contracts": {
+    "imageGenerationProviders": [
+      "ace-nano-banana"
+    ],
+    "tools": [
+      "ace_service_nano_banana_generate_image",
+      "ace_service_nano_banana_edit_image",
+      "ace_service_nano_banana_task_retrieve",
+      "ace_service_nano_banana_tasks_retrieve_batch"
+    ]
+  },
+  "imageGenerationProviderMetadata": {
+    "ace-nano-banana": {
+      "authProviders": [
+        "ace-nano-banana"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-nano-banana.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    }
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "apiKey": {
+      "label": "Ace Data Cloud API Token for Nano Banana",
+      "sensitive": true,
+      "help": "Optional service-specific credential; otherwise uses ACEDATA_NANO_BANANA_API_KEY or the ace-nano-banana auth profile."
+    }
+  },
+  "toolMetadata": {
+    "ace_service_nano_banana_generate_image": {
+      "authProviders": [
+        "ace-nano-banana"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-nano-banana.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_nano_banana_edit_image": {
+      "authProviders": [
+        "ace-nano-banana"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-nano-banana.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_nano_banana_task_retrieve": {
+      "authProviders": [
+        "ace-nano-banana"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-nano-banana.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_nano_banana_tasks_retrieve_batch": {
+      "authProviders": [
+        "ace-nano-banana"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-nano-banana.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
+}

@@ -8,3 +8,7 @@ dist/
 coverage/
 .vitest/
 *.tgz
+
+# Generated independently installable service artifacts (canonical source is src/service-plugins).
+service-plugins/*/dist/
+service-plugins/*/index.js

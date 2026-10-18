@@ -1,0 +1,185 @@
+{
+  "id": "ace-gpt-image",
+  "name": "GPT Image by Ace Data Cloud",
+  "description": "GPT Image by Ace Data Cloud: native image generation and 5 optional service tools for OpenClaw.",
+  "categories": [
+    "media"
+  ],
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": [
+    "ace-gpt-image"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ace-gpt-image",
+        "envVars": [
+          "ACEDATA_GPT_IMAGE_API_KEY"
+        ]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ace-gpt-image",
+      "method": "api-key",
+      "choiceId": "ace-gpt-image-api-key",
+      "choiceLabel": "GPT Image by Ace Data Cloud",
+      "groupId": "ace-gpt-image",
+      "groupLabel": "GPT Image by Ace Data Cloud",
+      "groupHint": "GPT Image image",
+      "onboardingScopes": [
+        "image-generation"
+      ],
+      "optionKey": "gptImageAceApiKey",
+      "cliFlag": "--gpt-image-ace-api-key",
+      "cliOption": "--gpt-image-ace-api-key <key>",
+      "cliDescription": "GPT Image Ace Data Cloud API key"
+    }
+  ],
+  "contracts": {
+    "imageGenerationProviders": [
+      "ace-gpt-image"
+    ],
+    "tools": [
+      "ace_service_gpt_image_generate_image",
+      "ace_service_gpt_image_edit_image",
+      "ace_service_gpt_image_list_tasks",
+      "ace_service_gpt_image_task_retrieve",
+      "ace_service_gpt_image_tasks_retrieve_batch"
+    ]
+  },
+  "imageGenerationProviderMetadata": {
+    "ace-gpt-image": {
+      "authProviders": [
+        "ace-gpt-image"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-gpt-image.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    }
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "apiKey": {
+      "label": "Ace Data Cloud API Token for GPT Image",
+      "sensitive": true,
+      "help": "Optional service-specific credential; otherwise uses ACEDATA_GPT_IMAGE_API_KEY or the ace-gpt-image auth profile."
+    }
+  },
+  "toolMetadata": {
+    "ace_service_gpt_image_generate_image": {
+      "authProviders": [
+        "ace-gpt-image"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-gpt-image.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_gpt_image_edit_image": {
+      "authProviders": [
+        "ace-gpt-image"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-gpt-image.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_gpt_image_list_tasks": {
+      "authProviders": [
+        "ace-gpt-image"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-gpt-image.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_gpt_image_task_retrieve": {
+      "authProviders": [
+        "ace-gpt-image"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-gpt-image.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_gpt_image_tasks_retrieve_batch": {
+      "authProviders": [
+        "ace-gpt-image"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-gpt-image.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
+}

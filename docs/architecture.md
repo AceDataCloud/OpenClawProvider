@@ -2,14 +2,14 @@
 
 ## Decision
 
-Ship one vendor-maintained `@acedatacloud/openclaw-provider` package in this repository.
+Maintain one canonical implementation in this repository. The full `@acedatacloud/openclaw-provider` collection remains available; five brand-specific packages expose only Suno, Seedance, HappyHorse, GPT Image or Nano Banana for independent discovery and installation.
 Keep chat, search, shared transport, native media adapters and per-service contracts in separate modules.
 
 | Option | Installation and auth | Maintenance/review | Discovery | Decision |
 | --- | --- | --- | --- | --- |
-| One package per service | Up to 18 installs and repeated setup | Many releases, scans and duplicated transport | Many similar listings; no guaranteed ranking benefit | Not the initial OpenClaw design |
+| One package per service | Up to 18 installs and repeated setup | Many releases, scans and duplicated transport | Many similar listings; no guaranteed ranking benefit | Selected for five branded services; unique runtime IDs, contracts, keys and native providers |
 | LLM package plus media package | Two installs; shared credentials need coordination | Two release/security boundaries | Clear category split | Reasonable if ownership or dependencies diverge later |
-| One vendor provider, modular capabilities | One install; shared key or optional service-scoped keys | One reviewed transport; independently tested adapters | Models category plus native media capability discovery, named service models and tools | Selected |
+| One vendor provider, modular capabilities | One install; shared key or optional service-scoped keys | One reviewed transport; independently tested adapters | Models category plus native media capability discovery, named service models and tools | Complementary collection |
 
 OpenClaw's provider guide registers media and search beside text inference. Its OpenAI,
 Google, MiniMax and fal providers use that pattern. A plugin is an ownership boundary;
@@ -56,3 +56,11 @@ services accessible through Ace Data Cloud, not endorsements from those vendors.
 
 An installable npm release, a ClawHub staged upload, a public market listing and an
 official publisher badge are separate gates. Claims and links must match verified state.
+
+## Independent branded discovery (2026-10-18)
+
+ClawHub permits independent packages, but requires unique runtime IDs within a publisher. The five packages in `service-plugins/` use service-specific IDs, credentials and native model references; optional tool names are distinct from the collection. No chat model is added or selected by a media-only service package. Existing explicit media defaults are preserved. The same contract client, polling, validation and media adapters are reused; generated artifacts contain only that service API contract. No new routing, price or fallback is added.
+
+`pnpm build:services` materializes five packages from canonical source. Their READMEs identify them as release candidates until npm/ClawHub publication, security checks, public brand search and independent installation are verified. Source PR is not a listing. Skill-only entries have separate ownership in Skills and do not install these code plugins.
+
+Official default provider discovery remains separate: OpenClaw external-provider catalog supports reviewed external packages, but current VISION directs vendor promotion to ClawHub and default/core promotion requires maintainer ownership and product/security justification. The installed collection auth choice is not proof of fresh-host default inclusion.

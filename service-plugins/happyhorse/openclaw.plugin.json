@@ -1,0 +1,151 @@
+{
+  "id": "ace-happyhorse",
+  "name": "HappyHorse by Ace Data Cloud",
+  "description": "HappyHorse by Ace Data Cloud: native video generation and 3 optional service tools for OpenClaw.",
+  "categories": [
+    "media"
+  ],
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": [
+    "ace-happyhorse"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ace-happyhorse",
+        "envVars": [
+          "ACEDATA_HAPPYHORSE_API_KEY"
+        ]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ace-happyhorse",
+      "method": "api-key",
+      "choiceId": "ace-happyhorse-api-key",
+      "choiceLabel": "HappyHorse by Ace Data Cloud",
+      "groupId": "ace-happyhorse",
+      "groupLabel": "HappyHorse by Ace Data Cloud",
+      "groupHint": "HappyHorse video",
+      "onboardingScopes": [
+        "video-generation"
+      ],
+      "optionKey": "happyhorseAceApiKey",
+      "cliFlag": "--happyhorse-ace-api-key",
+      "cliOption": "--happyhorse-ace-api-key <key>",
+      "cliDescription": "HappyHorse Ace Data Cloud API key"
+    }
+  ],
+  "contracts": {
+    "videoGenerationProviders": [
+      "ace-happyhorse"
+    ],
+    "tools": [
+      "ace_service_happyhorse_generate_video",
+      "ace_service_happyhorse_task_retrieve",
+      "ace_service_happyhorse_tasks_retrieve_batch"
+    ]
+  },
+  "videoGenerationProviderMetadata": {
+    "ace-happyhorse": {
+      "authProviders": [
+        "ace-happyhorse"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-happyhorse.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    }
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "apiKey": {
+      "label": "Ace Data Cloud API Token for HappyHorse",
+      "sensitive": true,
+      "help": "Optional service-specific credential; otherwise uses ACEDATA_HAPPYHORSE_API_KEY or the ace-happyhorse auth profile."
+    }
+  },
+  "toolMetadata": {
+    "ace_service_happyhorse_generate_video": {
+      "authProviders": [
+        "ace-happyhorse"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-happyhorse.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_happyhorse_task_retrieve": {
+      "authProviders": [
+        "ace-happyhorse"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-happyhorse.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_happyhorse_tasks_retrieve_batch": {
+      "authProviders": [
+        "ace-happyhorse"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-happyhorse.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
+}

@@ -1,0 +1,423 @@
+{
+  "id": "ace-suno",
+  "name": "Suno by Ace Data Cloud",
+  "description": "Suno by Ace Data Cloud: native music generation and 19 optional service tools for OpenClaw.",
+  "categories": [
+    "media"
+  ],
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": [
+    "ace-suno"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ace-suno",
+        "envVars": [
+          "ACEDATA_SUNO_API_KEY"
+        ]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ace-suno",
+      "method": "api-key",
+      "choiceId": "ace-suno-api-key",
+      "choiceLabel": "Suno by Ace Data Cloud",
+      "groupId": "ace-suno",
+      "groupLabel": "Suno by Ace Data Cloud",
+      "groupHint": "Suno music",
+      "onboardingScopes": [
+        "music-generation"
+      ],
+      "optionKey": "sunoAceApiKey",
+      "cliFlag": "--suno-ace-api-key",
+      "cliOption": "--suno-ace-api-key <key>",
+      "cliDescription": "Suno Ace Data Cloud API key"
+    }
+  ],
+  "contracts": {
+    "musicGenerationProviders": [
+      "ace-suno"
+    ],
+    "tools": [
+      "ace_service_suno_generate_audios",
+      "ace_service_suno_generate_lyrics",
+      "ace_service_suno_upload_reference_audio",
+      "ace_service_suno_get_mp4",
+      "ace_service_suno_get_mp3",
+      "ace_service_suno_get_wav",
+      "ace_service_suno_get_midi",
+      "ace_service_suno_get_timing",
+      "ace_service_suno_create_vox_audio",
+      "ace_service_suno_enhance_style",
+      "ace_service_suno_mashup_lyrics",
+      "ace_service_suno_create_voice",
+      "ace_service_suno_create_persona",
+      "ace_service_suno_list_personas",
+      "ace_service_suno_delete_persona",
+      "ace_service_suno_custom_models",
+      "ace_service_suno_projects",
+      "ace_service_suno_task_retrieve",
+      "ace_service_suno_tasks_retrieve_batch"
+    ]
+  },
+  "musicGenerationProviderMetadata": {
+    "ace-suno": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    }
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "apiKey": {
+      "label": "Ace Data Cloud API Token for Suno",
+      "sensitive": true,
+      "help": "Optional service-specific credential; otherwise uses ACEDATA_SUNO_API_KEY or the ace-suno auth profile."
+    }
+  },
+  "toolMetadata": {
+    "ace_service_suno_generate_audios": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_generate_lyrics": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_upload_reference_audio": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_get_mp4": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_get_mp3": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_get_wav": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_get_midi": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_get_timing": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_create_vox_audio": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_enhance_style": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_mashup_lyrics": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_create_voice": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_create_persona": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_list_personas": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_suno_delete_persona": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_custom_models": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_projects": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_suno_task_retrieve": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_suno_tasks_retrieve_batch": {
+      "authProviders": [
+        "ace-suno"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-suno.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
+}
