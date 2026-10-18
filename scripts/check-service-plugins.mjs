@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 import { SERVICE_PLUGINS } from "../src/service-plugins/definitions.ts";
 const host = process.env.SERVICE_PLUGIN_HOST;
 const channel = process.env.SERVICE_PLUGIN_CHANNEL ?? "local";
+if (!["local", "clawhub", "npm"].includes(channel)) throw new Error("Unsupported service install channel");
 const evidence = "service-plugin-proof"; mkdirSync(evidence, { recursive: true });
 for (const def of SERVICE_PLUGINS) {
   const root = join(process.cwd(), "service-plugins", def.service);
@@ -20,8 +21,8 @@ for (const def of SERVICE_PLUGINS) {
     const env = { ...process.env, OPENCLAW_HOME: join(process.env.RUNNER_TEMP, `home-${channel}-${def.service}`), OPENCLAW_STATE_DIR: join(process.env.RUNNER_TEMP, `state-${channel}-${def.service}`), OPENCLAW_CONFIG_PATH: join(process.env.RUNNER_TEMP, `state-${channel}-${def.service}/openclaw.json`) };
     const tar = join(process.cwd(), `acedatacloud-${def.service}-openclaw-${pkg.version}.tgz`);
     const run = args => execFileSync(process.execPath, [host, ...args], { env, encoding: "utf8", maxBuffer: 10 * 1024 * 1024 });
-    const spec = channel === "clawhub" ? `clawhub:${pkg.name}` : `npm-pack:${tar}`;
-    console.log(run(["plugins", "install", spec, ...(channel === "local" ? ["--force"] : []), "--accept-capabilities"]));
+    const spec = channel === "clawhub" ? `clawhub:${pkg.name}` : channel === "npm" ? `npm:${pkg.name}@${pkg.version}` : `npm-pack:${tar}`;
+    console.log(run(["plugins", "install", spec, ...(channel !== "clawhub" ? ["--force"] : []), "--accept-capabilities"]));
     if (channel === "clawhub") {
       const search = JSON.parse(run(["plugins", "search", def.label, "--json"]));
       if (!search.results.some(x => x.package.name === pkg.name)) throw new Error("Brand search did not find the published service plugin");
@@ -29,7 +30,7 @@ for (const def of SERVICE_PLUGINS) {
     const result = JSON.parse(run(["plugins", "inspect", def.id, "--runtime", "--json"]));
     const actual = result.plugin;
     const installedPackage = JSON.parse(readFileSync(join(actual.rootDir, "package.json"), "utf8"));
-    if (installedPackage.name !== pkg.name || (channel === "local" && installedPackage.version !== pkg.version)) throw new Error("Installed package identity/version mismatch");
+    if (installedPackage.name !== pkg.name || (channel !== "clawhub" && installedPackage.version !== pkg.version)) throw new Error("Installed package identity/version mismatch");
     if (actual.status !== "loaded" || result.diagnostics.some(x => x.level === "error")) throw new Error(`${def.id} did not load`);
     for (const [field, contract] of [["toolNames", "tools"], [`${def.kind}GenerationProviderIds`, `${def.kind}GenerationProviders`]]) {
       if (JSON.stringify([...actual[field]].sort()) !== JSON.stringify([...manifest.contracts[contract]].sort())) throw new Error(`${def.id} runtime contract mismatch ${field}`);
