@@ -90,6 +90,7 @@ jobs:
         run: |
           node scripts/build-service-plugins.mjs
           node scripts/check-service-plugins.mjs
+          SERVICE_PLUGIN_CHANNEL=clawhub node scripts/check-service-plugins.mjs
           npm view @acedatacloud/openclaw-provider@2026.10.12 dist --json --registry=https://registry.npmjs.org > provider-public-dist.json
 
       - name: Verify guarded downloads of existing media

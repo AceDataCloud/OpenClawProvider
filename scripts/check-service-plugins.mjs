@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { SERVICE_PLUGINS } from "../src/service-plugins/definitions.ts";
 const host = process.env.SERVICE_PLUGIN_HOST;
+const channel = process.env.SERVICE_PLUGIN_CHANNEL ?? "local";
 const evidence = "service-plugin-proof"; mkdirSync(evidence, { recursive: true });
 for (const def of SERVICE_PLUGINS) {
   const root = join(process.cwd(), "service-plugins", def.service);
@@ -16,10 +17,15 @@ for (const def of SERVICE_PLUGINS) {
   if (entry.id !== def.id) throw new Error("Wrong service runtime entry");
   execFileSync("npm", ["pack", "--ignore-scripts", "--pack-destination", process.cwd()], { cwd: root, stdio: "inherit" });
   if (host) {
-    const env = { ...process.env, OPENCLAW_HOME: join(process.env.RUNNER_TEMP, `home-${def.service}`), OPENCLAW_STATE_DIR: join(process.env.RUNNER_TEMP, `state-${def.service}`), OPENCLAW_CONFIG_PATH: join(process.env.RUNNER_TEMP, `state-${def.service}/openclaw.json`) };
+    const env = { ...process.env, OPENCLAW_HOME: join(process.env.RUNNER_TEMP, `home-${channel}-${def.service}`), OPENCLAW_STATE_DIR: join(process.env.RUNNER_TEMP, `state-${channel}-${def.service}`), OPENCLAW_CONFIG_PATH: join(process.env.RUNNER_TEMP, `state-${channel}-${def.service}/openclaw.json`) };
     const tar = join(process.cwd(), `acedatacloud-${def.service}-openclaw-${pkg.version}.tgz`);
     const run = args => execFileSync(process.execPath, [host, ...args], { env, encoding: "utf8", maxBuffer: 10 * 1024 * 1024 });
-    console.log(run(["plugins", "install", `npm-pack:${tar}`, "--force", "--accept-capabilities"]));
+    const spec = channel === "clawhub" ? `clawhub:${pkg.name}@${pkg.version}` : `npm-pack:${tar}`;
+    console.log(run(["plugins", "install", spec, ...(channel === "local" ? ["--force"] : []), "--accept-capabilities"]));
+    if (channel === "clawhub") {
+      const search = JSON.parse(run(["plugins", "search", def.label, "--json"]));
+      if (!search.results.some(x => x.package.name === pkg.name)) throw new Error("Brand search did not find the published service plugin");
+    }
     const result = JSON.parse(run(["plugins", "inspect", def.id, "--runtime", "--json"]));
     const actual = result.plugin;
     if (actual.status !== "loaded" || result.diagnostics.some(x => x.level === "error")) throw new Error(`${def.id} did not load`);
@@ -31,6 +37,6 @@ for (const def of SERVICE_PLUGINS) {
     // models list is the text-inference inventory; media discovery belongs to
     // the host native capability registration/manifest, not invented chat rows.
     if (models.models.some(x => !x.key.startsWith(def.id + "/"))) throw new Error("Unrelated chat models exposed by media-only package");
-    writeFileSync(join(evidence, `${def.service}.json`), JSON.stringify({ package: pkg.name, version: pkg.version, pluginId: def.id, status: actual.status, tools: actual.toolNames, textModels: models.models, nativeCapability: {kind:def.kind, providerId:def.id, contract:manifest.contracts[`${def.kind}GenerationProviders`]}, diagnostics: result.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0 }, null, 2) + "\n");
+    writeFileSync(join(evidence, `${channel}-${def.service}.json`), JSON.stringify({ channel, package: pkg.name, version: pkg.version, pluginId: def.id, status: actual.status, tools: actual.toolNames, textModels: models.models, nativeCapability: {kind:def.kind, providerId:def.id, contract:manifest.contracts[`${def.kind}GenerationProviders`]}, diagnostics: result.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0 }, null, 2) + "\n");
   }
 }
