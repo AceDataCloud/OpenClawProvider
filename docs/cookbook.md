@@ -4,13 +4,37 @@ Install the package from [ClawHub](https://clawhub.ai/acedatacloud/plugins/openc
 and use the onboarding prompt for the API key:
 
 ```sh
-openclaw plugins install clawhub:@acedatacloud/openclaw-provider@2026.10.3
+openclaw plugins install clawhub:@acedatacloud/openclaw-provider
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
+The command installs the latest release published on ClawHub. To pin a release,
+append the version shown on the listing, for example `@2026.10.12`. Check that
+channel before reusing a version from npm or GitHub Releases.
+
 The package is vendor maintained. Review the host's install prompts and the
 listing's security audit. Official publisher status and default bundling are
-separate OpenClaw decisions.
+separate OpenClaw decisions. On OpenClaw 2026.10.4, this community release can
+load with a `provenance-invalid` warning. Review the source and diagnostics with
+`openclaw plugins inspect acedatacloud --runtime --json`; installation does not
+grant official-publisher status or trusted-only host features.
+
+## Self-installed plugin and managed deployment
+
+The installation above adds this provider to an OpenClaw instance that you
+operate. It supplies the model catalog and optional media/search tools described
+in this package; allowlist only the tools that you need.
+
+An Ace Data Cloud managed OpenClaw deployment is a separate setup path. Its
+creation wizard can seed one platform chat model and an instance-specific
+credential into the native configuration. The pinned runtime does not install
+this provider package or its 97 optional tools automatically. Connect to that
+instance's native dashboard for chat; check its OpenClaw version and install the
+provider separately if you need these plugin capabilities. Redeployment preserves
+existing native settings. Deployment duration and model/API usage are billed
+separately.
+
+## Authentication and model selection
 
 For environment-based authentication, set `ACEDATA_API_KEY` or
 `ACEDATACLOUD_API_KEY` in the environment where OpenClaw runs. Non-interactive
