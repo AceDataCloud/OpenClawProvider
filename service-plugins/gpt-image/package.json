@@ -6,7 +6,6 @@
     "openclaw-plugin",
     "gpt-image",
     "gpt image",
-    "gpt-image",
     "image editing",
     "acedatacloud"
   ],
@@ -23,7 +22,7 @@
     "README_zh-CN.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/AceDataCloud/OpenClawProvider/tree/main/service-plugins/gpt-image",
+  "homepage": "https://clawhub.ai/acedatacloud/plugins/gpt-image-openclaw",
   "repository": {
     "type": "git",
     "url": "https://github.com/AceDataCloud/OpenClawProvider.git",

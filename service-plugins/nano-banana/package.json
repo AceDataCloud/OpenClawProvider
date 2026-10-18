@@ -6,7 +6,6 @@
     "openclaw-plugin",
     "nano-banana",
     "nano banana",
-    "nano-banana",
     "image editing",
     "acedatacloud"
   ],
@@ -23,7 +22,7 @@
     "README_zh-CN.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/AceDataCloud/OpenClawProvider/tree/main/service-plugins/nano-banana",
+  "homepage": "https://clawhub.ai/acedatacloud/plugins/nano-banana-openclaw",
   "repository": {
     "type": "git",
     "url": "https://github.com/AceDataCloud/OpenClawProvider.git",

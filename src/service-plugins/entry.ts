@@ -35,7 +35,7 @@ export function createServicePlugin(def: ServicePluginDefinition) {
     register(api) {
       api.registerProvider({
         id: def.id, label: `${def.label} by Ace Data Cloud`, envVars: [def.envVar],
-        docsPath: `https://github.com/AceDataCloud/OpenClawProvider/blob/main/service-plugins/${def.service}/README.md`,
+        docsPath: `https://clawhub.ai/acedatacloud/plugins/${def.service}-openclaw`,
         auth: [createProviderApiKeyAuthMethod({
           providerId: def.id, methodId: "api-key", label: `${def.label} Ace Data Cloud API key`,
           hint: "Get an application API token with access to this service at platform.acedata.cloud",

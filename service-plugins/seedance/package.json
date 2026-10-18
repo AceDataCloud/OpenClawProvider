@@ -5,7 +5,6 @@
   "keywords": [
     "openclaw-plugin",
     "seedance",
-    "seedance",
     "video",
     "text-to-video",
     "acedatacloud"
@@ -23,7 +22,7 @@
     "README_zh-CN.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/AceDataCloud/OpenClawProvider/tree/main/service-plugins/seedance",
+  "homepage": "https://clawhub.ai/acedatacloud/plugins/seedance-openclaw",
   "repository": {
     "type": "git",
     "url": "https://github.com/AceDataCloud/OpenClawProvider.git",

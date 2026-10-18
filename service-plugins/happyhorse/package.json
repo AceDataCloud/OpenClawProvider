@@ -5,7 +5,6 @@
   "keywords": [
     "openclaw-plugin",
     "happyhorse",
-    "happyhorse",
     "happy horse",
     "video",
     "acedatacloud"
@@ -23,7 +22,7 @@
     "README_zh-CN.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/AceDataCloud/OpenClawProvider/tree/main/service-plugins/happyhorse",
+  "homepage": "https://clawhub.ai/acedatacloud/plugins/happyhorse-openclaw",
   "repository": {
     "type": "git",
     "url": "https://github.com/AceDataCloud/OpenClawProvider.git",

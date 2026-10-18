@@ -5,7 +5,6 @@
   "keywords": [
     "openclaw-plugin",
     "suno",
-    "suno",
     "music",
     "lyrics",
     "acedatacloud"
@@ -23,7 +22,7 @@
     "README_zh-CN.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/AceDataCloud/OpenClawProvider/tree/main/service-plugins/suno",
+  "homepage": "https://clawhub.ai/acedatacloud/plugins/suno-openclaw",
   "repository": {
     "type": "git",
     "url": "https://github.com/AceDataCloud/OpenClawProvider.git",
