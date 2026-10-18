@@ -9,7 +9,7 @@ openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
 The command installs the latest release published on ClawHub. To pin a release,
-append the version shown on the listing, for example `@2026.10.12`. Check that
+append the version shown on the listing, for example `@2026.10.19`. Check that
 channel before reusing a version from npm or GitHub Releases.
 
 The package is vendor maintained. Review the host's install prompts and the

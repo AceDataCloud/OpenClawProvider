@@ -68,6 +68,12 @@ jobs:
         working-directory: OpenClawProvider
         run: pnpm pack --pack-destination .
 
+      - name: Package the five independent services
+        working-directory: OpenClawProvider
+        run: |
+          node scripts/build-service-plugins.mjs
+          node scripts/check-service-plugins.mjs
+
       - name: Check npm publishing availability
         id: npm-auth
         env:
@@ -85,7 +91,9 @@ jobs:
         working-directory: OpenClawProvider
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish acedatacloud-openclaw-provider-*.tgz --access public
+        run: |
+          package_version=$(node -p "require('./package.json').version")
+          npm publish "acedatacloud-openclaw-provider-${package_version}.tgz" --access public
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

@@ -7,7 +7,7 @@ import { renderChineseReadme } from "./service-plugin-readme-zh.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const outputRoot = process.env.SERVICE_PLUGIN_OUTPUT ?? join(root, "service-plugins");
 const base = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const versionFor = service => service === "suno" ? "0.1.2" : "0.1.1";
+const versionFor = service => service === "suno" ? "0.1.3" : "0.1.2";
 const publicStatus = "Independent service release. Before installing, check that the linked ClawHub listing shows this package and an approved published version; source code or CI alone does not prove publication. The package may be available on ClawHub before npm.";
 function write(path, value) { mkdirSync(join(path, ".."), { recursive: true }); writeFileSync(path, typeof value === "string" ? value : JSON.stringify(value, null, 2) + "\n"); }
 for (const def of SERVICE_PLUGINS) {
