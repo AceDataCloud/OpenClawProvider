@@ -34,11 +34,16 @@ export function toolSchema(endpoint: Endpoint): Schema {
   return { type: "object", properties, ...(required.length ? { required } : {}), additionalProperties: false };
 }
 export function operationName(name: string): string { return `acedata_${name}`; }
-export function registerServiceTools(api: OpenClawPluginApi): void {
-  const entries: Array<{service: Service; name: string; endpoint: Endpoint}> = SERVICES.flatMap(service => Object.entries(service.endpoints).filter(([name]) => !name.includes(":" )).map(([name, endpoint]) => ({ service, name, endpoint })));
+export type ServiceToolOptions = {
+  services?: readonly string[];
+  prefix?: string;
+  resolveKey?: (service: string, config?: OpenClawConfig) => Promise<string>;
+};
+export function registerServiceTools(api: OpenClawPluginApi, options: ServiceToolOptions = {}): void {
+  const entries: Array<{service: Service; name: string; endpoint: Endpoint}> = SERVICES.filter(service => !options.services || options.services.includes(service.id)).flatMap(service => Object.entries(service.endpoints).filter(([name]) => !name.includes(":" )).map(([name, endpoint]) => ({ service, name, endpoint })));
   for (const { service, name, endpoint } of entries) {
     api.registerTool(ctx => {
-      const nameInHost = operationName(name);
+      const nameInHost = options.prefix ? `${options.prefix}${name}` : operationName(name);
       return {
         name: nameInHost, label: endpoint.tool?.label ?? `${service.label}: ${name}`,
         description: `${endpoint.tool?.description ?? name} Uses Ace Data Cloud credits for billable operations. Prompts and reference URLs are sent to api.acedata.cloud. Preserve pending task IDs; do not repeat creation requests.`,
@@ -46,11 +51,11 @@ export function registerServiceTools(api: OpenClawPluginApi): void {
         async execute(_id, args, signal) {
           const config = ctx.getRuntimeConfig?.() ?? ctx.runtimeConfig ?? ctx.config;
           const serviceKey = record(record(record(config?.plugins?.entries?.acedatacloud?.config).serviceCredentials)[service.id]).apiKey;
-          const key = serviceKey !== undefined ? await resolveServiceKey(api, service.id, config) : await ctx.resolveApiKeyForProvider?.("acedatacloud") ?? await resolveServiceKey(api, service.id, config);
+          const key = options.resolveKey ? await options.resolveKey(service.id, config) : serviceKey !== undefined ? await resolveServiceKey(api, service.id, config) : await ctx.resolveApiKeyForProvider?.("acedatacloud") ?? await resolveServiceKey(api, service.id, config);
           const result = await new ServiceClient(key).invoke(service, name, record(args), signal);
           return { content: [{ type: "text", text: JSON.stringify(result) }], details: result };
         },
       } satisfies AnyAgentTool;
-    }, { name: operationName(name), optional: true });
+    }, { name: options.prefix ? `${options.prefix}${name}` : operationName(name), optional: true });
   }
 }

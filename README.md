@@ -101,3 +101,7 @@ The package uses built JavaScript entrypoints. Runtime APIs come from the instal
 OpenClaw host. Report problems through [GitHub issues](https://github.com/AceDataCloud/OpenClawProvider/issues).
 
 MIT License. Maintained by Ace Data Cloud, dev@acedata.cloud.
+
+## Independent service entry points
+
+Dedicated packages under [service-plugins](service-plugins) expose **Suno by Ace Data Cloud**, **Seedance by Ace Data Cloud**, **HappyHorse by Ace Data Cloud**, **GPT Image by Ace Data Cloud**, and **Nano Banana by Ace Data Cloud**. They share this source but register only their service media provider and tools, use separate keys, and can coexist with the collection. Publication is verified per package and version; consult each ClawHub listing rather than inferring availability from this source. Each README has the exact future package ID, API token steps, native auth choice and same-task result workflow.

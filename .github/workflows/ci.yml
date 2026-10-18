@@ -83,6 +83,16 @@ jobs:
           node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
           node -e 'const x = require("./stable-models.json"); if (x.models.length !== 90 || new Set(x.models.map(m => m.key)).size !== 90) process.exit(1)'
 
+      - name: Build and install five independent service plugins
+        working-directory: OpenClawProvider
+        env:
+          SERVICE_PLUGIN_HOST: ${{ runner.temp }}/openclaw-stable/node_modules/openclaw/openclaw.mjs
+        run: |
+          node scripts/build-service-plugins.mjs
+          node scripts/check-service-plugins.mjs
+          SERVICE_PLUGIN_CHANNEL=clawhub node scripts/check-service-plugins.mjs
+          npm view @acedatacloud/openclaw-provider@2026.10.12 dist --json --registry=https://registry.npmjs.org > provider-public-dist.json
+
       - name: Verify guarded downloads of existing media
         working-directory: OpenClawProvider
         run: node scripts/verify-public-media.mjs && node scripts/verify-media-adapters.mjs
@@ -98,3 +108,5 @@ jobs:
             OpenClawProvider/stable-models.json
             OpenClawProvider/media-download-proof.json
             OpenClawProvider/media-adapter-proof.json
+            OpenClawProvider/service-plugin-proof/*.json
+            OpenClawProvider/provider-public-dist.json

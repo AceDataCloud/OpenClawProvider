@@ -55,7 +55,8 @@
     "sync-catalog:check": "node scripts/sync-catalog.mjs --check",
     "prepublishOnly": "pnpm clean && pnpm build",
     "sync-services:check": "node scripts/sync-services.mjs --check",
-    "sync-services": "node scripts/sync-services.mjs"
+    "sync-services": "node scripts/sync-services.mjs",
+    "build:services": "pnpm build && node scripts/build-service-plugins.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

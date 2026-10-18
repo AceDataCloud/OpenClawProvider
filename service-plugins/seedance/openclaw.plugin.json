@@ -1,0 +1,150 @@
+{
+  "id": "ace-seedance",
+  "name": "Seedance by Ace Data Cloud",
+  "description": "Seedance by Ace Data Cloud: native video generation and 3 optional service tools for OpenClaw.",
+  "categories": [
+    "media"
+  ],
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": [
+    "ace-seedance"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ace-seedance",
+        "envVars": [
+          "ACEDATA_SEEDANCE_API_KEY"
+        ]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ace-seedance",
+      "method": "api-key",
+      "choiceId": "ace-seedance-api-key",
+      "choiceLabel": "Seedance by Ace Data Cloud",
+      "groupId": "ace-seedance",
+      "groupLabel": "Seedance by Ace Data Cloud",
+      "groupHint": "Seedance video",
+      "onboardingScopes": [],
+      "optionKey": "seedanceAceApiKey",
+      "cliFlag": "--seedance-ace-api-key",
+      "cliOption": "--seedance-ace-api-key <key>",
+      "cliDescription": "Seedance Ace Data Cloud API key"
+    }
+  ],
+  "contracts": {
+    "videoGenerationProviders": [
+      "ace-seedance"
+    ],
+    "tools": [
+      "ace_service_seedance_generate_video",
+      "ace_service_seedance_task_retrieve",
+      "ace_service_seedance_tasks_retrieve_batch"
+    ]
+  },
+  "videoGenerationProviderMetadata": {
+    "ace-seedance": {
+      "authProviders": [
+        "ace-seedance"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-seedance.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "referenceAudioInputs": true
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    }
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "apiKey": {
+      "label": "Ace Data Cloud API Token for Seedance",
+      "sensitive": true,
+      "help": "Optional service-specific credential; otherwise uses ACEDATA_SEEDANCE_API_KEY or the ace-seedance auth profile."
+    }
+  },
+  "toolMetadata": {
+    "ace_service_seedance_generate_video": {
+      "authProviders": [
+        "ace-seedance"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-seedance.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_seedance_task_retrieve": {
+      "authProviders": [
+        "ace-seedance"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-seedance.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_seedance_tasks_retrieve_batch": {
+      "authProviders": [
+        "ace-seedance"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-seedance.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
+}
