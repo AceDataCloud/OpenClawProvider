@@ -20,7 +20,7 @@ for (const def of SERVICE_PLUGINS) {
     const env = { ...process.env, OPENCLAW_HOME: join(process.env.RUNNER_TEMP, `home-${channel}-${def.service}`), OPENCLAW_STATE_DIR: join(process.env.RUNNER_TEMP, `state-${channel}-${def.service}`), OPENCLAW_CONFIG_PATH: join(process.env.RUNNER_TEMP, `state-${channel}-${def.service}/openclaw.json`) };
     const tar = join(process.cwd(), `acedatacloud-${def.service}-openclaw-${pkg.version}.tgz`);
     const run = args => execFileSync(process.execPath, [host, ...args], { env, encoding: "utf8", maxBuffer: 10 * 1024 * 1024 });
-    const spec = channel === "clawhub" ? `clawhub:${pkg.name}@${pkg.version}` : `npm-pack:${tar}`;
+    const spec = channel === "clawhub" ? `clawhub:${pkg.name}` : `npm-pack:${tar}`;
     console.log(run(["plugins", "install", spec, ...(channel === "local" ? ["--force"] : []), "--accept-capabilities"]));
     if (channel === "clawhub") {
       const search = JSON.parse(run(["plugins", "search", def.label, "--json"]));
@@ -28,6 +28,8 @@ for (const def of SERVICE_PLUGINS) {
     }
     const result = JSON.parse(run(["plugins", "inspect", def.id, "--runtime", "--json"]));
     const actual = result.plugin;
+    const installedPackage = JSON.parse(readFileSync(join(actual.rootDir, "package.json"), "utf8"));
+    if (installedPackage.name !== pkg.name || (channel === "local" && installedPackage.version !== pkg.version)) throw new Error("Installed package identity/version mismatch");
     if (actual.status !== "loaded" || result.diagnostics.some(x => x.level === "error")) throw new Error(`${def.id} did not load`);
     for (const [field, contract] of [["toolNames", "tools"], [`${def.kind}GenerationProviderIds`, `${def.kind}GenerationProviders`]]) {
       if (JSON.stringify([...actual[field]].sort()) !== JSON.stringify([...manifest.contracts[contract]].sort())) throw new Error(`${def.id} runtime contract mismatch ${field}`);
@@ -37,6 +39,6 @@ for (const def of SERVICE_PLUGINS) {
     // models list is the text-inference inventory; media discovery belongs to
     // the host native capability registration/manifest, not invented chat rows.
     if (models.models.some(x => !x.key.startsWith(def.id + "/"))) throw new Error("Unrelated chat models exposed by media-only package");
-    writeFileSync(join(evidence, `${channel}-${def.service}.json`), JSON.stringify({ channel, package: pkg.name, version: pkg.version, pluginId: def.id, status: actual.status, tools: actual.toolNames, textModels: models.models, nativeCapability: {kind:def.kind, providerId:def.id, contract:manifest.contracts[`${def.kind}GenerationProviders`]}, diagnostics: result.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0 }, null, 2) + "\n");
+    writeFileSync(join(evidence, `${channel}-${def.service}.json`), JSON.stringify({ channel, package: pkg.name, version: installedPackage.version, candidateVersion: pkg.version, pluginId: def.id, status: actual.status, tools: actual.toolNames, textModels: models.models, nativeCapability: {kind:def.kind, providerId:def.id, contract:manifest.contracts[`${def.kind}GenerationProviders`]}, diagnostics: result.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0 }, null, 2) + "\n");
   }
 }
