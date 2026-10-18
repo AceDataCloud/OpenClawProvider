@@ -1,0 +1,35 @@
+name: Publish existing release artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Approved immutable release tag with collection and five service artifacts'
+        required: true
+        default: 'v2026.10.19'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.16.0'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Validate immutable release tag
+        run: node -e 'if (!/^v\d{4}\.\d+\.\d+$/.test(process.env.RELEASE_TAG)) throw new Error("Expected an exact CalVer release tag")'
+      - name: Download existing official release artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.tgz' --dir release-artifacts
+      - name: Publish absent exact versions and verify registry integrity
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node scripts/publish-release-artifacts.mjs release-artifacts

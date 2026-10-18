@@ -91,9 +91,7 @@ jobs:
         working-directory: OpenClawProvider
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          package_version=$(node -p "require('./package.json').version")
-          npm publish "acedatacloud-openclaw-provider-${package_version}.tgz" --access public
+        run: node scripts/publish-release-artifacts.mjs .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
