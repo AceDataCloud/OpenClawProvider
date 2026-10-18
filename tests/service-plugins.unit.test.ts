@@ -36,7 +36,7 @@ describe("independent service plugins", () => {
       expect(manifest.providerAuthChoices[0].optionKey).toBe(manifest.providerAuthChoices[0].cliFlag.slice(2).replace(/-([a-z])/g, (_m: string, c: string) => c.toUpperCase()));
       const config = { agents: { defaults: { model: { primary: "other/chat" }, mediaModels: { [def.kind]: { primary: "other/media" } } } } };
       expect(applyServiceConfig(def, config)).toBe(config);
-      expect(applyServiceConfig(def, {}).agents?.defaults?.mediaModels?.[def.kind]?.primary).toBe(`${def.id}/${def.model}`);
+      expect(applyServiceConfig(def, {}).agents?.defaults?.mediaModels?.[def.kind]).toEqual({primary:`${def.id}/${def.model}`});
       expect((serviceById(def.service).endpoints[def.action].properties.model.enum as string[])).toContain(def.model);
     });
     it(`${def.label} resolves only its scoped key/profile and fails closed for unresolved overrides`, async () => {

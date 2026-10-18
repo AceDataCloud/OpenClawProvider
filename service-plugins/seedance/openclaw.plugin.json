@@ -31,9 +31,7 @@
       "groupId": "ace-seedance",
       "groupLabel": "Seedance by Ace Data Cloud",
       "groupHint": "Seedance video",
-      "onboardingScopes": [
-        "video-generation"
-      ],
+      "onboardingScopes": [],
       "optionKey": "seedanceAceApiKey",
       "cliFlag": "--seedance-ace-api-key",
       "cliOption": "--seedance-ace-api-key <key>",

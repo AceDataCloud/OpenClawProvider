@@ -45,7 +45,7 @@ export function createServicePlugin(def: ServicePluginDefinition) {
           expectedProviders: [def.id], applyConfig: cfg => applyServiceConfig(def, cfg),
           wizard: { choiceId: `${def.id}-api-key`, choiceLabel: `${def.label} by Ace Data Cloud`,
             groupId: def.id, groupLabel: `${def.label} by Ace Data Cloud`, groupHint: `${def.label} ${def.kind}`,
-            onboardingScopes: [`${def.kind}-generation`], },
+            onboardingScopes: def.kind === "video" ? [] : [`${def.kind}-generation`], },
         })],
       });
       const key = (_service: string, cfg?: OpenClawConfig) => resolveStandaloneKey(def, api, cfg);

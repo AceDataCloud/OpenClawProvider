@@ -31,9 +31,7 @@
       "groupId": "ace-happyhorse",
       "groupLabel": "HappyHorse by Ace Data Cloud",
       "groupHint": "HappyHorse video",
-      "onboardingScopes": [
-        "video-generation"
-      ],
+      "onboardingScopes": [],
       "optionKey": "happyhorseAceApiKey",
       "cliFlag": "--happyhorse-ace-api-key",
       "cliOption": "--happyhorse-ace-api-key <key>",
