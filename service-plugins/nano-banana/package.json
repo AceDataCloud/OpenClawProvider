@@ -1,6 +1,6 @@
 {
   "name": "@acedatacloud/nano-banana-openclaw",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Nano Banana by Ace Data Cloud: native image generation and 4 optional service tools for OpenClaw.",
   "keywords": [
     "openclaw-plugin",
