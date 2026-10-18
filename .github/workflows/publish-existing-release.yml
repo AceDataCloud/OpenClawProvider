@@ -7,6 +7,10 @@ on:
         description: 'Approved immutable release tag with collection and five service artifacts'
         required: true
         default: 'v2026.10.19'
+      already_submitted:
+        description: 'Exact name@version already accepted by npm in a prior attempt; read back without uploading again'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -32,4 +36,12 @@ jobs:
       - name: Publish absent exact versions and verify registry integrity
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_ALREADY_SUBMITTED: ${{ inputs.already_submitted }}
         run: node scripts/publish-release-artifacts.mjs release-artifacts
+      - name: Save publication receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-publication-receipt
+          path: npm-publication-receipt.json
+          if-no-files-found: ignore
