@@ -41,11 +41,11 @@ This is an unmodified official screenshot of the native chat UI, not this dedica
 
 ## 4. First use and the same task after a timeout
 
-Local installation/catalog inspection does not generate media:
+Local plugin/credential inventory inspection does not generate media. Native media discovery is separate from the text-model list:
 
 ```sh
 openclaw plugins inspect ace-seedance --runtime --json
-openclaw models list --provider ace-seedance --all
+openclaw models auth list --provider ace-seedance --json
 ```
 
 When balance, model access and the user's budget are confirmed, use the native video capability or allow the optional `ace_service_seedance_generate_video` tool. Example (paid; not executed by this guide):

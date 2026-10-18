@@ -28,7 +28,9 @@ for (const def of SERVICE_PLUGINS) {
     }
     if (actual.providerIds.length !== 1 || actual.providerIds[0] !== def.id) throw new Error("Unrelated auth provider registered");
     const models = JSON.parse(run(["models", "list", "--provider", def.id, "--all", "--json"]));
-    if (!models.models.length || models.models.some(x => !x.key.startsWith(def.id + "/"))) throw new Error("Service models not discoverable");
-    writeFileSync(join(evidence, `${def.service}.json`), JSON.stringify({ package: pkg.name, version: pkg.version, pluginId: def.id, status: actual.status, tools: actual.toolNames, models: models.models, diagnostics: result.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0 }, null, 2) + "\n");
+    // models list is the text-inference inventory; media discovery belongs to
+    // the host native capability registration/manifest, not invented chat rows.
+    if (models.models.some(x => !x.key.startsWith(def.id + "/"))) throw new Error("Unrelated chat models exposed by media-only package");
+    writeFileSync(join(evidence, `${def.service}.json`), JSON.stringify({ package: pkg.name, version: pkg.version, pluginId: def.id, status: actual.status, tools: actual.toolNames, textModels: models.models, nativeCapability: {kind:def.kind, providerId:def.id, contract:manifest.contracts[`${def.kind}GenerationProviders`]}, diagnostics: result.diagnostics, authenticatedApiCalls: 0, newGenerationCalls: 0 }, null, 2) + "\n");
   }
 }

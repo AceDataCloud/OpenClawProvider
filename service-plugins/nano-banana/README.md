@@ -41,11 +41,11 @@ This is an unmodified official screenshot of the native chat UI, not this dedica
 
 ## 4. First use and the same task after a timeout
 
-Local installation/catalog inspection does not generate media:
+Local plugin/credential inventory inspection does not generate media. Native media discovery is separate from the text-model list:
 
 ```sh
 openclaw plugins inspect ace-nano-banana --runtime --json
-openclaw models list --provider ace-nano-banana --all
+openclaw models auth list --provider ace-nano-banana --json
 ```
 
 When balance, model access and the user's budget are confirmed, use the native image capability or allow the optional `ace_service_nano_banana_generate_image` tool. Example (paid; not executed by this guide):
