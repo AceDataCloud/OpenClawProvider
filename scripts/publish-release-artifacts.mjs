@@ -1,6 +1,6 @@
 // Publish immutable, already-built release artifacts using the existing npm account.
 // Existing exact versions must match local bytes; only a registry E404 permits publish.
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { basename, join, resolve } from "node:path";
@@ -27,20 +27,36 @@ if (process.argv[1] && resolve(process.argv[1]) === import.meta.filename) {
   const directory = resolve(process.argv[2] ?? ".");
   const files = readdirSync(directory).filter(name => /^acedatacloud-(?:openclaw-provider|(?:suno|seedance|happyhorse|gpt-image|nano-banana)-openclaw)-[\d.]+\.tgz$/.test(name)).sort();
   if (files.length !== 6) throw new Error("Expected collection plus five service release artifacts");
+  const accepted = new Set((process.env.NPM_ALREADY_SUBMITTED ?? "").split(",").map(x => x.trim()).filter(Boolean));
+  const records = [];
+  const save = () => writeFileSync("npm-publication-receipt.json", JSON.stringify(records, null, 2) + "\n");
+  const argsFor = spec => ["view", spec, "dist", "--json", "--registry=https://registry.npmjs.org", "--fetch-retries=2", "--fetch-timeout=30000"];
   for (const file of files) {
     const path = join(directory, file), artifact = inspectArtifact(path), spec = `${artifact.name}@${artifact.version}`;
-    const args = ["view", spec, "dist", "--json", "--registry=https://registry.npmjs.org", "--fetch-retries=2", "--fetch-timeout=30000"];
-    let result = spawnSync("npm", args, { encoding: "utf8" });
+    const result = spawnSync("npm", argsFor(spec), { encoding: "utf8" });
+    const record = { ...artifact, spec, state: "preflight" };
+    records.push(record); save();
     if (registryDecision(result, artifact.integrity) === "publish") {
-      // Never invoke lifecycle scripts or repeat a publication after an ambiguous failure.
-      execFileSync("npm", ["publish", path, "--access", "public", "--ignore-scripts", "--registry=https://registry.npmjs.org"], { stdio: "inherit" });
-      for (let attempt = 0; attempt < 4; attempt++) {
-        result = spawnSync("npm", args, { encoding: "utf8" });
-        if (result.status === 0) break;
-        await new Promise(resolve => setTimeout(resolve, 5000));
+      if (accepted.has(spec)) {
+        record.state = "accepted-previous-run";
+      } else {
+        // A successful npm response may remain invisible during registry processing.
+        // Record it once, continue unrelated packages, and never retry this upload.
+        execFileSync("npm", ["publish", path, "--access", "public", "--ignore-scripts", "--registry=https://registry.npmjs.org"], { stdio: "inherit" });
+        record.state = "accepted-this-run";
       }
-      if (registryDecision(result, artifact.integrity) !== "already-published") throw new Error(`Published ${spec}, but registry readback is still pending; inspect without re-publishing`);
-    }
-    console.log(`${spec}: exact npm integrity verified`);
+    } else record.state = "verified";
+    save();
   }
+  for (let attempt = 0; attempt < 20 && records.some(x => x.state !== "verified"); attempt++) {
+    for (const record of records.filter(x => x.state !== "verified")) {
+      const result = spawnSync("npm", argsFor(record.spec), { encoding: "utf8" });
+      if (registryDecision(result, record.integrity) === "already-published") record.state = "verified";
+    }
+    save();
+    if (records.some(x => x.state !== "verified")) await new Promise(resolve => setTimeout(resolve, 15000));
+  }
+  const pending = records.filter(x => x.state !== "verified");
+  if (pending.length) throw new Error(`npm accepted these uploads but registry readback is still pending: ${pending.map(x => x.spec).join(", ")}. Reuse the receipt; do not upload again.`);
+  for (const record of records) console.log(`${record.spec}: exact npm integrity verified`);
 }
