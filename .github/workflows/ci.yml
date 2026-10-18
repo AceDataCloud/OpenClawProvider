@@ -62,7 +62,7 @@ jobs:
           node scripts/check-runtime.mjs runtime-inspect.json
 
       - name: Install current stable compatibility host
-        run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.10.1
+        run: npm install --prefix "$RUNNER_TEMP/openclaw-stable" --no-audit --no-fund --package-lock=false openclaw@2026.10.4
 
       - name: Verify current stable SDK and packed-plugin compatibility
         working-directory: OpenClawProvider

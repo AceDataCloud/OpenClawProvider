@@ -1,0 +1,66 @@
+name: Published distribution
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/published-distribution.yml'
+      - 'scripts/check-published-install.mjs'
+      - 'scripts/check-runtime.mjs'
+      - 'docs/cookbook.md'
+  workflow_dispatch:
+    inputs:
+      provider_version:
+        description: 'Public provider release to verify (already published on both channels)'
+        required: true
+        default: '2026.10.12'
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [npm, clawhub]
+    env:
+      PUBLISHED_VERSION: ${{ inputs.provider_version || '2026.10.12' }}
+      INSTALL_CHANNEL: ${{ matrix.channel }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.16.0'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Validate release input
+        run: node -e 'if (!/^\d{4}\.\d+\.\d+$/.test(process.env.PUBLISHED_VERSION)) throw new Error("Expected a CalVer release")'
+      - name: Install current stable OpenClaw
+        run: npm install --prefix "$RUNNER_TEMP/host" --no-audit --no-fund --package-lock=false openclaw@2026.10.4
+      - name: Discover and install the public release in fresh state
+        env:
+          OPENCLAW_HOME: ${{ runner.temp }}/published-home
+          OPENCLAW_STATE_DIR: ${{ runner.temp }}/published-state
+          OPENCLAW_CONFIG_PATH: ${{ runner.temp }}/published-state/openclaw.json
+        run: |
+          mkdir -p evidence
+          host="$RUNNER_TEMP/host/node_modules/openclaw/openclaw.mjs"
+          node "$host" --version > evidence/host-version.txt
+          node "$host" plugins search "Ace Data Cloud" --json > evidence/search.json
+          if [ "$INSTALL_CHANNEL" = npm ]; then
+            node "$host" plugins install "npm:@acedatacloud/openclaw-provider@$PUBLISHED_VERSION" --force --accept-capabilities
+          else
+            node "$host" plugins install "clawhub:@acedatacloud/openclaw-provider@$PUBLISHED_VERSION" --accept-capabilities
+          fi
+          node "$host" plugins inspect acedatacloud --runtime --json > evidence/runtime.json
+          node "$host" models list --provider acedatacloud --all --json > evidence/models.json
+          node scripts/check-published-install.mjs evidence
+      - name: Save public channel evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-${{ matrix.channel }}-${{ env.PUBLISHED_VERSION }}
+          path: evidence/
+          if-no-files-found: ignore
