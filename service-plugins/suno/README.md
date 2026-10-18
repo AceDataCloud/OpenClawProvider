@@ -27,10 +27,10 @@ The command is for the planned public release; before publication, maintainers v
 
 ## 3. Paste the key in OpenClaw
 
-After this plugin is installed, run its own interactive auth choice and paste the token into the **Suno by Ace Data Cloud** prompt:
+After this plugin is installed, run its provider-specific interactive key login and paste the token into the **Suno by Ace Data Cloud** prompt:
 
 ```sh
-openclaw onboard --auth-choice ace-suno-api-key
+openclaw models auth login --provider ace-suno --method api-key
 ```
 
 The dedicated environment variable is `ACEDATA_SUNO_API_KEY`. Its optional native configuration field is `plugins.entries.ace-suno.config.apiKey` (also accepts the host's supported SecretRef). Keys never belong in tool arguments. Existing explicit media selections are preserved. Only the selected service is authorized; no collection/chat key is silently reused.
