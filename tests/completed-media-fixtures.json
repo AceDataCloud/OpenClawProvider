@@ -21,33 +21,27 @@
     }
   },
   "music": {
-    "task": "95a81d9a-2b30-4b2e-ab9c-2b60474703f6",
+    "task": "238d5fba-e9d7-4406-9374-dcac13f20a46",
     "response": {
       "success": true,
-      "task_id": "95a81d9a-2b30-4b2e-ab9c-2b60474703f6",
-      "trace_id": "325e466d-38f7-4158-9c17-f7ec32c18b75",
+      "task_id": "238d5fba-e9d7-4406-9374-dcac13f20a46",
+      "trace_id": "090bd2ae-950d-4081-9c0a-995f11089157",
       "data": [
         {
-          "id": "3f79ee9e-e37b-46cf-804e-10833b608f8a",
-          "image_url": "https://cdn.acedata2.cloud/suno/0481c1ad7f216c4de39bd5c0e978c806e81d07c6a9e36c44ac39e58b87207563.jpg",
-          "image_large_url": "https://cdn.acedata2.cloud/suno/3ecf199d064e418474dc36dead5cb9db8d2f600b9930f5b3320a80116346a9f8.jpg",
-          "audio_url": "https://cdn.acedata2.cloud/suno/3f79ee9e-e37b-46cf-804e-10833b608f8a.mp3",
-          "video_url": "https://cdn1.suno.ai/3f79ee9e-e37b-46cf-804e-10833b608f8a.mp4",
-          "created_at": "2026-10-07T03:42:44.771Z",
+          "id": "5c2eed05-b819-4649-8cfe-3619917e1e30",
+          "audio_url": "https://cdn.acedata2.cloud/suno/5c2eed05-b819-4649-8cfe-3619917e1e30.mp3",
+          "created_at": "2026-11-13T00:47:14.986Z",
           "model": "chirp-v6",
           "state": "succeeded",
-          "duration": 10.52
+          "duration": 236.6
         },
         {
-          "id": "1f9f24b6-a533-4dc3-add5-7f4035dd85a4",
-          "image_url": "https://cdn.acedata2.cloud/suno/0adce61c6d46e10a7d96f62cdd1db23d63f6b1d73764cacb89e2d6a59c4fcafa.jpg",
-          "image_large_url": "https://cdn.acedata2.cloud/suno/f16ee671d997446cc1a507029d13a43fd7416458e8dd84e94d198ca21bbf8cf2.jpg",
-          "audio_url": "https://cdn.acedata2.cloud/suno/1f9f24b6-a533-4dc3-add5-7f4035dd85a4.mp3",
-          "video_url": "https://cdn1.suno.ai/1f9f24b6-a533-4dc3-add5-7f4035dd85a4.mp4",
-          "created_at": "2026-10-07T03:42:44.771Z",
+          "id": "3d32e572-37e8-4523-839f-bbd1c2a8f5ab",
+          "audio_url": "https://cdn.acedata2.cloud/suno/3d32e572-37e8-4523-839f-bbd1c2a8f5ab.mp3",
+          "created_at": "2026-11-13T00:47:15.542Z",
           "model": "chirp-v6",
           "state": "succeeded",
-          "duration": 18.24
+          "duration": 236.44
         }
       ]
     }
