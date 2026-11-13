@@ -28,7 +28,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `claude-3-sonnet-20240229`   | openai-completions | yes         | —                                   |
 | `claude-fable-5`             | openai-completions | yes         | low, medium, high, xhigh, max       |
 | `claude-fable-5-1`           | openai-completions | yes         | low, medium, high, xhigh, max       |
-| `claude-fable-5-2`           | anthropic-messages | yes         | low, medium, high, xhigh, max       |
+| `claude-fable-5-2`           | anthropic-messages | yes         | high (published default)       |
 | `claude-haiku-4-5-20251001`  | openai-completions | yes         | low, medium, high, max              |
 | `claude-opus-4-1-20250805`   | openai-completions | yes         | low, medium, high                   |
 | `claude-opus-4-20250514`     | openai-completions | yes         | low, medium, high                   |

@@ -391,11 +391,7 @@
         "supportsLongCacheRetention": false
       },
       "reasoningEfforts": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
+        "high"
       ],
       "thinkingToggle": false,
       "source": {
@@ -409,12 +405,12 @@
         "availability": "Catalog entry and native Messages contract verified; generation depends on current account channel availability."
       },
       "thinkingLevelMap": {
-        "low": "low",
-        "medium": "medium",
+        "low": "high",
+        "medium": "high",
         "high": "high",
-        "xhigh": "xhigh",
-        "max": "max",
-        "off": "low"
+        "xhigh": "high",
+        "max": "high",
+        "off": "high"
       }
     },
     {

@@ -807,12 +807,12 @@
               "supportsLongCacheRetention": false
             },
             "thinkingLevelMap": {
-              "low": "low",
-              "medium": "medium",
+              "low": "high",
+              "medium": "high",
               "high": "high",
-              "xhigh": "xhigh",
-              "max": "max",
-              "off": "low"
+              "xhigh": "high",
+              "max": "high",
+              "off": "high"
             }
           },
           {

@@ -329,20 +329,16 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
       "supportsLongCacheRetention": false
     },
     "reasoningEfforts": [
-      "low",
-      "medium",
-      "high",
-      "xhigh",
-      "max"
+      "high"
     ],
     "thinkingToggle": false,
     "thinkingLevelMap": {
-      "low": "low",
-      "medium": "medium",
+      "low": "high",
+      "medium": "high",
       "high": "high",
-      "xhigh": "xhigh",
-      "max": "max",
-      "off": "low"
+      "xhigh": "high",
+      "max": "high",
+      "off": "high"
     }
   },
   {
