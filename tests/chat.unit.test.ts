@@ -24,7 +24,7 @@ describe("full public chat catalog", () => {
     expect(manifest.modelCatalog.providers.acedatacloud.models).toEqual(
       runtime,
     );
-    expect(runtime.length).toBe(90);
+    expect(runtime.length).toBe(91);
     expect(new Set(runtime.map((row) => row.id)).size).toBe(runtime.length);
     for (const excluded of Object.keys(source.excluded))
       expect(runtime.some((row) => row.id === excluded)).toBe(false);
@@ -43,6 +43,7 @@ describe("full public chat catalog", () => {
       ["glm-5.3", "openai-completions", "/glm"],
       ["gpt-5.4-pro", "openai-responses", "/openai"],
       ["claude-opus-5-5", "anthropic-messages", ""],
+      ["claude-fable-5-2", "anthropic-messages", ""],
       ["claude-sonnet-5-5", "anthropic-messages", ""],
     ];
     for (const [id, api, path] of expected) {
@@ -77,6 +78,16 @@ describe("full public chat catalog", () => {
     )!;
     expect(mini.cost.input).toBeCloseTo(0.840989 * 0.175, 9);
     expect(mini.cost.cacheRead).toBeCloseTo((0.840989 - 0.630742) * 0.175, 9);
+    const fable = GENERATED_CHAT_MODELS.find(
+      (row) => row.id === "claude-fable-5-2",
+    )!;
+    expect(fable.cost).toEqual({
+      input: 33.639576 * 0.175,
+      output: 168.19788 * 0.175,
+      cacheRead: 0.840989 * 0.175,
+      cacheWrite: 42.04947 * 0.175,
+    });
+    expect(fable.thinkingToggle).toBe(false);
     const sol = GENERATED_CHAT_MODELS.find((row) => row.id === "gpt-6.1-sol")!;
     expect(sol.cost.tieredPricing?.map((tier) => tier.range)).toEqual([
       [0, 272001],

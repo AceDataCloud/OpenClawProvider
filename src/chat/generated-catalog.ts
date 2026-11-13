@@ -307,6 +307,41 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     }
   },
   {
+    "id": "claude-fable-5-2",
+    "name": "Claude Fable 5.2",
+    "api": "anthropic-messages",
+    "baseUrl": "https://api.acedata.cloud",
+    "reasoning": true,
+    "input": [
+      "text",
+      "image"
+    ],
+    "contextWindow": 1000000,
+    "maxTokens": 128000,
+    "cost": {
+      "input": 5.886925799999999,
+      "output": 29.434628999999997,
+      "cacheRead": 0.147173075,
+      "cacheWrite": 7.358657249999999
+    },
+    "compat": {
+      "supportsEagerToolInputStreaming": false,
+      "supportsLongCacheRetention": false
+    },
+    "reasoningEfforts": [
+      "high"
+    ],
+    "thinkingToggle": false,
+    "thinkingLevelMap": {
+      "low": "high",
+      "medium": "high",
+      "high": "high",
+      "xhigh": "high",
+      "max": "high",
+      "off": "high"
+    }
+  },
+  {
     "id": "claude-haiku-4-5-20251001",
     "name": "Claude Haiku 4.5",
     "api": "openai-completions",

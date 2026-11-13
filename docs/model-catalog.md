@@ -1,6 +1,6 @@
 # Supported model catalog
 
-The plugin includes **90 public chat models** across seven families, refreshed on October 11, 2026. Catalog membership is derived from the [published Ace Data Cloud directory](https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat) and each bound API contract. Models are not restricted to the subset used for smoke tests.
+The plugin includes **91 public chat models** across seven families, with the base catalog refreshed on October 11, 2026 and Fable 5.2 added on November 13, 2026. Catalog membership is derived from the [published Ace Data Cloud directory](https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat) and each bound API contract. Models are not restricted to the subset used for smoke tests.
 
 Each request preserves the selected public model ID. The plugin does not add fallback or substitute models. Unknown IDs are not assigned invented capabilities. The three excluded chat-classified products (`gpt-4o-all`, `gpt-4o-image`, `gpt-5.1-all`) expose image-generation or mixed-product behavior, not this standard text-inference contract. Runtime discovery also contains embeddings, image models and retired entries; those do not become chat models.
 
@@ -10,7 +10,7 @@ Each request preserves the selected public model ID. The plugin does not add fal
 | ---------------- | -----: | ------------------------------------------------------------------ |
 | Chat Completions |     83 | `/openai`, `/v1`, `/gemini`, `/grok`, `/deepseek`, `/kimi`, `/glm` |
 | Responses        |      5 | `/openai/responses`                                                |
-| Messages         |      2 | `/v1/messages`, with explicit Bearer authentication                |
+| Messages         |      3 | `/v1/messages`, with explicit Bearer authentication                |
 
 Input and reasoning metadata are model-specific. Image input is advertised only when both the model definition and the current public Ace Data Cloud catalog support it. Native PDF/audio/video input is not copied onto Chat Completions models. Reasoning levels and toggles use the selected host protocol; toggle-only hosts do not receive an unsupported `reasoning_effort`.
 
@@ -28,6 +28,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `claude-3-sonnet-20240229`   | openai-completions | yes         | —                                   |
 | `claude-fable-5`             | openai-completions | yes         | low, medium, high, xhigh, max       |
 | `claude-fable-5-1`           | openai-completions | yes         | low, medium, high, xhigh, max       |
+| `claude-fable-5-2`           | anthropic-messages | yes         | high (published default)       |
 | `claude-haiku-4-5-20251001`  | openai-completions | yes         | low, medium, high, max              |
 | `claude-opus-4-1-20250805`   | openai-completions | yes         | low, medium, high                   |
 | `claude-opus-4-20250514`     | openai-completions | yes         | low, medium, high                   |
@@ -88,7 +89,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `gpt-5.5-pro`                | openai-responses   | yes         | medium, high, xhigh                 |
 | `gpt-5.6-luna`               | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-5.6-sol`                | openai-completions | yes         | none, low, medium, high, xhigh, max |
-| `gpt-5.6-sol-fast`                | openai-completions | yes         | none, low, medium, high, xhigh, max |
+| `gpt-5.6-sol-fast`           | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-5.6-terra`              | openai-completions | yes         | none, low, medium, high, xhigh, max |
 | `gpt-6-astra`                | openai-completions | yes         | low, medium, high, xhigh, max       |
 | `gpt-6-luna`                 | openai-completions | yes         | none, low, medium, high, xhigh, max |
@@ -124,3 +125,9 @@ The original 89 models were checked with 534 short/long-context ordinary-input, 
 `src/chat/model-catalog.json` is the reviewed source snapshot, with per-model public API references, package rates and metadata. `pnpm sync-catalog` generates runtime and manifest entries from the same source; `pnpm sync-catalog:check` prevents projection drift. Refresh the published directory and bound API records together, then update metadata for every added or changed model instead of restricting membership to tested examples. Never use the billing-rule inventory alone as a public model list.
 
 Fast serving alias `gpt-5.6-sol-fast` was reconciled on October 11 with the public catalog and both API enums. It preserves the exact requested ID and uses the GPT-5.6 Sol model contract, with its separately published fast prices. Six independent short/long-context price samples and a real tool-call result are reused from the provider-directory validation.
+
+## Claude Fable 5.2
+
+`claude-fable-5-2` uses native Messages, preserves its model ID, and has no automatic substitute. Thinking stays enabled; omit sampling overrides and forced tool choice. Count Tokens and Responses are not published for this model. Catalog inclusion is independent of current account channel health.
+
+The entry-package estimate ($7 / 40 Credits) is $5.8869258 input, $29.434629 output, $0.147173075 cache read and $7.35865725 cache write per million tokens. The advertised maximum-package rate ($13,584 / 142,800 Credits) is $3.20 / $16 input/output, $0.08 cache read and $4 cache write (5 minutes); 1-hour cache write costs $6.40. The host exposes one cache-write estimate, so this entry uses 5 minutes and does not advertise long-cache-retention support.

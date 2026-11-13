@@ -52,7 +52,7 @@ openclaw infer model run --model acedatacloud/gpt-4.1-mini --prompt "Reply with 
 Each model selects its documented API and base URL. Claude Opus/Sonnet 5.5 use
 Messages with Bearer authentication; Responses-only models use Responses. Other
 models use their family's Chat Completions endpoint. See [the supported
-catalog](model-catalog.md) for all 90 model IDs, capabilities, and reference costs.
+catalog](model-catalog.md) for all 91 model IDs, capabilities, and reference costs.
 Image, video, and music generation are separate capabilities.
 
 ```sh
