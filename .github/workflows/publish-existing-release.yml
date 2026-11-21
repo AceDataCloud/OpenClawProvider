@@ -7,6 +7,11 @@ on:
         description: 'Approved immutable release tag with collection and five service artifacts'
         required: true
         default: 'v2026.10.19'
+      packages:
+        description: 'Package set carried by the existing release'
+        type: choice
+        options: [all, acemusic]
+        default: all
       already_submitted:
         description: 'Exact name@version already accepted by npm in a prior attempt; read back without uploading again'
         required: false
@@ -29,6 +34,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Validate immutable release tag
         run: node -e 'if (!/^v\d{4}\.\d+\.\d+$/.test(process.env.RELEASE_TAG)) throw new Error("Expected an exact CalVer release tag")'
+      - name: Read the immutable tag's service package inventory
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          path: release-source
       - name: Download existing official release artifacts
         env:
           GH_TOKEN: ${{ github.token }}
@@ -36,6 +46,8 @@ jobs:
       - name: Publish absent exact versions and verify registry integrity
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_RELEASE_SCOPE: ${{ inputs.packages }}
+          RELEASE_SERVICES_ROOT: release-source/service-plugins
           NPM_ALREADY_SUBMITTED: ${{ inputs.already_submitted }}
         run: node scripts/publish-release-artifacts.mjs release-artifacts
       - name: Save publication receipt

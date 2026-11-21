@@ -198,6 +198,37 @@ export function registerMediaProviders(api: OpenClawPluginApi, options: MediaReg
     api.registerVideoGenerationProvider(provider);
     catalog(api, provider.id, "video_generation", models, service.label, provider.capabilities, options.authEnvVars);
   }
+  if (includes("acemusic")) {
+    const service = serviceById("acemusic");
+    const endpoint = service.endpoints.acemusic_generate_music;
+    const provider: MusicProvider = {
+      id: mediaProviderId("acemusic"), label: label("acemusic", "ACE Music"),
+      models: operationModels(endpoint), defaultModel: "acemusic-v1.1",
+      isConfigured: ({ cfg, agentDir }) => isConfigured("acemusic", cfg, agentDir),
+      capabilities: { generate: { maxTracks: 2, supportsLyrics: false, supportsInstrumental: false }, edit: { enabled: false } },
+      async generateMusic(req) {
+        exactModel(endpoint, req.model);
+        if (req.instrumental || req.durationSeconds !== undefined || req.inputImages?.length || (req.format && req.format !== "mp3")) {
+          throw new Error("ACE Music idea generation accepts a song prompt and returns MP3 tracks.");
+        }
+        if (req.lyrics?.trim()) throw new Error("Use the ACE Music custom music tool with title, lyric and style.");
+        const result = await new ServiceClient(await resolveKey("acemusic", req.cfg)).complete(
+          service, "acemusic_generate_music", { model: req.model, prompt: req.prompt }, req.timeoutMs ?? 900_000
+        );
+        const id = result.task_id || result.trace_id;
+        if (!result.media_urls.length) throw new Error(`ACE Music task ${id} has no delivered audio. Retrieve the same task.`);
+        const downloads = await Promise.allSettled(result.media_urls.map(url => downloadAsset(url, "audio")));
+        const tracks = downloads.flatMap(download => download.status === "fulfilled" ? [download.value] : []);
+        if (!tracks.length) throw new Error(`Audio download failed for ACE Music task ${id}. Retrieve the same task.`);
+        return { tracks, model: req.model, metadata: {
+          taskId: result.task_id, traceId: result.trace_id, groupStatus: result.status,
+          deliveryStatus: tracks.length === downloads.length ? "complete" : "partial",
+        } };
+      },
+    };
+    api.registerMusicGenerationProvider(provider);
+    catalog(api, provider.id, "music_generation", provider.models ?? [], service.label, provider.capabilities, options.authEnvVars);
+  }
   if (includes("suno")) {
   const suno = serviceById("suno"), endpoint = suno.endpoints.suno_generate_audios;
   const music: MusicProvider = {

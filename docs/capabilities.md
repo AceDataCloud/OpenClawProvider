@@ -1,7 +1,7 @@
 # Service capability reference
 
 One Ace Data Cloud provider package includes the existing 91-model chat catalog and
-17 service modules with 97 optional operations. The source baseline is the current
+18 service modules with 106 optional operations. The source baseline is the current
 Dify service repositories, verified on October 11, 2026. Each contract records its
 immutable repository commit. Full operation parameters are exposed in the tool schema.
 
@@ -26,6 +26,7 @@ it until the result is terminal; never repeat creation just because polling time
 | Qwen Image | 3 | `acedata_qwen_image`, `acedata_qwen_image_task_retrieve`, `acedata_qwen_image_tasks_retrieve_batch` |
 | Seedance | 3 | `acedata_seedance_generate_video`, `acedata_seedance_task_retrieve`, `acedata_seedance_tasks_retrieve_batch` |
 | Seedream | 5 | `acedata_seedream_generate_image`, `acedata_seedream_edit_image`, `acedata_seedream_decompose_image`, `acedata_seedream_task_retrieve`, `acedata_seedream_tasks_retrieve_batch` |
+| ACE Music | 9 | Idea and custom generation, reference upload, cover, mashup, lyrics, original-task lookup, batch and history. [ACE Music API](https://github.com/AceDataCloud/ACEMusicAPI) |
 | Suno | 19 | `acedata_suno_generate_audios`, `acedata_suno_generate_lyrics`, `acedata_suno_upload_reference_audio`, `acedata_suno_get_mp4`, `acedata_suno_get_mp3`, `acedata_suno_get_wav`, `acedata_suno_get_midi`, `acedata_suno_get_timing`, `acedata_suno_create_vox_audio`, `acedata_suno_enhance_style`, `acedata_suno_mashup_lyrics`, `acedata_suno_create_voice`, `acedata_suno_create_persona`, `acedata_suno_list_personas`, `acedata_suno_delete_persona`, `acedata_suno_custom_models`, `acedata_suno_projects`, `acedata_suno_task_retrieve`, `acedata_suno_tasks_retrieve_batch` |
 | Veo | 7 | `acedata_veo_generate_video`, `acedata_veo_extend_video`, `acedata_veo_edit_objects`, `acedata_veo_reshoot_video`, `acedata_veo_upsample_video`, `acedata_veo_task_retrieve`, `acedata_veo_tasks_retrieve_batch` |
 | Wan | 4 | `acedata_wan_generate_video`, `acedata_wan3_generate`, `acedata_wan_task_retrieve`, `acedata_wan_tasks_retrieve_batch` |

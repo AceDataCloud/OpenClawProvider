@@ -1,9 +1,10 @@
 // Publish immutable, already-built release artifacts using the existing npm account.
 // Existing exact versions must match local bytes; only a registry E404 permits publish.
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { basename, join, resolve } from "node:path";
+import { SERVICE_PLUGINS } from "../src/service-plugins/definitions.ts";
 
 export function registryDecision(result, integrity) {
   let value;
@@ -17,16 +18,40 @@ export function registryDecision(result, integrity) {
 }
 export function inspectArtifact(path) {
   const pkg = JSON.parse(execFileSync("tar", ["-xOf", path, "package/package.json"], { encoding: "utf8" }));
-  const allowed = new Set(["@acedatacloud/openclaw-provider", ...["suno", "seedance", "happyhorse", "gpt-image", "nano-banana"].map(s => `@acedatacloud/${s}-openclaw`)]);
+  const allowed = new Set(["@acedatacloud/openclaw-provider", ...SERVICE_PLUGINS.map(plugin => plugin.packageName)]);
   if (!allowed.has(pkg.name) || !/^(?:\d{4}\.\d+\.\d+|0\.\d+\.\d+)$/.test(pkg.version)) throw new Error("Unexpected release artifact identity");
   if (basename(path) !== `${pkg.name.slice(1).replace("/", "-")}-${pkg.version}.tgz`) throw new Error("Artifact filename differs from packed metadata");
   return { name: pkg.name, version: pkg.version, integrity: `sha512-${createHash("sha512").update(readFileSync(path)).digest("base64")}` };
 }
 if (process.argv[1] && resolve(process.argv[1]) === import.meta.filename) {
-  if (!process.env.NODE_AUTH_TOKEN?.trim()) throw new Error("Existing npm publishing token is not configured");
   const directory = resolve(process.argv[2] ?? ".");
-  const files = readdirSync(directory).filter(name => /^acedatacloud-(?:openclaw-provider|(?:suno|seedance|happyhorse|gpt-image|nano-banana)-openclaw)-[\d.]+\.tgz$/.test(name)).sort();
-  if (files.length !== 6) throw new Error("Expected collection plus five service release artifacts");
+  const scope = process.env.NPM_RELEASE_SCOPE || "all";
+  if (!["all", "acemusic"].includes(scope)) throw new Error("Unknown npm release scope");
+  const serviceRoot = resolve(process.env.RELEASE_SERVICES_ROOT ?? "service-plugins");
+  const expected = new Set(["@acedatacloud/openclaw-provider"]);
+  for (const entry of readdirSync(serviceRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory() || (scope === "acemusic" && entry.name !== "acemusic")) continue;
+    const metadata = JSON.parse(readFileSync(join(serviceRoot, entry.name, "package.json"), "utf8"));
+    expected.add(metadata.name);
+  }
+  if (scope === "acemusic" && !expected.has("@acedatacloud/acemusic-openclaw")) throw new Error("This release has no ACE Music package");
+  const files = [];
+  const found = new Set();
+  for (const file of readdirSync(directory).filter(name => /^acedatacloud-.*-([\d.]+)\.tgz$/.test(name)).sort()) {
+    const { name } = inspectArtifact(join(directory, file));
+    if (scope !== "all" && !expected.has(name)) continue;
+    if (!expected.has(name) || found.has(name)) throw new Error("Unexpected or duplicate release package: " + name);
+    found.add(name);
+    files.push(file);
+  }
+  if (found.size !== expected.size) throw new Error("Missing release artifacts for the selected scope");
+  if (process.argv[3] === "--stage") {
+    const destination = resolve(process.argv[4]);
+    mkdirSync(destination);
+    for (const file of files) copyFileSync(join(directory, file), join(destination, file));
+    process.exit(0);
+  }
+  if (!process.env.NODE_AUTH_TOKEN?.trim()) throw new Error("Existing npm publishing token is not configured");
   const accepted = new Set((process.env.NPM_ALREADY_SUBMITTED ?? "").split(",").map(x => x.trim()).filter(Boolean));
   const records = [];
   const save = () => writeFileSync("npm-publication-receipt.json", JSON.stringify(records, null, 2) + "\n");

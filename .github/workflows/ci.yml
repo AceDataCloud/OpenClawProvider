@@ -83,15 +83,29 @@ jobs:
           node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
           node -e 'const x = require("./stable-models.json"); if (x.models.length !== 91 || new Set(x.models.map(m => m.key)).size !== 91) process.exit(1)'
 
-      - name: Build and install five independent service plugins
+      - name: Build and install each candidate service plugin
         working-directory: OpenClawProvider
         env:
           SERVICE_PLUGIN_HOST: ${{ runner.temp }}/openclaw-stable/node_modules/openclaw/openclaw.mjs
         run: |
           node scripts/build-service-plugins.mjs
           node scripts/check-service-plugins.mjs
+      - name: Verify published channels against the most recent release
+        working-directory: OpenClawProvider
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SERVICE_PLUGIN_HOST: ${{ runner.temp }}/openclaw-stable/node_modules/openclaw/openclaw.mjs
+        run: |
+          release_tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)
+          git fetch --depth=1 origin "refs/tags/$release_tag"
+          git worktree add --detach "$RUNNER_TEMP/openclaw-published-source" FETCH_HEAD
+          cd "$RUNNER_TEMP/openclaw-published-source"
+          ln -s "$GITHUB_WORKSPACE/OpenClawProvider/node_modules" node_modules
+          pnpm build
+          node scripts/build-service-plugins.mjs
           SERVICE_PLUGIN_CHANNEL=clawhub node scripts/check-service-plugins.mjs
           SERVICE_PLUGIN_CHANNEL=npm node scripts/check-service-plugins.mjs
+          cd "$GITHUB_WORKSPACE/OpenClawProvider"
           npm view @acedatacloud/openclaw-provider@2026.10.12 dist --json --registry=https://registry.npmjs.org > provider-public-dist.json
 
       - name: Verify guarded downloads of existing media
