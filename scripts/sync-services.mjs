@@ -6,7 +6,7 @@ const manifestPath = `${root}openclaw.plugin.json`;
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 const image = ["nano-banana", "gpt-image", "seedream", "flux", "qwen-image", "midjourney"];
 const video = ["seedance", "happyhorse", "grok", "kling", "veo", "minimax", "wan", "flux", "midjourney"];
-const music = ["acemusic", "suno"];
+const music = ["suno", "acemusic"];
 const tools = services.flatMap(s => Object.keys(s.endpoints).filter(k => !k.includes(":" )).map(k => `acedata_${k}`));
 if (new Set(tools).size !== tools.length || tools.length !== 106) throw new Error("Unexpected Dify operation coverage");
 manifest.description = "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, ACE Music, Suno, Fish Audio, Google Search and face tools.";

@@ -1,0 +1,22 @@
+{
+  "mode": "recorded-api-response replay with real guarded media downloads",
+  "newGenerationCalls": 0,
+  "imageCount": 1,
+  "musicTracks": 2,
+  "speechBytes": 34340,
+  "apiRequests": [
+    {
+      "path": "/nano-banana/images",
+      "model": "nano-banana-2-lite"
+    },
+    {
+      "path": "/suno/audios",
+      "model": "chirp-v6"
+    },
+    {
+      "path": "/fish/tts",
+      "text": "fixture",
+      "voice": "fixture-voice"
+    }
+  ]
+}

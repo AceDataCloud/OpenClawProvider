@@ -198,6 +198,26 @@ export function registerMediaProviders(api: OpenClawPluginApi, options: MediaReg
     api.registerVideoGenerationProvider(provider);
     catalog(api, provider.id, "video_generation", models, service.label, provider.capabilities, options.authEnvVars);
   }
+  if (includes("suno")) {
+  const suno = serviceById("suno"), endpoint = suno.endpoints.suno_generate_audios;
+  const music: MusicProvider = {
+    id: mediaProviderId("suno"), label: label("suno", "Suno"), models: operationModels(endpoint), defaultModel: String(endpoint.defaults?.model ?? "chirp-v6"),
+    isConfigured: ({cfg, agentDir}) => isConfigured("suno", cfg, agentDir),
+    capabilities: { generate: { maxTracks: 2, supportsLyrics: true, supportsInstrumental: true }, edit: { enabled: false } },
+    async generateMusic(req) {
+      exactModel(endpoint, req.model);
+      const result = await new ServiceClient(await resolveKey("suno", req.cfg)).complete(suno, "suno_generate_audios", { model: req.model, prompt: req.prompt, ...(req.lyrics ? { custom: true, lyric: req.lyrics } : {}), ...(req.instrumental !== undefined ? { instrumental: req.instrumental } : {}) }, req.timeoutMs ?? 900_000);
+      if (!result.media_urls.length) throw new Error(`No music output in completed task ${result.task_id}.`);
+      let tracks: Array<{buffer: Buffer; mimeType: string}>;
+      try { tracks = await Promise.all(result.media_urls.filter(url => /\.(mp3|wav|ogg|flac|m4a)(\?|$)/i.test(url)).map(url => downloadAsset(url, "audio"))); }
+      catch { throw new Error(`Music task ${result.task_id || result.trace_id} completed but media delivery failed. Retrieve this task; do not regenerate.`); }
+      if (!tracks.length) throw new Error("No audio tracks in completed task.");
+      return { tracks, model: req.model, metadata: { taskId: result.task_id, traceId: result.trace_id } };
+    },
+  };
+  api.registerMusicGenerationProvider(music);
+  catalog(api, music.id, "music_generation", music.models ?? [], "Suno", music.capabilities, options.authEnvVars);
+  }
   if (includes("acemusic")) {
     const service = serviceById("acemusic");
     const endpoint = service.endpoints.acemusic_generate_music;
@@ -228,26 +248,6 @@ export function registerMediaProviders(api: OpenClawPluginApi, options: MediaReg
     };
     api.registerMusicGenerationProvider(provider);
     catalog(api, provider.id, "music_generation", provider.models ?? [], service.label, provider.capabilities, options.authEnvVars);
-  }
-  if (includes("suno")) {
-  const suno = serviceById("suno"), endpoint = suno.endpoints.suno_generate_audios;
-  const music: MusicProvider = {
-    id: mediaProviderId("suno"), label: label("suno", "Suno"), models: operationModels(endpoint), defaultModel: String(endpoint.defaults?.model ?? "chirp-v6"),
-    isConfigured: ({cfg, agentDir}) => isConfigured("suno", cfg, agentDir),
-    capabilities: { generate: { maxTracks: 2, supportsLyrics: true, supportsInstrumental: true }, edit: { enabled: false } },
-    async generateMusic(req) {
-      exactModel(endpoint, req.model);
-      const result = await new ServiceClient(await resolveKey("suno", req.cfg)).complete(suno, "suno_generate_audios", { model: req.model, prompt: req.prompt, ...(req.lyrics ? { custom: true, lyric: req.lyrics } : {}), ...(req.instrumental !== undefined ? { instrumental: req.instrumental } : {}) }, req.timeoutMs ?? 900_000);
-      if (!result.media_urls.length) throw new Error(`No music output in completed task ${result.task_id}.`);
-      let tracks: Array<{buffer: Buffer; mimeType: string}>;
-      try { tracks = await Promise.all(result.media_urls.filter(url => /\.(mp3|wav|ogg|flac|m4a)(\?|$)/i.test(url)).map(url => downloadAsset(url, "audio"))); }
-      catch { throw new Error(`Music task ${result.task_id || result.trace_id} completed but media delivery failed. Retrieve this task; do not regenerate.`); }
-      if (!tracks.length) throw new Error("No audio tracks in completed task.");
-      return { tracks, model: req.model, metadata: { taskId: result.task_id, traceId: result.trace_id } };
-    },
-  };
-  api.registerMusicGenerationProvider(music);
-  catalog(api, music.id, "music_generation", music.models ?? [], "Suno", music.capabilities, options.authEnvVars);
   }
   if (includes("fish-audio")) {
   api.registerSpeechProvider({

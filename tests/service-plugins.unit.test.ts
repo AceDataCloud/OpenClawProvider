@@ -50,6 +50,7 @@ describe("independent service plugins", () => {
   }
   it("coexists with the collection and all standalone service packages", () => {
     const { rows, api } = registry(); aggregate.register!(api);
+    expect(rows.music.map(provider => provider.id)).toEqual(["acedatacloud-suno", "acedatacloud-acemusic"]);
     for (const def of SERVICE_PLUGINS) createServicePlugin(def).register!(api);
     for (const list of [rows.provider, rows.image, rows.video, rows.music, rows.tools.map(x => ({id:x.name}))]) {
       expect(new Set(list.map(x => x.id)).size).toBe(list.length);

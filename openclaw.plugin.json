@@ -321,8 +321,8 @@
       "acedatacloud-midjourney"
     ],
     "musicGenerationProviders": [
-      "acedatacloud-acemusic",
-      "acedatacloud-suno"
+      "acedatacloud-suno",
+      "acedatacloud-acemusic"
     ],
     "speechProviders": [
       "acedatacloud-fish-audio"
@@ -5916,19 +5916,6 @@
     }
   },
   "musicGenerationProviderMetadata": {
-    "acedatacloud-acemusic": {
-      "authProviders": [
-        "acedatacloud"
-      ],
-      "configSignals": [
-        {
-          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
-          "required": [
-            "apiKey"
-          ]
-        }
-      ]
-    },
     "acedatacloud-suno": {
       "authProviders": [
         "acedatacloud"
@@ -5936,6 +5923,19 @@
       "configSignals": [
         {
           "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.suno",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
+    },
+    "acedatacloud-acemusic": {
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
           "required": [
             "apiKey"
           ]
@@ -5957,8 +5957,8 @@
     "acedatacloud-veo": "acedatacloud",
     "acedatacloud-minimax": "acedatacloud",
     "acedatacloud-wan": "acedatacloud",
-    "acedatacloud-acemusic": "acedatacloud",
     "acedatacloud-suno": "acedatacloud",
+    "acedatacloud-acemusic": "acedatacloud",
     "acedatacloud-fish-audio": "acedatacloud"
   },
   "version": "2026.11.22"
