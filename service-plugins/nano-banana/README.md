@@ -18,9 +18,9 @@ Use the public command only when the listing shows a published version. Maintain
 
 ## 2. Register, sign in and copy a scoped API token
 
-1. Register or sign in at [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_api_key). Open **General application**; if absent, choose **Initialize General Application**. A general key can access the services available to your account; a service-specific application is limited to its service.
+1. Register or sign in at [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen). Open **General application**; if absent, choose **Initialize General Application**. A general key can access the services available to your account; a service-specific application is limited to its service.
 2. Copy its API Key, or choose **Manage Keys → Create** for a separately named OpenClaw key. Check expiration, usage limitation and **Allowed APIs**. Allow this service's generation/edit operations and task retrieval; task-query permission alone does not permit generation.
-3. Confirm Nano Banana service/model access, current [pricing and balance](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_pricing). No free generation or fixed trial allowance is promised.
+3. Confirm Nano Banana service/model access, current [pricing and balance](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen). No free generation or fixed trial allowance is promised.
 4. Copy only the token, with no quotes or Bearer prefix. A platform-management token cannot replace an application generation API token. Never put secrets in prompts, workflow exports, screenshots or commits.
 
 ![Application API Key controls; real platform screenshot, reference 2026-10-18](https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/get-api-key-en.png)
@@ -56,7 +56,7 @@ When balance, model access and the user's budget are confirmed, use the native i
 openclaw infer image generate --model ace-nano-banana/nano-banana-2-lite --prompt "A blue circle on a white background" --count 1 --output image.jpg
 ```
 
-For an async response, save `task_id`. Allow `ace_service_nano_banana_task_retrieve` with that exact ID and `wait_seconds=0` for one read, or a bounded wait when needed. Pending, an accepted submission or a preview URL is not terminal success. After timeout/delivery failure, retrieve the same ID; do not generate again. Only completed output and downloaded/usable media prove delivery. Check the trace/task in [usage history](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_usage) for the final charge; install/search counts are not revenue.
+For an async response, save `task_id`. Allow `ace_service_nano_banana_task_retrieve` with that exact ID and `wait_seconds=0` for one read, or a bounded wait when needed. Pending, an accepted submission or a preview URL is not terminal success. After timeout/delivery failure, retrieve the same ID; do not generate again. Only completed output and downloaded/usable media prove delivery. Check the trace/task in [usage history](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen_usage) for the final charge; install/search counts are not revenue.
 
 ## 5. Permissions, costs and troubleshooting
 
@@ -68,7 +68,7 @@ Prompts/reference URLs go to https://api.acedata.cloud; billable operations cons
 - Media pending/failed: keep the task/trace and inspect its state; do not retry creation blindly or substitute another model.
 - Managed instance: its platform wizard seeds one chat model/key, not this plugin. Separately install and authorize the service if permitted; deployment duration and API usage are billed separately.
 
-[Source](https://github.com/AceDataCloud/OpenClawProvider) · [Pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_pricing) · [Issues](https://github.com/AceDataCloud/OpenClawProvider/issues)
+[Source](https://github.com/AceDataCloud/OpenClawProvider) · [Pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen) · [Issues](https://github.com/AceDataCloud/OpenClawProvider/issues)
 
 ## 中文完整指南
 
@@ -94,14 +94,14 @@ openclaw plugins install clawhub:@acedatacloud/nano-banana-openclaw
 
 ## 2. 注册、登录 Ace 并取得专用 Token
 
-1. 新用户先注册并登录 [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_api_key)。
+1. 新用户先注册并登录 [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen)。
 2. 打开 **General application**；如果没有，选择 **Initialize General Application**。通用应用可访问账号已经拥有权限的服务；专用服务应用的 Key 仅能使用该服务。
 3. 如要复用已有 Key，点击应用卡片复制按钮；如要单独管理这次接入，打开 **Manage Keys → Create**，创建可单独撤销/轮换的 Key。
 
 ![真实平台应用页：复制Key或进入Manage Keys；固定源截图，本指南引用日期2026-10-18](https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/get-api-key-en.png)
 
 4. 命名为容易识别的 `OpenClaw Nano Banana`。检查 **Expiration Time**、**Set Usage Limitation**、**Allowed APIs**。需要哪些限制才启用；若限制接口，必须同时允许本次生成/编辑和任务查询 API。只有查询权限不能生成。
-5. 确认 Nano Banana 的模型/服务权限、[当前价格和余额](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_pricing)。本指南不承诺固定免费额度；实际费用取决于账号套餐、模型和请求参数。
+5. 确认 Nano Banana 的模型/服务权限、[当前价格和余额](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen)。本指南不承诺固定免费额度；实际费用取决于账号套餐、模型和请求参数。
 6. 创建后回到 Key 列表或应用卡片复制完整 token。只复制值，不加 `Bearer `、引号或空格。`platform-...` 等账号管理 Token 不能代替生成 API Key。
 
 ![真实平台创建Key页：独立命名、有效期/额度/API限制；固定源截图，本指南引用日期2026-10-18](https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/create-api-key-en.png)
@@ -153,7 +153,7 @@ openclaw infer image generate --model ace-nano-banana/nano-banana-2-lite --promp
 
 `wait_seconds=0` 是单次查询；需要时可设置工具支持的有界等待。accepted/pending 或预览 URL 都不代表完成。超时、仍在运行、下载失败时查原 ID，不重新提交收费生成。只有终态成功、媒体链接/可用文件与实际交付都核实，才算完成；查询失败也不能声称成功。
 
-在 [Ace 使用历史](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_usage) 按原 task/trace 核对最终费用与计费记录。插件安装/搜索次数不是收入，API返回成功也不能代替唯一账单核验。
+在 [Ace 使用历史](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen_usage) 按原 task/trace 核对最终费用与计费记录。插件安装/搜索次数不是收入，API返回成功也不能代替唯一账单核验。
 
 ## 6. 费用、权限与排错
 
@@ -167,4 +167,4 @@ openclaw infer image generate --model ace-nano-banana/nano-banana-2-lite --promp
 - **任务 pending/失败**：保留 task/trace，查询原任务；不要重复生成，也不自行替换模型。
 - **使用平台托管实例**：创建向导默认初始化所选聊天模型与实例凭据，不自动安装本媒体插件。先确认实例版本/安装权限，再单独安装并授权本服务；部署时长与模型/API使用分别计费。
 
-[官方安装与完整指南](https://clawhub.ai/acedatacloud/plugins/nano-banana-openclaw) · [实时价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_openclaw_readme_pricing) · [问题反馈](https://github.com/AceDataCloud/OpenClawProvider/issues)
+[官方安装与完整指南](https://clawhub.ai/acedatacloud/plugins/nano-banana-openclaw) · [实时价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen) · [问题反馈](https://github.com/AceDataCloud/OpenClawProvider/issues)
