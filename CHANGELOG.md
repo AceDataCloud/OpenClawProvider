@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.22
+
+- Add ACE Music prompt-to-song generation and nine tools for custom songs, references, lyrics and task retrieval. The independent source package is `@acedatacloud/acemusic-openclaw@0.1.0`.
+- Select the `acemusic` package set in the release workflow to publish the new collection and ACE Music service together. Existing service releases retain their own versions.
+
 ## 2026.10.19
 
 - Release the merged independent Suno, Seedance, HappyHorse, GPT Image and Nano Banana code-plugin sources and complete English/Chinese token onboarding.

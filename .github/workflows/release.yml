@@ -9,6 +9,11 @@ on:
       tag:
         description: 'Version tag to release (e.g. v2026.5.31)'
         required: true
+      packages:
+        description: 'Package set for this release'
+        type: choice
+        options: [all, acemusic]
+        default: all
 
 permissions:
   contents: write
@@ -68,11 +73,17 @@ jobs:
         working-directory: OpenClawProvider
         run: pnpm pack --pack-destination .
 
-      - name: Package the five independent services
+      - name: Package the independent services
         working-directory: OpenClawProvider
         run: |
           node scripts/build-service-plugins.mjs
           node scripts/check-service-plugins.mjs
+
+      - name: Stage the selected release packages
+        working-directory: OpenClawProvider
+        env:
+          NPM_RELEASE_SCOPE: ${{ inputs.packages || 'all' }}
+        run: node scripts/publish-release-artifacts.mjs . --stage release-artifacts
 
       - name: Check npm publishing availability
         id: npm-auth
@@ -91,7 +102,8 @@ jobs:
         working-directory: OpenClawProvider
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: node scripts/publish-release-artifacts.mjs .
+          NPM_RELEASE_SCOPE: ${{ inputs.packages || 'all' }}
+        run: node scripts/publish-release-artifacts.mjs release-artifacts
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -99,5 +111,5 @@ jobs:
           tag_name: ${{ steps.ref.outputs.ref }}
           name: ${{ steps.ref.outputs.ref }}
           generate_release_notes: true
-          files: OpenClawProvider/*.tgz
+          files: OpenClawProvider/release-artifacts/*.tgz
           fail_on_unmatched_files: true

@@ -46,8 +46,8 @@ See [model support and cost estimates](https://github.com/AceDataCloud/OpenClawP
 fallback changes the chosen model.
 
 Native media providers cover Nano Banana, GPT Image, Seedream, Flux, Qwen Image,
-Midjourney, Seedance, Veo, Kling, Grok Video, Happy Horse, MiniMax H3, Wan, Suno
-and Fish Audio. 97 optional tools across 17 services expose advanced editing,
+Midjourney, Seedance, Veo, Kling, Grok Video, Happy Horse, MiniMax H3, Wan, ACE Music, Suno
+and Fish Audio. 106 optional tools across 18 services expose advanced editing,
 voice/persona management, face transformation, search and task retrieval.
 See [capability and tool reference](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/capabilities.md) and the
 [official-contract architecture decision](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/architecture.md).
@@ -104,4 +104,4 @@ MIT License. Maintained by Ace Data Cloud, dev@acedata.cloud.
 
 ## Independent service entry points
 
-Dedicated packages under [service-plugins](service-plugins) expose **Suno by Ace Data Cloud**, **Seedance by Ace Data Cloud**, **HappyHorse by Ace Data Cloud**, **GPT Image by Ace Data Cloud**, and **Nano Banana by Ace Data Cloud**. They share this source but register only their service media provider and tools, use separate keys, and can coexist with the collection. Publication is verified per package and version; consult each ClawHub listing rather than inferring availability from this source. Each README has the exact future package ID, API token steps, native auth choice and same-task result workflow.
+Dedicated packages under [service-plugins](service-plugins) expose **ACE Music by Ace Data Cloud**, **Suno by Ace Data Cloud**, **Seedance by Ace Data Cloud**, **HappyHorse by Ace Data Cloud**, **GPT Image by Ace Data Cloud**, and **Nano Banana by Ace Data Cloud**. They share this source but register only their service media provider and tools, use separate keys, and can coexist with the collection. Publication is verified per package and version; consult each ClawHub listing rather than inferring availability from this source. Each README has the exact future package ID, API token steps, native auth choice and same-task result workflow.

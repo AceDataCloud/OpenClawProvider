@@ -28,7 +28,7 @@ in this package; allowlist only the tools that you need.
 An Ace Data Cloud managed OpenClaw deployment is a separate setup path. Its
 creation wizard can seed one platform chat model and an instance-specific
 credential into the native configuration. The pinned runtime does not install
-this provider package or its 97 optional tools automatically. Connect to that
+this provider package or its 106 optional tools automatically. Connect to that
 instance's native dashboard for chat; check its OpenClaw version and install the
 provider separately if you need these plugin capabilities. Redeployment preserves
 existing native settings. Deployment duration and model/API usage are billed

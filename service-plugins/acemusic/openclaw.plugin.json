@@ -1,0 +1,253 @@
+{
+  "id": "ace-acemusic",
+  "name": "ACE Music by Ace Data Cloud",
+  "description": "ACE Music by Ace Data Cloud: native music generation and 9 optional service tools for OpenClaw.",
+  "categories": [
+    "media"
+  ],
+  "activation": {
+    "onStartup": false
+  },
+  "enabledByDefault": true,
+  "providers": [
+    "ace-acemusic"
+  ],
+  "setup": {
+    "providers": [
+      {
+        "id": "ace-acemusic",
+        "envVars": [
+          "ACEDATA_ACEMUSIC_API_KEY"
+        ]
+      }
+    ]
+  },
+  "providerAuthChoices": [
+    {
+      "provider": "ace-acemusic",
+      "method": "api-key",
+      "choiceId": "ace-acemusic-api-key",
+      "choiceLabel": "ACE Music by Ace Data Cloud",
+      "groupId": "ace-acemusic",
+      "groupLabel": "ACE Music by Ace Data Cloud",
+      "groupHint": "ACE Music music",
+      "onboardingScopes": [
+        "music-generation"
+      ],
+      "optionKey": "acemusicAceApiKey",
+      "cliFlag": "--acemusic-ace-api-key",
+      "cliOption": "--acemusic-ace-api-key <key>",
+      "cliDescription": "ACE Music Ace Data Cloud API key"
+    }
+  ],
+  "contracts": {
+    "musicGenerationProviders": [
+      "ace-acemusic"
+    ],
+    "tools": [
+      "ace_service_acemusic_generate_music",
+      "ace_service_acemusic_generate_custom_music",
+      "ace_service_acemusic_upload_audio",
+      "ace_service_acemusic_cover_audio",
+      "ace_service_acemusic_mashup_audio",
+      "ace_service_acemusic_generate_lyrics",
+      "ace_service_acemusic_task_retrieve",
+      "ace_service_acemusic_task_batch",
+      "ace_service_acemusic_task_list"
+    ]
+  },
+  "musicGenerationProviderMetadata": {
+    "ace-acemusic": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    }
+  },
+  "configContracts": {
+    "secretInputs": {
+      "paths": [
+        {
+          "path": "apiKey",
+          "expected": "string",
+          "ownerKind": "capability"
+        }
+      ]
+    }
+  },
+  "uiHints": {
+    "apiKey": {
+      "label": "Ace Data Cloud API Token for ACE Music",
+      "sensitive": true,
+      "help": "Optional service-specific credential; otherwise uses ACEDATA_ACEMUSIC_API_KEY or the ace-acemusic auth profile."
+    }
+  },
+  "toolMetadata": {
+    "ace_service_acemusic_generate_music": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_acemusic_generate_custom_music": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_acemusic_upload_audio": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_acemusic_cover_audio": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_acemusic_mashup_audio": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_acemusic_generate_lyrics": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "ace_service_acemusic_task_retrieve": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_acemusic_task_batch": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "ace_service_acemusic_task_list": {
+      "authProviders": [
+        "ace-acemusic"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.ace-acemusic.config",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "optional": true,
+      "replaySafe": true,
+      "sideEffecting": false
+    }
+  },
+  "skills": [
+    "./skills"
+  ]
+}

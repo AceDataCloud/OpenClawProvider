@@ -19,7 +19,7 @@ const api = new Proxy({runtime:{modelAuth:{resolveApiKeyForProvider:async()=>({a
 try {
   plugin.register(api);
   const image = await providers.images.find(p=>p.id==="acedatacloud-nano-banana").generateImage({provider:"acedatacloud-nano-banana",model:"nano-banana-2-lite",prompt:"fixture",cfg:{},count:1});
-  const music = await providers.music[0].generateMusic({provider:"acedatacloud-suno",model:"chirp-v6",prompt:"fixture",cfg:{}});
+  const music = await providers.music.find(provider => provider.id === "acedatacloud-suno").generateMusic({provider:"acedatacloud-suno",model:"chirp-v6",prompt:"fixture",cfg:{}});
   const speech = providers.speech[0];
   const providerConfig = speech.resolveConfig({cfg:{},rawConfig:{providers:{"acedatacloud-fish-audio":{model:"s2-pro"}}},timeoutMs:60000});
   const providerOverrides = speech.resolveTalkOverrides({params:{modelId:"s2-pro",voiceId:"fixture-voice"}});

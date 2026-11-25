@@ -74,6 +74,11 @@ export function prepare(service: Service, tool: string, parameters: Values): Pre
     endpoint = service.endpoints[selection];
   }
   const params = adaptParameters(service.id, Object.fromEntries(Object.entries(parameters).filter(([, v]) => v !== undefined && v !== null)), endpoint);
+  if (service.id === "acemusic") {
+    for (const [key, fixed] of Object.entries(endpoint.fixed ?? {})) {
+      if (key in params && params[key] !== fixed) throw new Error(`Unsupported ${key} for this ACE Music operation.`);
+    }
+  }
   const values = { ...endpoint.defaults, ...params, ...endpoint.fixed };
   const allowed = new Set([...Object.keys(endpoint.properties), ...(endpoint.parameters ?? []).map(p => p.name.toLowerCase() === "idempotency-key" ? "idempotency_key" : p.name), ...Object.keys(endpoint.defaults ?? {}), "confirm", "wait_seconds", "task_id"]);
   if (service.endpoints[tool].selector) allowed.add("action");
@@ -132,6 +137,36 @@ export function normalize(body: unknown, taskId = "", retrieved = false, synchro
   if (!done && !id) throw new Error(`No task ID or completed result; inspect request history before resubmitting${trace ? ` (trace ${trace})` : ""}.`);
   return { status: done ? partial ? "partial" : "succeeded" : "pending", success: done && !partial, task_id: id, trace_id: trace, media_urls: done ? urls : [], data: done ? cleanResult(obj.data ?? obj.content ?? result) : {}, result: done ? clean : {} };
 }
+// ACE Music uses the task group state even when a processing response has success=false.
+function normalizeAceMusic(body: unknown, taskId: string, retrieved: boolean): ServiceResult {
+  const row = record(body);
+  const payload = retrieved ? record(row.response) : row;
+  const state = String(row.state ?? row.status ?? payload.state ?? payload.status ?? "");
+  const id = String(taskId || row.task_id || row.id || payload.task_id || "");
+  const trace = String(row.trace_id ?? payload.trace_id ?? "");
+  const data = Array.isArray(payload.data) ? payload.data : [];
+  const partial = state === "partial_failed";
+  if (state === "failed" || (!state && payload.success === false && !id)) {
+    throw new Error(`ACE Music task failed (${id || trace || "no ID"}).`);
+  }
+  // Synchronous lyric results can contain a task_id alongside the final text.
+  const completedLyrics = !state && payload.success === true && data.some(item => typeof record(item).text === "string");
+  const done = state === "succeeded" || partial || completedLyrics;
+  if (!done && !id) throw new Error("ACE Music did not return a task ID. Reconcile the submission before trying again.");
+  const delivered = done ? data.filter(item => {
+    const track = record(item);
+    return !partial || (track.state ?? track.status) === "succeeded";
+  }) : [];
+  const urls = delivered.map(item => record(item).audio_url).filter(
+    (url): url is string => typeof url === "string" && url.startsWith("https://")
+  );
+  return {
+    status: partial ? "partial" : done ? "succeeded" : "pending",
+    success: done && !partial, task_id: id, trace_id: trace, media_urls: urls,
+    data: cleanResult(delivered), result: done ? cleanResult({ ...payload, state, data: delivered }) : { state },
+  };
+}
+
 export async function readLimited(response: Response, limit: number): Promise<Buffer> {
   if (Number(response.headers.get("content-length")) > limit) throw new Error("Response exceeds the configured size limit.");
   const reader = response.body?.getReader(); if (!reader) throw new Error("Empty response body.");
@@ -163,6 +198,10 @@ export class ServiceClient {
   async invoke(service: Service, tool: string, params: Values, signal?: AbortSignal): Promise<ServiceResult> {
     const endpoint = service.endpoints[tool];
     if (!endpoint) throw new Error("Unknown service operation.");
+    const settle = (body: unknown, id: string, retrieved: boolean, synchronous = false) =>
+      service.id === "acemusic" && endpoint.operation !== "task_list"
+        ? normalizeAceMusic(body, id, retrieved)
+        : normalize(body, id, retrieved, synchronous, service.id === "seedream");
     if (endpoint.operation === "task") {
       const id = params.task_id ?? params.id;
       const trace = endpoint.properties.trace_id ? params.trace_id : undefined;
@@ -174,7 +213,7 @@ export class ServiceClient {
         signal?.throwIfAborted();
         const request = prepare(service, tool, { ...params, action: "retrieve", ...(id ? { id } : {}), ...(trace ? { trace_id: trace } : {}) });
         const body = await this.request(request, signal);
-        const result = normalize(body, String(id || record(body).id || ""), true, false, service.id === "seedream");
+        const result = settle(body, String(id || record(body).id || ""), true);
         if (result.status !== "pending" || Date.now() >= end) return result;
         await delay(Math.min(5000, end - Date.now()), signal);
       }
@@ -183,11 +222,11 @@ export class ServiceClient {
     if (endpoint.operation === "batch") {
       const obj = record(body); const items = Array.isArray(body) ? body : obj.items ?? obj.tasks ?? obj.data;
       if (!Array.isArray(items)) throw new Error("Invalid task batch response.");
-      const results = items.map(item => { const id = String(record(item).id ?? record(item).task_id ?? ""); try { return normalize(item, id, true, false, service.id === "seedream"); } catch { return { status: "failed", success: false, task_id: id, trace_id: "", media_urls: [], data: {}, result: {} } as ServiceResult; } });
+      const results = items.map(item => { const id = String(record(item).id ?? record(item).task_id ?? ""); try { return settle(item, id, true); } catch { return { status: "failed", success: false, task_id: id, trace_id: "", media_urls: [], data: {}, result: {} } as ServiceResult; } });
       const status = results.some(r => r.status === "pending") ? "pending" : results.some(r => r.status === "failed") ? "failed" : results.some(r => r.status === "partial") ? "partial" : "succeeded";
       return { status, success: status === "succeeded", task_id: "", trace_id: "", media_urls: results.flatMap(r => r.media_urls), data: results, result: { items: results } };
     }
-    return normalize(body, "", false, !req.asynchronous, service.id === "seedream");
+    return settle(body, "", false, !req.asynchronous);
   }
   async complete(service: Service, tool: string, params: Values, timeoutMs = 600_000): Promise<ServiceResult> {
     const signal = AbortSignal.timeout(timeoutMs); let result = await this.invoke(service, tool, params, signal);

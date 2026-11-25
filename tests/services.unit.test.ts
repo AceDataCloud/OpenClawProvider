@@ -20,11 +20,11 @@ describe("independent Dify contract parity", () => {
     if (example.read_only !== undefined) expect(req.readOnly).toBe(example.read_only);
     for (const key of example.body_absent ?? []) expect(req.body).not.toHaveProperty(key);
   });
-  it("keeps 17 services, 97 named optional tools and native capability ownership discoverable", () => {
+  it("keeps 18 services, 106 named optional tools and native capability ownership discoverable", () => {
     const manifest = JSON.parse(readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"));
-    expect(SERVICES).toHaveLength(17);
+    expect(SERVICES).toHaveLength(18);
     const names = SERVICES.flatMap(s => Object.keys(s.endpoints).filter(k => !k.includes(":"))).map(n => `acedata_${n}`);
-    expect(names).toHaveLength(97); expect(new Set(names).size).toBe(97);
+    expect(names).toHaveLength(106); expect(new Set(names).size).toBe(106);
     expect(manifest.contracts.tools).toEqual(names);
     for (const name of names) expect(manifest.toolMetadata[name].optional).toBe(true);
     expect(manifest.contracts.imageGenerationProviders).toHaveLength(6);
@@ -87,5 +87,51 @@ describe("native media request mapping", () => {
   it("maps Seedance typed reference roles to the API content array", () => {
     const req = mapVideoRequest("seedance", { provider: "acedatacloud-seedance", model: "doubao-seedance-2-0-mini-260615", prompt: "animate", cfg: {}, inputImages: [{ url: "https://example.org/image.png", role: "first_frame" }] });
     expect(prepare(serviceById("seedance"), req.tool, req.params).body.content).toEqual([{ type: "text", text: "animate" }, { type: "image_url", role: "first_frame", image_url: { url: "https://example.org/image.png" } }]);
+  });
+});
+
+describe("ACE Music contracts and task recovery", () => {
+  const service = serviceById("acemusic");
+
+  it("preserves required custom fields and rejects unsupported reference options before submission", () => {
+    expect(prepare(service, "acemusic_generate_custom_music", {
+      title: "Home", lyric: "Verse", style: "folk", model: "acemusic-v1",
+    }).body).toEqual({ action: "generate", custom: true, async: true, title: "Home", lyric: "Verse", style: "folk", model: "acemusic-v1" });
+    expect(() => prepare(service, "acemusic_generate_custom_music", { title: "Home", lyric: "Verse" })).toThrow();
+    expect(() => prepare(service, "acemusic_generate_music", { prompt: "Home", instrumental: true })).toThrow();
+    expect(() => prepare(service, "acemusic_upload_audio", { audio_url: "http://example.org/file" })).toThrow();
+    expect(() => prepare(service, "acemusic_cover_audio", { model: "acemusic-v1", audio_id: "own", style: "folk", lyric: "verse" })).toThrow();
+    expect(() => prepare(service, "acemusic_mashup_audio", { mashup_audio_ids: ["own", "own"], style: "folk", lyric: "verse" })).toThrow();
+    expect(prepare(service, "acemusic_task_list", { page: 2, page_size: 10 }).body).toEqual({ action: "list", page: 2, page_size: 10 });
+  });
+
+  it("keeps in-progress results pending and returns only successful audio from a partially failed group", async () => {
+    const fetchFn = vi.fn()
+      .mockResolvedValueOnce(Response.json({ task_id: "same", success: false, state: "submitting" }))
+      .mockResolvedValueOnce(Response.json({ id: "same", state: "storing", response: { success: false, data: [{ audio_url: "https://cdn.example/preview" }] } }))
+      .mockResolvedValueOnce(Response.json({ id: "same", state: "submission_unknown", response: { success: false } }))
+      .mockResolvedValueOnce(Response.json({ id: "same", state: "partial_failed", response: { success: false, data: [
+        { id: "one", state: "succeeded", audio_url: "https://cdn.example/one", image_url: "https://cdn.example/cover.png" },
+        { id: "two", state: "failed", audio_url: "https://cdn.example/bad" },
+      ] } }));
+    const client = new ServiceClient("fixture", fetchFn);
+    const started = await client.invoke(service, "acemusic_generate_music", { prompt: "folk" });
+    expect(started).toMatchObject({ status: "pending", task_id: "same", media_urls: [] });
+    const lookup = () => client.invoke(service, "acemusic_task_retrieve", { task_id: started.task_id });
+    expect(await lookup()).toMatchObject({ status: "pending", media_urls: [] });
+    expect(await lookup()).toMatchObject({ status: "pending", result: { state: "submission_unknown" } });
+    expect(await lookup()).toMatchObject({ status: "partial", success: false, task_id: "same", media_urls: ["https://cdn.example/one"] });
+    for (const [, options] of fetchFn.mock.calls.slice(1)) {
+      expect(JSON.parse(options.body)).toEqual({ action: "retrieve", id: "same" });
+    }
+  });
+
+  it("distinguishes a synchronous lyrics result from an accepted lyrics task", async () => {
+    const fetchFn = vi.fn()
+      .mockResolvedValueOnce(Response.json({ task_id: "a", success: true, data: [{ title: "Home", text: "Verse" }] }))
+      .mockResolvedValueOnce(Response.json({ task_id: "b", success: true }, { status: 202 }));
+    const client = new ServiceClient("fixture", fetchFn);
+    expect(await client.invoke(service, "acemusic_generate_lyrics", { prompt: "Home" })).toMatchObject({ status: "succeeded", data: [{ title: "Home", text: "Verse" }] });
+    expect(await client.invoke(service, "acemusic_generate_lyrics", { prompt: "Home" })).toMatchObject({ status: "pending", task_id: "b" });
   });
 });

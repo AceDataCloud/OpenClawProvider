@@ -1,7 +1,7 @@
 {
   "id": "acedatacloud",
   "name": "Ace Data Cloud",
-  "description": "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, Suno, Fish Audio, Google Search and face tools.",
+  "description": "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, ACE Music, Suno, Fish Audio, Google Search and face tools.",
   "activation": {
     "onStartup": false
   },
@@ -77,6 +77,18 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "acemusic": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
           "face": {
             "type": "object",
             "additionalProperties": false,
@@ -309,12 +321,22 @@
       "acedatacloud-midjourney"
     ],
     "musicGenerationProviders": [
-      "acedatacloud-suno"
+      "acedatacloud-suno",
+      "acedatacloud-acemusic"
     ],
     "speechProviders": [
       "acedatacloud-fish-audio"
     ],
     "tools": [
+      "acedata_acemusic_generate_music",
+      "acedata_acemusic_generate_custom_music",
+      "acedata_acemusic_upload_audio",
+      "acedata_acemusic_cover_audio",
+      "acedata_acemusic_mashup_audio",
+      "acedata_acemusic_generate_lyrics",
+      "acedata_acemusic_task_retrieve",
+      "acedata_acemusic_task_batch",
+      "acedata_acemusic_task_list",
       "acedata_face_transform",
       "acedata_fish_generate_audio",
       "acedata_fish_search_voices",
@@ -507,6 +529,11 @@
     },
     "serviceCredentials.wan.apiKey": {
       "label": "Wan API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.acemusic.apiKey": {
+      "label": "ACE Music API key (optional override)",
       "sensitive": true,
       "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
     }
@@ -3970,6 +3997,150 @@
     }
   },
   "toolMetadata": {
+    "acedata_acemusic_generate_music": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_acemusic_generate_custom_music": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_acemusic_upload_audio": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_acemusic_cover_audio": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_acemusic_mashup_audio": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_acemusic_generate_lyrics": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_acemusic_task_retrieve": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "acedata_acemusic_task_batch": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "acedata_acemusic_task_list": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": true,
+      "sideEffecting": false
+    },
     "acedata_face_transform": {
       "optional": true,
       "authProviders": [
@@ -5757,6 +5928,19 @@
           ]
         }
       ]
+    },
+    "acedatacloud-acemusic": {
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.acemusic",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ]
     }
   },
   "providerAuthAliases": {
@@ -5774,7 +5958,8 @@
     "acedatacloud-minimax": "acedatacloud",
     "acedatacloud-wan": "acedatacloud",
     "acedatacloud-suno": "acedatacloud",
+    "acedatacloud-acemusic": "acedatacloud",
     "acedatacloud-fish-audio": "acedatacloud"
   },
-  "version": "2026.11.13"
+  "version": "2026.11.22"
 }

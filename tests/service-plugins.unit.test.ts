@@ -48,8 +48,9 @@ describe("independent service plugins", () => {
       await expect(resolveStandaloneKey(def, api, {plugins:{entries:{[def.id]:{config:{apiKey:""}}}}})).rejects.toThrow("unresolved or empty");
     });
   }
-  it("coexists with the collection and all five standalone service packages", () => {
+  it("coexists with the collection and all standalone service packages", () => {
     const { rows, api } = registry(); aggregate.register!(api);
+    expect(rows.music.map(provider => provider.id)).toEqual(["acedatacloud-suno", "acedatacloud-acemusic"]);
     for (const def of SERVICE_PLUGINS) createServicePlugin(def).register!(api);
     for (const list of [rows.provider, rows.image, rows.video, rows.music, rows.tools.map(x => ({id:x.name}))]) {
       expect(new Set(list.map(x => x.id)).size).toBe(list.length);
@@ -67,4 +68,26 @@ describe("independent service plugins", () => {
       expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe("Bearer test-scoped-key");
     } finally { vi.unstubAllGlobals(); }
   });
+});
+
+it("ACE Music native generation preserves an ordinary prompt and rejects supplied lyrics", async () => {
+  const def = SERVICE_PLUGINS.find(plugin => plugin.service === "acemusic")!;
+  const { rows, api } = registry();
+  createServicePlugin(def).register!(api);
+  const music = rows.music[0];
+  expect(music.capabilities.generate).toMatchObject({ supportsLyrics: false, supportsInstrumental: false });
+  const fetchFn = vi.fn().mockResolvedValue(Response.json({ success: false, state: "failed", task_id: "original" }));
+  vi.stubGlobal("fetch", fetchFn);
+  try {
+    const req = { model: "acemusic-v1.1", lyrics: "My words", prompt: "folk", cfg: {} };
+    await expect(music.generateMusic(req)).rejects.toThrow("title, lyric and style");
+    await expect(music.generateMusic({ ...req, instrumental: true })).rejects.toThrow();
+    expect(fetchFn).not.toHaveBeenCalled();
+    const prompt = '{"setting":"a small room"}';
+    await expect(music.generateMusic({ ...req, lyrics: undefined, prompt })).rejects.toThrow("original");
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(fetchFn.mock.calls[0][1].body)).toEqual({
+      action: "generate", custom: false, async: true, model: "acemusic-v1.1", prompt,
+    });
+  } finally { vi.unstubAllGlobals(); }
 });
