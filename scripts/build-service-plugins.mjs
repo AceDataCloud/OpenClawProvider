@@ -39,9 +39,9 @@ for (const def of SERVICE_PLUGINS) {
   cpSync(join(root, "assets"), join(out, "assets"), { recursive: true }); cpSync(join(root, "LICENSE"), join(out, "LICENSE"));
   write(join(out, "index.js"), `export { default } from "./dist/src/service-plugins/${def.service}.js";\n`);
   write(join(out, "package.json"), pkg); write(join(out, "openclaw.plugin.json"), fields);
-  const utm = `utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=${def.service.replaceAll('-', '_')}_openclaw_readme`;
-  const app = `https://platform.acedata.cloud/console/applications?${utm}_api_key`;
-  const pricing = `https://platform.acedata.cloud/models?${utm}_pricing`;
+  const utm = "utm_source=opensource&utm_medium=referral&utm_campaign=evergreen";
+  const app = `https://platform.acedata.cloud/console/applications?${utm}`;
+  const pricing = `https://platform.acedata.cloud/models?${utm}`;
   const listing = `https://clawhub.ai/acedatacloud/plugins/${def.service}-openclaw`;
   const preview = "https://raw.githubusercontent.com/openclaw/openclaw/b461dc69d67d58b98f0f9fe9fb03cd42a67cda0f/.github/pr-proof/working-claw-centering/after-full.png";
   const tool = `ace_service_${def.action}`; const retrieve = toolNames.find(x => x.endsWith("task_retrieve"));
