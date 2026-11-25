@@ -20,14 +20,14 @@ openclaw plugins install clawhub:@acedatacloud/acemusic-openclaw
 
 ## 2. 注册、登录 Ace 并取得专用 Token
 
-1. 新用户先注册并登录 [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=acemusic_openclaw_readme_api_key)。
+1. 新用户先注册并登录 [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen)。
 2. 打开 **General application**；如果没有，选择 **Initialize General Application**。通用应用可访问账号已经拥有权限的服务；专用服务应用的 Key 仅能使用该服务。
 3. 如要复用已有 Key，点击应用卡片复制按钮；如要单独管理这次接入，打开 **Manage Keys → Create**，创建可单独撤销/轮换的 Key。
 
 ![真实平台应用页：复制Key或进入Manage Keys；固定源截图，本指南引用日期2026-10-18](https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/get-api-key-en.png)
 
 4. 命名为容易识别的 `OpenClaw ACE Music`。检查 **Expiration Time**、**Set Usage Limitation**、**Allowed APIs**。需要哪些限制才启用；若限制接口，必须同时允许本次生成/编辑和任务查询 API。只有查询权限不能生成。
-5. 确认 ACE Music 的模型/服务权限、[当前价格和余额](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=acemusic_openclaw_readme_pricing)。本指南不承诺固定免费额度；实际费用取决于账号套餐、模型和请求参数。
+5. 确认 ACE Music 的模型/服务权限、[当前价格和余额](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen)。本指南不承诺固定免费额度；实际费用取决于账号套餐、模型和请求参数。
 6. 创建后回到 Key 列表或应用卡片复制完整 token。只复制值，不加 `Bearer `、引号或空格。`platform-...` 等账号管理 Token 不能代替生成 API Key。
 
 ![真实平台创建Key页：独立命名、有效期/额度/API限制；固定源截图，本指南引用日期2026-10-18](https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/create-api-key-en.png)
@@ -79,7 +79,7 @@ openclaw infer music generate --model ace-acemusic/acemusic-v1.1 --prompt "A gen
 
 `wait_seconds=0` 是单次查询；需要时可设置工具支持的有界等待。accepted/pending 或预览 URL 都不代表完成。超时、仍在运行、下载失败时查原 ID，不重新提交收费生成。只有终态成功、媒体链接/可用文件与实际交付都核实，才算完成；查询失败也不能声称成功。
 
-在 [Ace 使用历史](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=acemusic_openclaw_readme_usage) 按原 task/trace 核对最终费用与计费记录。插件安装/搜索次数不是收入，API返回成功也不能代替唯一账单核验。
+在 [Ace 使用历史](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen) 按原 task/trace 核对最终费用与计费记录。插件安装/搜索次数不是收入，API返回成功也不能代替唯一账单核验。
 
 ## 6. 费用、权限与排错
 
@@ -93,4 +93,4 @@ openclaw infer music generate --model ace-acemusic/acemusic-v1.1 --prompt "A gen
 - **任务 pending/失败**：保留 task/trace，查询原任务；不要重复生成，也不自行替换模型。
 - **使用平台托管实例**：创建向导默认初始化所选聊天模型与实例凭据，不自动安装本媒体插件。先确认实例版本/安装权限，再单独安装并授权本服务；部署时长与模型/API使用分别计费。
 
-[官方安装与完整指南](https://clawhub.ai/acedatacloud/plugins/acemusic-openclaw) · [实时价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=acemusic_openclaw_readme_pricing) · [问题反馈](https://github.com/AceDataCloud/OpenClawProvider/issues)
+[官方安装与完整指南](https://clawhub.ai/acedatacloud/plugins/acemusic-openclaw) · [实时价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen) · [问题反馈](https://github.com/AceDataCloud/OpenClawProvider/issues)

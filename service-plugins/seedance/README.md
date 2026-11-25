@@ -56,7 +56,7 @@ When balance, model access and the user's budget are confirmed, use the native v
 openclaw infer video generate --model ace-seedance/doubao-seedance-2-0-mini-260615 --prompt "A blue circle on a white background"
 ```
 
-For an async response, save `task_id`. Allow `ace_service_seedance_task_retrieve` with that exact ID and `wait_seconds=0` for one read, or a bounded wait when needed. Pending, an accepted submission or a preview URL is not terminal success. After timeout/delivery failure, retrieve the same ID; do not generate again. Only completed output and downloaded/usable media prove delivery. Check the trace/task in [usage history](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen_usage) for the final charge; install/search counts are not revenue.
+For an async response, save `task_id`. Allow `ace_service_seedance_task_retrieve` with that exact ID and `wait_seconds=0` for one read, or a bounded wait when needed. Pending, an accepted submission or a preview URL is not terminal success. After timeout/delivery failure, retrieve the same ID; do not generate again. Only completed output and downloaded/usable media prove delivery. Check the trace/task in [usage history](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen) for the final charge; install/search counts are not revenue.
 
 ## 5. Permissions, costs and troubleshooting
 
@@ -153,7 +153,7 @@ openclaw infer video generate --model ace-seedance/doubao-seedance-2-0-mini-2606
 
 `wait_seconds=0` 是单次查询；需要时可设置工具支持的有界等待。accepted/pending 或预览 URL 都不代表完成。超时、仍在运行、下载失败时查原 ID，不重新提交收费生成。只有终态成功、媒体链接/可用文件与实际交付都核实，才算完成；查询失败也不能声称成功。
 
-在 [Ace 使用历史](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen_usage) 按原 task/trace 核对最终费用与计费记录。插件安装/搜索次数不是收入，API返回成功也不能代替唯一账单核验。
+在 [Ace 使用历史](https://platform.acedata.cloud/console/usages?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen) 按原 task/trace 核对最终费用与计费记录。插件安装/搜索次数不是收入，API返回成功也不能代替唯一账单核验。
 
 ## 6. 费用、权限与排错
 
