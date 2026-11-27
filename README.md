@@ -32,27 +32,34 @@ openclaw plugins install clawhub:@acedatacloud/openclaw-provider
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-Review OpenClaw's source/capability prompts before accepting installation. To pin
-an exact release, append `@2026.11.13` to the ClawHub package spec. The same package
-is distributed on [npm](https://www.npmjs.com/package/@acedatacloud/openclaw-provider)
-and as a `.tgz` on [GitHub Releases](https://github.com/AceDataCloud/OpenClawProvider/releases).
+Review OpenClaw's source and capability prompts before accepting installation.
+Gemini 4 Neon is available in `2026.11.27` on both ClawHub and npm. To pin
+that release on ClawHub, run:
+
+```sh
+openclaw plugins install clawhub:@acedatacloud/openclaw-provider@2026.11.27
+```
+
+For npm, use `openclaw plugins install npm:@acedatacloud/openclaw-provider@2026.11.27`.
+Select `acedatacloud/gemini-4-neon` in the model picker. The same package is
+available on [GitHub Releases](https://github.com/AceDataCloud/OpenClawProvider/releases/tag/v2026.11.27).
 Follow the [API key steps above](#get-your-ace-data-cloud-api-key) before onboarding.
 The default model is `acedatacloud/gpt-4.1-mini`.
 
 The chat catalog covers 92 public models across OpenAI, Claude, Gemini, Grok,
 DeepSeek, Kimi, and GLM. Each model uses its own supported Chat Completions,
 Responses, or Messages route, input capabilities, reasoning controls, and prices.
-See [model support and cost estimates](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/model-catalog.md). No automatic
+See [model support and cost estimates](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.27/docs/model-catalog.md). No automatic
 fallback changes the chosen model.
 
 Native media providers cover Nano Banana, GPT Image, Seedream, Flux, Qwen Image,
 Midjourney, Seedance, Veo, Kling, Grok Video, Happy Horse, MiniMax H3, Wan, ACE Music, Suno
 and Fish Audio. 115 optional tools across 19 services expose advanced editing,
 voice/persona management, face transformation, search and task retrieval.
-See [capability and tool reference](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/capabilities.md) and the
-[official-contract architecture decision](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/architecture.md).
+See [capability and tool reference](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.27/docs/capabilities.md) and the
+[official-contract architecture decision](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.27/docs/architecture.md).
 
-[Setup and validation cookbook](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/cookbook.md) includes environment-key setup,
+[Setup and validation cookbook](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.27/docs/cookbook.md) includes environment-key setup,
 model selection, and optional web search.
 
 For a native image after setup:
