@@ -2093,6 +2093,61 @@
       }
     },
     {
+      "id": "gemini-4-neon",
+      "name": "Gemini 4 Neon",
+      "api": "openai-completions",
+      "baseUrl": "https://api.acedata.cloud/gemini",
+      "reasoning": true,
+      "input": [
+        "text",
+        "image"
+      ],
+      "contextWindow": 1048576,
+      "maxTokens": 65536,
+      "cost": {
+        "input": 1.1037985,
+        "output": 5.51899285,
+        "cacheRead": 0.055189925,
+        "cacheWrite": 0
+      },
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": true,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "supportsTools": true,
+        "supportedReasoningEfforts": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "thinkingFormat": "openai"
+      },
+      "reasoningEfforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "thinkingToggle": false,
+      "source": {
+        "api": "https://platform.acedata.cloud/api/v1/apis/94b49b55-2ea8-4d46-a93c-eb308e1a52d5",
+        "package": {
+          "price": 7.0,
+          "amount": 40.0
+        },
+        "limits": "https://aistudio.google.com/docs/models/gemini-4-neon",
+        "checkedAt": "2026-11-27",
+        "input": "The public directory advertises vision and the Chat Completions schema accepts image_url parts."
+      },
+      "thinkingLevelMap": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high",
+        "off": "low"
+      }
+    },
+    {
       "id": "glm-4.6",
       "name": "GLM-4.6",
       "api": "openai-completions",

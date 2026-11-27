@@ -39,7 +39,7 @@ and as a `.tgz` on [GitHub Releases](https://github.com/AceDataCloud/OpenClawPro
 Follow the [API key steps above](#get-your-ace-data-cloud-api-key) before onboarding.
 The default model is `acedatacloud/gpt-4.1-mini`.
 
-The chat catalog covers 91 public models across OpenAI, Claude, Gemini, Grok,
+The chat catalog covers 92 public models across OpenAI, Claude, Gemini, Grok,
 DeepSeek, Kimi, and GLM. Each model uses its own supported Chat Completions,
 Responses, or Messages route, input capabilities, reasoning controls, and prices.
 See [model support and cost estimates](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/model-catalog.md). No automatic

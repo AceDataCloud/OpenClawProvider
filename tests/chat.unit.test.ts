@@ -24,7 +24,7 @@ describe("full public chat catalog", () => {
     expect(manifest.modelCatalog.providers.acedatacloud.models).toEqual(
       runtime,
     );
-    expect(runtime.length).toBe(91);
+    expect(runtime.length).toBe(92);
     expect(new Set(runtime.map((row) => row.id)).size).toBe(runtime.length);
     for (const excluded of Object.keys(source.excluded))
       expect(runtime.some((row) => row.id === excluded)).toBe(false);
@@ -37,6 +37,7 @@ describe("full public chat catalog", () => {
       ["gpt-6.1-sol", "openai-completions", "/openai"],
       ["claude-sonnet-5", "openai-completions", "/v1"],
       ["gemini-3.8-flash", "openai-completions", "/gemini"],
+      ["gemini-4-neon", "openai-completions", "/gemini"],
       ["grok-4.7", "openai-completions", "/grok"],
       ["deepseek-v4.1-flash", "openai-completions", "/deepseek"],
       ["kimi-k3", "openai-completions", "/kimi"],

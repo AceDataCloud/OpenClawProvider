@@ -1,6 +1,6 @@
 # Supported model catalog
 
-The plugin includes **91 public chat models** across seven families, with the base catalog refreshed on October 11, 2026 and Fable 5.2 added on November 13, 2026. Catalog membership is derived from the [published Ace Data Cloud directory](https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat) and each bound API contract. Models are not restricted to the subset used for smoke tests.
+The plugin includes **92 public chat models** across seven families, with the base catalog refreshed on October 11, 2026, Fable 5.2 added on November 13 and Gemini 4 Neon added on November 27, 2026. Catalog membership is derived from the [published Ace Data Cloud directory](https://platform.acedata.cloud/api/v1/models/catalog/?modality=chat) and each bound API contract. Models are not restricted to the subset used for smoke tests.
 
 Each request preserves the selected public model ID. The plugin does not add fallback or substitute models. Unknown IDs are not assigned invented capabilities. The three excluded chat-classified products (`gpt-4o-all`, `gpt-4o-image`, `gpt-5.1-all`) expose image-generation or mixed-product behavior, not this standard text-inference contract. Runtime discovery also contains embeddings, image models and retired entries; those do not become chat models.
 
@@ -8,7 +8,7 @@ Each request preserves the selected public model ID. The plugin does not add fal
 
 | Protocol         | Models | Routing                                                            |
 | ---------------- | -----: | ------------------------------------------------------------------ |
-| Chat Completions |     83 | `/openai`, `/v1`, `/gemini`, `/grok`, `/deepseek`, `/kimi`, `/glm` |
+| Chat Completions |     84 | `/openai`, `/v1`, `/gemini`, `/grok`, `/deepseek`, `/kimi`, `/glm` |
 | Responses        |      5 | `/openai/responses`                                                |
 | Messages         |      3 | `/v1/messages`, with explicit Bearer authentication                |
 
@@ -62,6 +62,7 @@ Context/output limits use the reviewed public model definitions from [Models.dev
 | `gemini-3.6-flash`           | openai-completions | yes         | minimal, low, medium, high          |
 | `gemini-3.7-flash`           | openai-completions | yes         | low, medium, high                   |
 | `gemini-3.8-flash`           | openai-completions | yes         | low, medium, high                   |
+| `gemini-4-neon`              | openai-completions | yes         | low, medium, high                   |
 | `glm-4.6`                    | openai-completions | no          | on/off                              |
 | `glm-4.7`                    | openai-completions | no          | on/off                              |
 | `glm-5`                      | openai-completions | no          | on/off                              |

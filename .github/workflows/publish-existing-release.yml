@@ -10,7 +10,7 @@ on:
       packages:
         description: 'Package set carried by the existing release'
         type: choice
-        options: [all, acemusic]
+        options: [all, acemusic, provider]
         default: all
       already_submitted:
         description: 'Exact name@version already accepted by npm in a prior attempt; read back without uploading again'

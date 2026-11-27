@@ -26,11 +26,11 @@ export function inspectArtifact(path) {
 if (process.argv[1] && resolve(process.argv[1]) === import.meta.filename) {
   const directory = resolve(process.argv[2] ?? ".");
   const scope = process.env.NPM_RELEASE_SCOPE || "all";
-  if (!["all", "acemusic"].includes(scope)) throw new Error("Unknown npm release scope");
+  if (!["all", "acemusic", "provider"].includes(scope)) throw new Error("Unknown npm release scope");
   const serviceRoot = resolve(process.env.RELEASE_SERVICES_ROOT ?? "service-plugins");
   const expected = new Set(["@acedatacloud/openclaw-provider"]);
   for (const entry of readdirSync(serviceRoot, { withFileTypes: true })) {
-    if (!entry.isDirectory() || (scope === "acemusic" && entry.name !== "acemusic")) continue;
+    if (scope === "provider" || !entry.isDirectory() || (scope === "acemusic" && entry.name !== "acemusic")) continue;
     const metadata = JSON.parse(readFileSync(join(serviceRoot, entry.name, "package.json"), "utf8"));
     expected.add(metadata.name);
   }
