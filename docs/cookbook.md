@@ -8,9 +8,13 @@ openclaw plugins install clawhub:@acedatacloud/openclaw-provider
 openclaw onboard --auth-choice acedatacloud-api-key
 ```
 
-The command installs the latest release published on ClawHub. To pin a release,
-append the version shown on the listing, for example `@2026.10.19`. Check that
-channel before reusing a version from npm or GitHub Releases.
+The command installs the version currently listed on ClawHub. For Gemini 4 Neon,
+the npm release can be installed and selected explicitly:
+
+```sh
+openclaw plugins install npm:@acedatacloud/openclaw-provider@2026.11.27
+openclaw models set acedatacloud/gemini-4-neon
+```
 
 The package is vendor maintained. Review the host's install prompts and the
 listing's security audit. Official publisher status and default bundling are
