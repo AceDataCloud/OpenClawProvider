@@ -1756,6 +1756,51 @@ export const GENERATED_CHAT_MODELS: readonly GeneratedCatalogEntry[] = [
     }
   },
   {
+    "id": "gemini-4-neon",
+    "name": "Gemini 4 Neon",
+    "api": "openai-completions",
+    "baseUrl": "https://api.acedata.cloud/gemini",
+    "reasoning": true,
+    "input": [
+      "text",
+      "image"
+    ],
+    "contextWindow": 1048576,
+    "maxTokens": 65536,
+    "cost": {
+      "input": 1.1037985,
+      "output": 5.51899285,
+      "cacheRead": 0.055189925,
+      "cacheWrite": 0
+    },
+    "compat": {
+      "supportsStore": false,
+      "supportsDeveloperRole": false,
+      "supportsReasoningEffort": true,
+      "supportsUsageInStreaming": true,
+      "maxTokensField": "max_tokens",
+      "supportsTools": true,
+      "supportedReasoningEfforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "thinkingFormat": "openai"
+    },
+    "reasoningEfforts": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "thinkingToggle": false,
+    "thinkingLevelMap": {
+      "low": "low",
+      "medium": "medium",
+      "high": "high",
+      "off": "low"
+    }
+  },
+  {
     "id": "glm-4.6",
     "name": "GLM-4.6",
     "api": "openai-completions",
