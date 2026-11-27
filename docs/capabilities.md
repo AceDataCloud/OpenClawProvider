@@ -1,7 +1,6 @@
 # Service capability reference
 
-One Ace Data Cloud provider package includes the existing 91-model chat catalog and
-19 service modules with 115 optional operations. The Tripo contract uses the production PlatformBackend OpenAPI definitions. Each contract records its
+The Ace Data Cloud provider package includes 92 chat models and 19 services with 115 optional tools. The Tripo contract uses the production PlatformBackend OpenAPI definitions. Each contract records its
 immutable repository commit. Full operation parameters are exposed in the tool schema.
 
 Use native providers for ordinary image, video, music and speech generation. Use the

@@ -81,7 +81,15 @@ jobs:
           node "$stable_host/openclaw.mjs" plugins inspect acedatacloud --runtime --json > stable-runtime-inspect.json
           node scripts/check-runtime.mjs stable-runtime-inspect.json
           node "$stable_host/openclaw.mjs" models list --provider acedatacloud --all --json > stable-models.json
-          node -e 'const x = require("./stable-models.json"); if (x.models.length !== 91 || new Set(x.models.map(m => m.key)).size !== 91) process.exit(1)'
+          node --input-type=commonjs <<'NODE'
+          const assert = require("node:assert/strict");
+          const catalog = require("./src/chat/model-catalog.json").models;
+          const listed = require("./stable-models.json").models;
+          assert.deepEqual(
+            listed.map(model => model.key).sort(),
+            catalog.map(model => "acedatacloud/" + model.id).sort()
+          );
+          NODE
 
       - name: Build and install each candidate service plugin
         working-directory: OpenClawProvider
