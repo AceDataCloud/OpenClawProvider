@@ -104,7 +104,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SERVICE_PLUGIN_HOST: ${{ runner.temp }}/openclaw-stable/node_modules/openclaw/openclaw.mjs
         run: |
-          release_tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)
+          # A provider-only release carries no independent service package.
+          # Rebuild the most recent release that actually shipped service tarballs.
+          release_tag=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" | jq -rs \
+            '[.[][] | select(.draft == false and .prerelease == false) | select(any(.assets[]?; .name | test("^acedatacloud-.+-openclaw-[0-9].*\\.tgz$")))] | first.tag_name')
+          test -n "$release_tag" && test "$release_tag" != null
           git fetch --depth=1 origin "refs/tags/$release_tag"
           git worktree add --detach "$RUNNER_TEMP/openclaw-published-source" FETCH_HEAD
           cd "$RUNNER_TEMP/openclaw-published-source"

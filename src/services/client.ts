@@ -21,7 +21,7 @@ export function mediaUrls(x: unknown): string[] {
   function walk(n: unknown): void {
     if (Array.isArray(n)) { n.forEach(walk); return; }
     for (const [key, value] of Object.entries(record(n))) {
-      if (["url", "image_url", "audio_url", "video_url", "file_url", "raw_image_url"].includes(key) && typeof value === "string" && /^https:\/\//.test(value)) result.add(value);
+      if (["url", "image_url", "audio_url", "video_url", "file_url", "model_url", "raw_image_url"].includes(key) && typeof value === "string" && /^https:\/\//.test(value)) result.add(value);
       else if (typeof value === "object") walk(value);
     }
   }

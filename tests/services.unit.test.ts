@@ -20,11 +20,11 @@ describe("independent Dify contract parity", () => {
     if (example.read_only !== undefined) expect(req.readOnly).toBe(example.read_only);
     for (const key of example.body_absent ?? []) expect(req.body).not.toHaveProperty(key);
   });
-  it("keeps 18 services, 106 named optional tools and native capability ownership discoverable", () => {
+  it("keeps 19 services, 115 named optional tools and native capability ownership discoverable", () => {
     const manifest = JSON.parse(readFileSync(new URL("../openclaw.plugin.json", import.meta.url), "utf8"));
-    expect(SERVICES).toHaveLength(18);
+    expect(SERVICES).toHaveLength(19);
     const names = SERVICES.flatMap(s => Object.keys(s.endpoints).filter(k => !k.includes(":"))).map(n => `acedata_${n}`);
-    expect(names).toHaveLength(106); expect(new Set(names).size).toBe(106);
+    expect(names).toHaveLength(115); expect(new Set(names).size).toBe(115);
     expect(manifest.contracts.tools).toEqual(names);
     for (const name of names) expect(manifest.toolMetadata[name].optional).toBe(true);
     expect(manifest.contracts.imageGenerationProviders).toHaveLength(6);

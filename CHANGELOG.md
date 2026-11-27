@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.28
+
+- Add nine Tripo tools for 3D generation, model processing, animation and task retrieval. Model downloads are included in completed tool results.
+
 ## 2026.11.27
 
 - Add Gemini 4 Neon to the chat model picker with vision, streaming and function calling.

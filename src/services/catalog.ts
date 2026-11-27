@@ -15,6 +15,7 @@ import c12 from "./contracts/seedance.json" with { type: "json" };
 import c13 from "./contracts/seedream.json" with { type: "json" };
 import c14 from "./contracts/suno.json" with { type: "json" };
 import c15 from "./contracts/veo.json" with { type: "json" };
+import tripo from "./contracts/tripo.json" with { type: "json" };
 import c16 from "./contracts/wan.json" with { type: "json" };
 
 export type Schema = Record<string, unknown>;
@@ -31,7 +32,7 @@ export type Service = {
   source: {repository: string; commit: string; path: string};
   endpoints: Record<string, Endpoint>;
 };
-export const SERVICES: readonly Service[] = [aceMusic, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16] as unknown as Service[];
+export const SERVICES: readonly Service[] = [aceMusic, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, tripo, c15, c16] as unknown as Service[];
 export function serviceById(id: string): Service {
   const service = SERVICES.find(s => s.id === id);
   if (!service) throw new Error(`Unknown Ace Data Cloud service: ${id}`);

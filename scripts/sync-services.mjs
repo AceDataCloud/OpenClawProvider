@@ -8,8 +8,8 @@ const image = ["nano-banana", "gpt-image", "seedream", "flux", "qwen-image", "mi
 const video = ["seedance", "happyhorse", "grok", "kling", "veo", "minimax", "wan", "flux", "midjourney"];
 const music = ["suno", "acemusic"];
 const tools = services.flatMap(s => Object.keys(s.endpoints).filter(k => !k.includes(":" )).map(k => `acedata_${k}`));
-if (new Set(tools).size !== tools.length || tools.length !== 106) throw new Error("Unexpected Dify operation coverage");
-manifest.description = "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, ACE Music, Suno, Fish Audio, Google Search and face tools.";
+if (new Set(tools).size !== tools.length || tools.length !== 115) throw new Error("Unexpected service tool coverage");
+manifest.description = "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, ACE Music, Suno, Fish Audio, Tripo 3D, Google Search and face tools.";
 manifest.contracts = { ...manifest.contracts, imageGenerationProviders: image.map(s => `acedatacloud-${s}`), videoGenerationProviders: video.map(s => `acedatacloud-${s}`), musicGenerationProviders: music.map(s => `acedatacloud-${s}`), speechProviders: ["acedatacloud-fish-audio"], tools };
 const metadata = id => ({ authProviders: ["acedatacloud"], configSignals: [{rootPath: `plugins.entries.acedatacloud.config.serviceCredentials.${id}`, required: ["apiKey"]}] });
 manifest.imageGenerationProviderMetadata = Object.fromEntries(image.map(id => [`acedatacloud-${id}`, metadata(id)]));

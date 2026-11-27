@@ -1,7 +1,7 @@
 {
   "id": "acedatacloud",
   "name": "Ace Data Cloud",
-  "description": "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, ACE Music, Suno, Fish Audio, Google Search and face tools.",
+  "description": "Ace Data Cloud LLMs, Nano Banana, GPT Image, Seedream, Flux, Qwen Image, Midjourney, Seedance, Veo, Kling, Grok, Happy Horse, MiniMax, Wan, ACE Music, Suno, Fish Audio, Tripo 3D, Google Search and face tools.",
   "activation": {
     "onStartup": false
   },
@@ -269,6 +269,18 @@
               }
             }
           },
+          "tripo": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "apiKey": {
+                "type": [
+                  "string",
+                  "object"
+                ]
+              }
+            }
+          },
           "veo": {
             "type": "object",
             "additionalProperties": false,
@@ -423,6 +435,15 @@
       "acedata_suno_projects",
       "acedata_suno_task_retrieve",
       "acedata_suno_tasks_retrieve_batch",
+      "acedata_tripo_generate",
+      "acedata_tripo_import",
+      "acedata_tripo_texture",
+      "acedata_tripo_convert",
+      "acedata_tripo_rig_check",
+      "acedata_tripo_rig",
+      "acedata_tripo_retarget",
+      "acedata_tripo_retrieve",
+      "acedata_tripo_retrieve_batch",
       "acedata_veo_generate_video",
       "acedata_veo_extend_video",
       "acedata_veo_edit_objects",
@@ -534,6 +555,11 @@
     },
     "serviceCredentials.acemusic.apiKey": {
       "label": "ACE Music API key (optional override)",
+      "sensitive": true,
+      "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
+    },
+    "serviceCredentials.tripo.apiKey": {
+      "label": "Tripo 3D API key (optional override)",
       "sensitive": true,
       "help": "Uses your Ace Data Cloud provider credential when omitted. Use a scoped key to restrict this service."
     }
@@ -5556,6 +5582,150 @@
       "replaySafe": true,
       "sideEffecting": false
     },
+    "acedata_tripo_generate": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_import": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_texture": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_convert": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_rig_check": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_rig": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_retarget": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": false,
+      "sideEffecting": true
+    },
+    "acedata_tripo_retrieve": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": true,
+      "sideEffecting": false
+    },
+    "acedata_tripo_retrieve_batch": {
+      "optional": true,
+      "authProviders": [
+        "acedatacloud"
+      ],
+      "configSignals": [
+        {
+          "rootPath": "plugins.entries.acedatacloud.config.serviceCredentials.tripo",
+          "required": [
+            "apiKey"
+          ]
+        }
+      ],
+      "replaySafe": true,
+      "sideEffecting": false
+    },
     "acedata_veo_generate_video": {
       "optional": true,
       "authProviders": [
@@ -6000,5 +6170,5 @@
     "acedatacloud-acemusic": "acedatacloud",
     "acedatacloud-fish-audio": "acedatacloud"
   },
-  "version": "2026.11.27"
+  "version": "2026.11.28"
 }
