@@ -47,7 +47,7 @@ fallback changes the chosen model.
 
 Native media providers cover Nano Banana, GPT Image, Seedream, Flux, Qwen Image,
 Midjourney, Seedance, Veo, Kling, Grok Video, Happy Horse, MiniMax H3, Wan, ACE Music, Suno
-and Fish Audio. 106 optional tools across 18 services expose advanced editing,
+and Fish Audio. 115 optional tools across 19 services expose advanced editing,
 voice/persona management, face transformation, search and task retrieval.
 See [capability and tool reference](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/capabilities.md) and the
 [official-contract architecture decision](https://github.com/AceDataCloud/OpenClawProvider/blob/v2026.11.13/docs/architecture.md).

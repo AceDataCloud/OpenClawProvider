@@ -1,0 +1,2077 @@
+{
+  "id": "tripo",
+  "label": "Tripo 3D",
+  "source": {
+    "repository": "https://github.com/AceDataCloud/PlatformBackend",
+    "commit": "35a9522cfc03d17fd2bfbe51a4b1e17843b0de17",
+    "path": "openapi/"
+  },
+  "taskPath": "/tripo/tasks",
+  "endpoints": {
+    "tripo_generate": {
+      "method": "POST",
+      "path": "/tripo/generations",
+      "operation": "generate",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "prompt"
+            ]
+          },
+          {
+            "required": [
+              "image_url"
+            ]
+          },
+          {
+            "required": [
+              "image_urls"
+            ]
+          }
+        ],
+        "properties": {
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "model": {
+            "enum": [
+              "v3.1-20260211",
+              "v3.0-20250812",
+              "v2.5-20250123",
+              "P1-20260311",
+              "P2-20260801"
+            ],
+            "type": "string",
+            "default": "v3.1-20260211"
+          },
+          "action": {
+            "enum": [
+              "generate"
+            ],
+            "type": "string",
+            "default": "generate"
+          },
+          "prompt": {
+            "type": "string",
+            "maxLength": 1024,
+            "minLength": 1
+          },
+          "texture": {
+            "enum": [
+              "none",
+              "standard"
+            ],
+            "type": "string",
+            "default": "standard"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public PNG or JPEG up to 20 MiB."
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "nullable": true,
+              "maxLength": 8192
+            },
+            "maxItems": 4,
+            "minItems": 2,
+            "description": "Front, left, back, right. Front and at least one other image are required. Use null to skip an optional view."
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          }
+        },
+        "description": "Supply exactly one input: prompt, image_url, or image_urls.",
+        "additionalProperties": false
+      },
+      "properties": {
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "model": {
+          "enum": [
+            "v3.1-20260211",
+            "v3.0-20250812",
+            "v2.5-20250123",
+            "P1-20260311",
+            "P2-20260801"
+          ],
+          "type": "string",
+          "default": "v3.1-20260211"
+        },
+        "action": {
+          "enum": [
+            "generate"
+          ],
+          "type": "string",
+          "default": "generate"
+        },
+        "prompt": {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 1
+        },
+        "texture": {
+          "enum": [
+            "none",
+            "standard"
+          ],
+          "type": "string",
+          "default": "standard"
+        },
+        "image_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public PNG or JPEG up to 20 MiB."
+        },
+        "image_urls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "nullable": true,
+            "maxLength": 8192
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "description": "Front, left, back, right. Front and at least one other image are required. Use null to skip an optional view."
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        }
+      },
+      "tool": {
+        "label": "Tripo: generate",
+        "description": "Generate a 3D model from a prompt, an image, or ordered views. Use a stable idempotency key when retrying the same request.",
+        "input": [
+          {
+            "name": "model",
+            "required": false,
+            "schema": {
+              "enum": [
+                "v3.1-20260211",
+                "v3.0-20250812",
+                "v2.5-20250123",
+                "P1-20260311",
+                "P2-20260801"
+              ],
+              "type": "string",
+              "default": "v3.1-20260211"
+            }
+          },
+          {
+            "name": "prompt",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            }
+          },
+          {
+            "name": "texture",
+            "required": false,
+            "schema": {
+              "enum": [
+                "none",
+                "standard"
+              ],
+              "type": "string",
+              "default": "standard"
+            }
+          },
+          {
+            "name": "image_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public PNG or JPEG up to 20 MiB."
+            }
+          },
+          {
+            "name": "image_urls",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "nullable": true,
+                "maxLength": 8192
+              },
+              "maxItems": 4,
+              "minItems": 2,
+              "description": "Front, left, back, right. Front and at least one other image are required. Use null to skip an optional view."
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "generate"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_import": {
+      "method": "POST",
+      "path": "/tripo/models",
+      "operation": "import",
+      "schema": {
+        "type": "object",
+        "required": [
+          "action",
+          "model_url"
+        ],
+        "properties": {
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "action": {
+            "enum": [
+              "import"
+            ],
+            "type": "string"
+          },
+          "model_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "action": {
+          "enum": [
+            "import"
+          ],
+          "type": "string"
+        },
+        "model_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        }
+      },
+      "tool": {
+        "label": "Tripo: import",
+        "description": "Import an existing 3D model and return a reusable asset ID.",
+        "input": [
+          {
+            "name": "model_url",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "import"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_texture": {
+      "method": "POST",
+      "path": "/tripo/models",
+      "operation": "texture",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "model_id"
+            ]
+          },
+          {
+            "required": [
+              "model_url"
+            ]
+          }
+        ],
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "pbr": {
+            "type": "boolean"
+          },
+          "bake": {
+            "type": "boolean"
+          },
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "model": {
+            "enum": [
+              "v3.5-20260815",
+              "v3.0-20250812",
+              "v2.5-20250123"
+            ],
+            "type": "string"
+          },
+          "action": {
+            "enum": [
+              "texture"
+            ],
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string",
+            "maxLength": 1024,
+            "minLength": 1
+          },
+          "delight": {
+            "type": "boolean"
+          },
+          "compress": {
+            "enum": [
+              "geometry"
+            ],
+            "type": "string"
+          },
+          "model_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public PNG or JPEG up to 20 MiB."
+          },
+          "model_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "nullable": true,
+              "maxLength": 8192
+            },
+            "maxItems": 4,
+            "minItems": 2,
+            "description": "Front, left, back, right. Front and at least one other image are required. Use null to skip an optional view."
+          },
+          "part_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          },
+          "texture_seed": {
+            "type": "integer"
+          },
+          "style_image_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public PNG or JPEG up to 20 MiB."
+          },
+          "texture_quality": {
+            "enum": [
+              "fast",
+              "standard",
+              "detailed",
+              "extreme"
+            ],
+            "type": "string",
+            "default": "standard"
+          },
+          "texture_alignment": {
+            "enum": [
+              "original_image",
+              "geometry"
+            ],
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "pbr": {
+          "type": "boolean"
+        },
+        "bake": {
+          "type": "boolean"
+        },
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "model": {
+          "enum": [
+            "v3.5-20260815",
+            "v3.0-20250812",
+            "v2.5-20250123"
+          ],
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "texture"
+          ],
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 1
+        },
+        "delight": {
+          "type": "boolean"
+        },
+        "compress": {
+          "enum": [
+            "geometry"
+          ],
+          "type": "string"
+        },
+        "model_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "image_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public PNG or JPEG up to 20 MiB."
+        },
+        "model_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+        },
+        "image_urls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "nullable": true,
+            "maxLength": 8192
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "description": "Front, left, back, right. Front and at least one other image are required. Use null to skip an optional view."
+        },
+        "part_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        },
+        "texture_seed": {
+          "type": "integer"
+        },
+        "style_image_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public PNG or JPEG up to 20 MiB."
+        },
+        "texture_quality": {
+          "enum": [
+            "fast",
+            "standard",
+            "detailed",
+            "extreme"
+          ],
+          "type": "string",
+          "default": "standard"
+        },
+        "texture_alignment": {
+          "enum": [
+            "original_image",
+            "geometry"
+          ],
+          "type": "string"
+        }
+      },
+      "tool": {
+        "label": "Tripo: texture",
+        "description": "Apply texture to an existing model.",
+        "input": [
+          {
+            "name": "pbr",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "bake",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "model",
+            "required": false,
+            "schema": {
+              "enum": [
+                "v3.5-20260815",
+                "v3.0-20250812",
+                "v2.5-20250123"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "prompt",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            }
+          },
+          {
+            "name": "delight",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "compress",
+            "required": false,
+            "schema": {
+              "enum": [
+                "geometry"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "model_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "image_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public PNG or JPEG up to 20 MiB."
+            }
+          },
+          {
+            "name": "model_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+            }
+          },
+          {
+            "name": "image_urls",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://",
+                "nullable": true,
+                "maxLength": 8192
+              },
+              "maxItems": 4,
+              "minItems": 2,
+              "description": "Front, left, back, right. Front and at least one other image are required. Use null to skip an optional view."
+            }
+          },
+          {
+            "name": "part_names",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            }
+          },
+          {
+            "name": "texture_seed",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "style_image_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public PNG or JPEG up to 20 MiB."
+            }
+          },
+          {
+            "name": "texture_quality",
+            "required": false,
+            "schema": {
+              "enum": [
+                "fast",
+                "standard",
+                "detailed",
+                "extreme"
+              ],
+              "type": "string",
+              "default": "standard"
+            }
+          },
+          {
+            "name": "texture_alignment",
+            "required": false,
+            "schema": {
+              "enum": [
+                "original_image",
+                "geometry"
+              ],
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "texture"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_convert": {
+      "method": "POST",
+      "path": "/tripo/models",
+      "operation": "convert",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "model_id"
+            ]
+          },
+          {
+            "required": [
+              "model_url"
+            ]
+          }
+        ],
+        "required": [
+          "action",
+          "format"
+        ],
+        "properties": {
+          "bake": {
+            "type": "boolean"
+          },
+          "quad": {
+            "type": "boolean"
+          },
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "action": {
+            "enum": [
+              "convert"
+            ],
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "GLTF",
+              "FBX",
+              "USDZ",
+              "OBJ",
+              "STL",
+              "3MF"
+            ],
+            "type": "string"
+          },
+          "pack_uv": {
+            "type": "boolean"
+          },
+          "model_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "model_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+          },
+          "face_limit": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fbx_preset": {
+            "enum": [
+              "blender",
+              "3dsmax",
+              "mixamo",
+              "bake_scale"
+            ],
+            "type": "string"
+          },
+          "part_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          },
+          "scale_factor": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "texture_size": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "flatten_bottom": {
+            "type": "boolean"
+          },
+          "force_symmetry": {
+            "type": "boolean"
+          },
+          "texture_format": {
+            "enum": [
+              "JPEG",
+              "PNG",
+              "WEBP",
+              "BMP"
+            ],
+            "type": "string"
+          },
+          "with_animation": {
+            "type": "boolean"
+          },
+          "animate_in_place": {
+            "type": "boolean"
+          },
+          "texture_packaging": {
+            "enum": [
+              "embedded",
+              "zip"
+            ],
+            "type": "string"
+          },
+          "export_orientation": {
+            "enum": [
+              "+x",
+              "-x",
+              "+y",
+              "-y"
+            ],
+            "type": "string"
+          },
+          "export_vertex_colors": {
+            "type": "boolean"
+          },
+          "pivot_to_center_bottom": {
+            "type": "boolean"
+          },
+          "flatten_bottom_threshold": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "bake": {
+          "type": "boolean"
+        },
+        "quad": {
+          "type": "boolean"
+        },
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "action": {
+          "enum": [
+            "convert"
+          ],
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "GLTF",
+            "FBX",
+            "USDZ",
+            "OBJ",
+            "STL",
+            "3MF"
+          ],
+          "type": "string"
+        },
+        "pack_uv": {
+          "type": "boolean"
+        },
+        "model_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "model_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+        },
+        "face_limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fbx_preset": {
+          "enum": [
+            "blender",
+            "3dsmax",
+            "mixamo",
+            "bake_scale"
+          ],
+          "type": "string"
+        },
+        "part_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        },
+        "scale_factor": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        },
+        "texture_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "flatten_bottom": {
+          "type": "boolean"
+        },
+        "force_symmetry": {
+          "type": "boolean"
+        },
+        "texture_format": {
+          "enum": [
+            "JPEG",
+            "PNG",
+            "WEBP",
+            "BMP"
+          ],
+          "type": "string"
+        },
+        "with_animation": {
+          "type": "boolean"
+        },
+        "animate_in_place": {
+          "type": "boolean"
+        },
+        "texture_packaging": {
+          "enum": [
+            "embedded",
+            "zip"
+          ],
+          "type": "string"
+        },
+        "export_orientation": {
+          "enum": [
+            "+x",
+            "-x",
+            "+y",
+            "-y"
+          ],
+          "type": "string"
+        },
+        "export_vertex_colors": {
+          "type": "boolean"
+        },
+        "pivot_to_center_bottom": {
+          "type": "boolean"
+        },
+        "flatten_bottom_threshold": {
+          "type": "number"
+        }
+      },
+      "tool": {
+        "label": "Tripo: convert",
+        "description": "Convert a model to a selected format.",
+        "input": [
+          {
+            "name": "bake",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "quad",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "format",
+            "required": true,
+            "schema": {
+              "enum": [
+                "GLTF",
+                "FBX",
+                "USDZ",
+                "OBJ",
+                "STL",
+                "3MF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "pack_uv",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "model_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "model_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+            }
+          },
+          {
+            "name": "face_limit",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "fbx_preset",
+            "required": false,
+            "schema": {
+              "enum": [
+                "blender",
+                "3dsmax",
+                "mixamo",
+                "bake_scale"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "part_names",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            }
+          },
+          {
+            "name": "scale_factor",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "exclusiveMinimum": true
+            }
+          },
+          {
+            "name": "texture_size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "flatten_bottom",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "force_symmetry",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "texture_format",
+            "required": false,
+            "schema": {
+              "enum": [
+                "JPEG",
+                "PNG",
+                "WEBP",
+                "BMP"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "with_animation",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "animate_in_place",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "texture_packaging",
+            "required": false,
+            "schema": {
+              "enum": [
+                "embedded",
+                "zip"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "export_orientation",
+            "required": false,
+            "schema": {
+              "enum": [
+                "+x",
+                "-x",
+                "+y",
+                "-y"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "export_vertex_colors",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pivot_to_center_bottom",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "flatten_bottom_threshold",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "convert"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_rig_check": {
+      "method": "POST",
+      "path": "/tripo/animations",
+      "operation": "rig_check",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "model_id"
+            ]
+          },
+          {
+            "required": [
+              "model_url"
+            ]
+          }
+        ],
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "action": {
+            "enum": [
+              "rig_check"
+            ],
+            "type": "string"
+          },
+          "model_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "model_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "action": {
+          "enum": [
+            "rig_check"
+          ],
+          "type": "string"
+        },
+        "model_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "model_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        }
+      },
+      "tool": {
+        "label": "Tripo: rig check",
+        "description": "Check whether an existing model can be rigged. Returns a boolean.",
+        "input": [
+          {
+            "name": "model_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "model_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "rig_check"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_rig": {
+      "method": "POST",
+      "path": "/tripo/animations",
+      "operation": "rig",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "model_id"
+            ]
+          },
+          {
+            "required": [
+              "model_url"
+            ]
+          }
+        ],
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "spec": {
+            "enum": [
+              "tripo",
+              "mixamo",
+              "actorcore",
+              "unity",
+              "unreal",
+              "vrm"
+            ],
+            "type": "string"
+          },
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "model": {
+            "enum": [
+              "v1.0-20240301",
+              "v2.5-20260210",
+              "v3.0-20260909"
+            ],
+            "type": "string"
+          },
+          "action": {
+            "enum": [
+              "rig"
+            ],
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "GLB",
+              "FBX"
+            ],
+            "type": "string",
+            "default": "GLB"
+          },
+          "model_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rig_type": {
+            "enum": [
+              "biped",
+              "quadruped",
+              "hexapod",
+              "octopod",
+              "avian",
+              "serpentine",
+              "aquatic",
+              "others"
+            ],
+            "type": "string"
+          },
+          "model_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "spec": {
+          "enum": [
+            "tripo",
+            "mixamo",
+            "actorcore",
+            "unity",
+            "unreal",
+            "vrm"
+          ],
+          "type": "string"
+        },
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "model": {
+          "enum": [
+            "v1.0-20240301",
+            "v2.5-20260210",
+            "v3.0-20260909"
+          ],
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "rig"
+          ],
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "GLB",
+            "FBX"
+          ],
+          "type": "string",
+          "default": "GLB"
+        },
+        "model_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "rig_type": {
+          "enum": [
+            "biped",
+            "quadruped",
+            "hexapod",
+            "octopod",
+            "avian",
+            "serpentine",
+            "aquatic",
+            "others"
+          ],
+          "type": "string"
+        },
+        "model_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        }
+      },
+      "tool": {
+        "label": "Tripo: rig",
+        "description": "Bind a skeleton to a model.",
+        "input": [
+          {
+            "name": "spec",
+            "required": false,
+            "schema": {
+              "enum": [
+                "tripo",
+                "mixamo",
+                "actorcore",
+                "unity",
+                "unreal",
+                "vrm"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "model",
+            "required": false,
+            "schema": {
+              "enum": [
+                "v1.0-20240301",
+                "v2.5-20260210",
+                "v3.0-20260909"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "schema": {
+              "enum": [
+                "GLB",
+                "FBX"
+              ],
+              "type": "string",
+              "default": "GLB"
+            }
+          },
+          {
+            "name": "model_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "rig_type",
+            "required": false,
+            "schema": {
+              "enum": [
+                "biped",
+                "quadruped",
+                "hexapod",
+                "octopod",
+                "avian",
+                "serpentine",
+                "aquatic",
+                "others"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "model_url",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "maxLength": 8192,
+              "description": "Public HTTPS URL to a supported model file up to 150 MiB."
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "rig"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_retarget": {
+      "method": "POST",
+      "path": "/tripo/animations",
+      "operation": "retarget",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "animation"
+            ]
+          },
+          {
+            "required": [
+              "animations"
+            ]
+          }
+        ],
+        "required": [
+          "action",
+          "model_id"
+        ],
+        "properties": {
+          "async": {
+            "type": "boolean",
+            "default": false,
+            "description": "Return the task ID immediately."
+          },
+          "action": {
+            "enum": [
+              "retarget"
+            ],
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "GLB",
+              "FBX"
+            ],
+            "type": "string",
+            "default": "GLB"
+          },
+          "model_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "animation": {
+            "type": "string",
+            "pattern": "^preset:[a-z0-9_]+(:[a-z0-9_]+)*$"
+          },
+          "animations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^preset:[a-z0-9_]+(:[a-z0-9_]+)*$"
+            },
+            "maxItems": 5,
+            "minItems": 1
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://",
+            "maxLength": 8192,
+            "description": "Receive the final JSON result by HTTPS POST; implies async."
+          },
+          "animate_in_place": {
+            "type": "boolean"
+          },
+          "export_with_geometry": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return the task ID immediately."
+        },
+        "action": {
+          "enum": [
+            "retarget"
+          ],
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "GLB",
+            "FBX"
+          ],
+          "type": "string",
+          "default": "GLB"
+        },
+        "model_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "animation": {
+          "type": "string",
+          "pattern": "^preset:[a-z0-9_]+(:[a-z0-9_]+)*$"
+        },
+        "animations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^preset:[a-z0-9_]+(:[a-z0-9_]+)*$"
+          },
+          "maxItems": 5,
+          "minItems": 1
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 8192,
+          "description": "Receive the final JSON result by HTTPS POST; implies async."
+        },
+        "animate_in_place": {
+          "type": "boolean"
+        },
+        "export_with_geometry": {
+          "type": "boolean"
+        }
+      },
+      "tool": {
+        "label": "Tripo: retarget",
+        "description": "Apply one to five supported animation presets to a rigged model.",
+        "input": [
+          {
+            "name": "format",
+            "required": false,
+            "schema": {
+              "enum": [
+                "GLB",
+                "FBX"
+              ],
+              "type": "string",
+              "default": "GLB"
+            }
+          },
+          {
+            "name": "model_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "animation",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^preset:[a-z0-9_]+(:[a-z0-9_]+)*$"
+            }
+          },
+          {
+            "name": "animations",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^preset:[a-z0-9_]+(:[a-z0-9_]+)*$"
+              },
+              "maxItems": 5,
+              "minItems": 1
+            }
+          },
+          {
+            "name": "animate_in_place",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "export_with_geometry",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "retarget"
+      },
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          "required": false,
+          "description": "Reuse the same key and payload to retrieve the original task."
+        }
+      ]
+    },
+    "tripo_retrieve": {
+      "method": "POST",
+      "path": "/tripo/tasks",
+      "operation": "task",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "id"
+            ]
+          },
+          {
+            "required": [
+              "trace_id"
+            ]
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "action": {
+            "enum": [
+              "retrieve"
+            ],
+            "type": "string",
+            "default": "retrieve"
+          },
+          "trace_id": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "retrieve"
+          ],
+          "type": "string",
+          "default": "retrieve"
+        },
+        "trace_id": {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1
+        }
+      },
+      "tool": {
+        "label": "Tripo: retrieve",
+        "description": "Retrieve a Tripo task by its task ID or trace ID.",
+        "input": [
+          {
+            "name": "id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "trace_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            }
+          },
+          {
+            "name": "wait_seconds",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 240
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "retrieve"
+      },
+      "read_only": true
+    },
+    "tripo_retrieve_batch": {
+      "method": "POST",
+      "path": "/tripo/tasks",
+      "operation": "batch",
+      "schema": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "ids"
+            ]
+          },
+          {
+            "required": [
+              "trace_ids"
+            ]
+          }
+        ],
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 100,
+            "minItems": 1
+          },
+          "action": {
+            "enum": [
+              "retrieve_batch"
+            ],
+            "type": "string"
+          },
+          "trace_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            "maxItems": 100,
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false
+      },
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "action": {
+          "enum": [
+            "retrieve_batch"
+          ],
+          "type": "string"
+        },
+        "trace_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 1
+          },
+          "maxItems": 100,
+          "minItems": 1
+        }
+      },
+      "tool": {
+        "label": "Tripo: retrieve batch",
+        "description": "Retrieve up to 100 tasks or trace IDs in the original order.",
+        "input": [
+          {
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 100,
+              "minItems": 1
+            }
+          },
+          {
+            "name": "trace_ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              "maxItems": 100,
+              "minItems": 1
+            }
+          }
+        ]
+      },
+      "fixed": {
+        "action": "retrieve_batch"
+      },
+      "read_only": true
+    }
+  }
+}

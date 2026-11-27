@@ -12,7 +12,7 @@ on:
       packages:
         description: 'Package set for this release'
         type: choice
-        options: [all, acemusic]
+        options: [all, acemusic, provider]
         default: all
 
 permissions:

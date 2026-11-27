@@ -28,7 +28,7 @@ in this package; allowlist only the tools that you need.
 An Ace Data Cloud managed OpenClaw deployment is a separate setup path. Its
 creation wizard can seed one platform chat model and an instance-specific
 credential into the native configuration. The pinned runtime does not install
-this provider package or its 106 optional tools automatically. Connect to that
+this provider package or its 115 optional tools automatically. Connect to that
 instance's native dashboard for chat; check its OpenClaw version and install the
 provider separately if you need these plugin capabilities. Redeployment preserves
 existing native settings. Deployment duration and model/API usage are billed
@@ -101,3 +101,7 @@ After approval, verify `openclaw plugins search "Ace Data Cloud"`, install using
 the exact ClawHub package/version, onboard in isolated state, and run a model turn.
 Only then record a successful market-discovery milestone. Official publisher
 status and default bundling require separate OpenClaw decisions.
+
+## Tripo 3D
+
+Call `acedata_tripo_generate` with a prompt, one image URL or ordered views. Use `acedata_tripo_retrieve` with the returned ID. When it succeeds, download the GLB from `data[0].model_url`. For an existing model, use the import, texture, convert, rig check, rig and retarget tools. Batch lookup preserves the requested order. Reuse an idempotency key and identical inputs when retrying a submission.

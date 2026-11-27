@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.27
+
+- Add nine Tripo tools for 3D generation, model processing, animation and task retrieval. Model downloads are included in completed tool results.
+
 ## 2026.11.22
 
 - Add ACE Music prompt-to-song generation and nine tools for custom songs, references, lyrics and task retrieval. The independent source package is `@acedatacloud/acemusic-openclaw@0.1.0`.
