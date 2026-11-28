@@ -21,7 +21,7 @@ openclaw plugins install clawhub:@acedatacloud/gpt-image-openclaw
 ## 2. 注册、登录 Ace 并取得专用 Token
 
 1. 新用户先注册并登录 [Ace Data Cloud → Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen)。
-2. 打开 **General application**；如果没有，选择 **Initialize General Application**。通用应用可访问账号已经拥有权限的服务；专用服务应用的 Key 仅能使用该服务。
+2. 打开 **General application**。通用应用可访问账号已经拥有权限的服务；专用服务应用的 Key 仅能使用该服务。
 3. 如要复用已有 Key，点击应用卡片复制按钮；如要单独管理这次接入，打开 **Manage Keys → Create**，创建可单独撤销/轮换的 Key。
 
 ![真实平台应用页：复制Key或进入Manage Keys；固定源截图，本指南引用日期2026-10-18](https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/get-api-key-en.png)
